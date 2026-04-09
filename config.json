@@ -1,0 +1,19 @@
+{
+  "sheet_url": "https://docs.google.com/spreadsheets/d/13SrI50MGBAJHcRqFXa2TT5EDki3EGd0YL5wAGKXzPuw/edit?gid=1534602765#gid=1534602765",
+  "parse_rules": {
+    "row_anchor": "12點半",
+    "cn_pattern": "^[\\u4e00-\\u9fff]{2,5}$",
+    "en_pattern": "^[A-Za-z]{2,15}$",
+    "phone_prefix": "(02) 2760-7768 #6",
+    "email_domain": "@etalkingonline.com"
+  },
+  "consultants": [
+    {
+      "id": "wolf",
+      "name": "Wolf 黃",
+      "phone": "(02) 2760-7768 #622",
+      "email": "Wolf.Huang@etalkingonline.com",
+      "lineId": "verypigkimo"
+    }
+  ]
+}

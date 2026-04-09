@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ETalking Kids · 方案確認卡</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dk:#042C53;--blue:#185FA5;--mid:#B5D4F4;--light:#E6F1FB;
+  --bg:#F7F6F3;--s2:#F0EFE9;--bd:#E0DFD8;
+  --text:#1A1A18;--t2:#5C5B57;--t3:#9C9B96;
+  --green:#3B6D11;--gl:#EAF3DE;
+  --amber:#BA7517;--al:#FAEEDA;
+  --orange:#B85A10;--ol:#FEF0E2;
+  --red:#A32D2D;--rl:#FCEBEB;
+  --r:8px;--rl2:12px;
+}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft JhengHei","PingFang TC",sans-serif;
+  font-size:14px;color:var(--text);background:#E8E7E0;line-height:1.5}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:278px;flex-shrink:0;background:#fff;border-right:.5px solid var(--bd);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-body{flex:1;overflow-y:auto;padding:15px 13px;display:flex;flex-direction:column;gap:14px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--dk);padding:0 18px;height:50px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.main-body{flex:1;overflow-y:auto;padding:18px;display:flex;gap:18px;align-items:flex-start;justify-content:center}
+.preview-col{display:flex;flex-direction:column;gap:12px;flex-shrink:0}
+.send-col{flex:1;min-width:265px;max-width:365px;display:flex;flex-direction:column;gap:10px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-dot{width:7px;height:7px;border-radius:50%;background:var(--mid)}
+.brand-name{font-size:13px;font-weight:600;color:#fff}
+.brand-tag{font-size:10px;color:var(--mid)}
+.top-actions{display:flex;gap:7px}
+.sec{display:flex;flex-direction:column;gap:7px}
+.sec-label{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.08em;text-transform:uppercase}
+.fl{font-size:11px;color:var(--t2);margin-bottom:2px}
+input[type=text],input[type=date],input[type=number],select,textarea{
+  width:100%;padding:6px 9px;border:.5px solid var(--bd);border-radius:var(--r);
+  font-size:12px;background:#fff;color:var(--text);outline:none;font-family:inherit;transition:border-color .12s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(24,95,165,.1)}
+input[type=number]{width:64px}
+.row2{display:flex;gap:8px;align-items:center}
+.hint{font-size:11px;color:var(--t3)}
+.hint.warn{color:var(--red)}
+.chk-row{display:flex;align-items:flex-start;gap:8px;cursor:pointer;padding:2px 0}
+.chk-box{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .12s;background:#fff}
+.chk-box.on{background:var(--blue);border-color:var(--blue)}
+.chk-tick{color:#fff;font-size:10px;font-weight:700;opacity:0;transition:opacity .1s}
+.chk-box.on .chk-tick{opacity:1}
+.chk-main{font-size:12px;color:var(--text)}
+.chk-sub{font-size:11px;color:var(--t3)}
+.pill-row{display:flex;gap:5px;padding-left:23px}
+.pill{font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;border:.5px solid var(--bd);background:transparent;color:var(--t2);transition:all .12s;font-family:inherit}
+.pill.on{background:var(--light);color:var(--blue);border-color:var(--mid)}
+.sub-panel{padding-left:0;display:flex;flex-direction:column;gap:6px}
+.biz-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.biz-bar{flex:1;height:5px;border-radius:3px;background:var(--bd);overflow:hidden;min-width:60px}
+.biz-bar-fill{height:100%;background:var(--blue);transition:width .2s}
+.chip{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--gl);color:var(--green);font-weight:600;white-space:nowrap}
+.chip.zero{background:var(--rl);color:var(--red)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 14px;font-size:12px;font-weight:500;border-radius:var(--r);cursor:pointer;border:none;font-family:inherit;transition:all .12s;white-space:nowrap}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:#0F4A8A}
+.btn-outline{background:#fff;color:var(--text);border:.5px solid var(--bd)}
+.btn-outline:hover{background:var(--bg);border-color:var(--blue);color:var(--blue)}
+.btn-ghost{background:transparent;color:var(--mid);border:.5px solid rgba(181,212,244,.3)}
+.btn-ghost:hover{background:rgba(181,212,244,.1)}
+.btn-sm{padding:6px 11px;font-size:11px}
+.ch-card{background:#fff;border:.5px solid var(--bd);border-radius:var(--rl2);overflow:hidden}
+.ch-head{padding:10px 13px;border-bottom:.5px solid var(--bd);display:flex;align-items:center;gap:9px}
+.ch-icon{width:27px;height:27px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ch-title{font-size:12px;font-weight:600;color:var(--text)}
+.ch-desc{font-size:10px;color:var(--t3);margin-top:1px}
+.ch-body{padding:10px 13px;display:flex;flex-direction:column;gap:7px}
+.ch-prev{background:var(--bg);border-radius:var(--r);padding:8px 10px;font-size:11.5px;color:var(--t2);line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:90px;overflow-y:auto}
+.ch-prev.sms{font-size:13px;max-height:56px}
+.ch-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--dk);color:#fff;padding:7px 16px;border-radius:20px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:999}
+#toast.show{opacity:1}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:var(--rl2);width:580px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-head{padding:13px 17px;border-bottom:.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-title{font-size:14px;font-weight:600}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--t3);padding:2px 6px;line-height:1}
+.modal-body{flex:1;overflow-y:auto;padding:15px 17px;display:flex;flex-direction:column;gap:11px}
+.modal-foot{padding:11px 17px;border-top:.5px solid var(--bd);display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.mlabel{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.esubj{padding:7px 10px;border:.5px solid var(--bd);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--bg)}
+.ebody{padding:9px 10px;border:.5px solid var(--bd);border-radius:var(--r);font-size:11.5px;color:var(--t2);line-height:1.7;white-space:pre-wrap;background:var(--bg);min-height:260px;overflow-y:auto;font-family:monospace}
+.crmbody{padding:9px 10px;border:.5px solid var(--bd);border-radius:var(--r);font-size:11.5px;color:var(--t2);line-height:1.7;white-space:pre-wrap;background:var(--bg);min-height:300px;overflow-y:auto;font-family:monospace}
+#card{width:420px;background:var(--bg);color:var(--text);border-radius:var(--rl2);overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.12);flex-shrink:0;font-family:-apple-system,"Microsoft JhengHei","PingFang TC",sans-serif}
+.c-head{background:var(--dk);padding:17px 22px 13px}
+.c-eyebrow{font-size:10px;color:var(--mid);letter-spacing:.1em;margin-bottom:4px}
+.c-name{font-size:20px;font-weight:700;color:#fff;line-height:1.25}
+.c-sub{font-size:11px;color:var(--mid);margin-top:4px}
+.c-hero{background:var(--blue);padding:13px 22px;display:flex;justify-content:space-between;align-items:flex-end}
+.hn{font-size:23px;font-weight:700;color:#fff}
+.hf{font-size:12px;color:var(--mid);margin-top:3px}
+.rpv{font-size:25px;font-weight:700;color:#fff}
+.c-ey2{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.08em;margin-bottom:7px}
+.bonus-item{display:flex;align-items:center;gap:9px;padding:6px 11px;border-radius:var(--r);margin-bottom:5px;border-width:1px;border-style:solid}
+.c-deadline{padding:11px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bd)}
+.dl-badge{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;color:#fff}
+.c-steps{padding:12px 22px;border-bottom:1px solid var(--bd)}
+.step-row{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.step-num{width:19px;height:19px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.c-foot{padding:11px 22px;background:var(--s2);display:flex;justify-content:space-between;align-items:flex-start}
+@media(max-width:860px){
+  .app{flex-direction:column;height:auto}
+  .sidebar{width:100%;height:auto;border-right:none;border-bottom:.5px solid var(--bd)}
+  .main{height:auto}
+  .main-body{flex-direction:column;align-items:center;padding:14px}
+  #card{width:100%;max-width:420px}
+  .send-col{width:100%;max-width:420px}
+}
+/* ── Inline-editable card text ── */
+.ce,.ce-dk,.ce-lt{outline:none;cursor:text;border-radius:3px;transition:background .15s;white-space:pre-wrap}
+.ce:hover{background:rgba(255,255,255,.15)}
+.ce:focus{background:rgba(255,255,255,.22);box-shadow:0 0 0 1.5px rgba(181,212,244,.6)}
+.ce-dk:hover{background:rgba(0,0,0,.06)}
+.ce-dk:focus{background:rgba(0,0,0,.09);box-shadow:0 0 0 1.5px rgba(24,95,165,.4)}
+.ce-lt:hover{background:rgba(24,95,165,.06)}
+.ce-lt:focus{background:rgba(24,95,165,.1);box-shadow:0 0 0 1.5px rgba(24,95,165,.3)}
+.edit-tip{font-size:10px;color:var(--t3);display:flex;align-items:center;gap:5px}
+.edit-tip-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);opacity:.6}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar"><div class="sidebar-body">
+
+  <div class="sec">
+    <div class="sec-label">學員</div>
+    <div><div class="fl">學員姓名</div><input type="text" id="studentName" placeholder="例：陳小明" oninput="render()"></div>
+    <div><div class="fl">稱呼家長為</div><input type="text" id="parentName" placeholder="例：陳媽媽" oninput="render()"></div>
+    <div><div class="fl">本次課程類型</div>
+      <select id="sessionType" onchange="render()" style="width:100%">
+        <option>體驗</option>
+        <option>檢測</option>
+        <option>Demo</option>
+        <option>說明</option>
+        <option value="__custom__">自訂...</option>
+      </select>
+      <input type="text" id="sessionCustom" placeholder="輸入自訂類型" oninput="render()"
+        style="display:none;margin-top:5px">
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">課程</div>
+    <div><div class="fl">方案</div>
+      <select id="planSel" onchange="render()">
+        <option>輕鬆學</option><option>進階學</option><option>小夢想家</option><option selected>大夢想家</option>
+      </select></div>
+    <div><div class="fl">每週頻率</div>
+      <select id="freqSel" onchange="render()">
+        <option value="2">2 堂 / 週</option><option value="3" selected>3 堂 / 週</option>
+        <option value="4">4 堂 / 週</option><option value="5">5 堂 / 週</option>
+      </select></div>
+    <div class="hint" id="priceHint"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">折扣方案</div>
+    <div class="chk-row" onclick="tog('discount')">
+      <div class="chk-box" id="chk-discount"><span class="chk-tick">✓</span></div>
+      <div><div class="chk-main">套用折扣</div></div>
+    </div>
+    <div id="discount-panel" style="display:none;flex-direction:column;gap:6px;padding-left:0">
+      <div><div class="fl">優惠名稱</div>
+        <select id="discountLabel" onchange="onLabelChg()" style="width:100%">
+          <option>體驗後當日簽約</option><option>10週年慶</option><option>兒童節促銷</option>
+          <option>暑期限定優惠</option><option>開學特惠</option><option>學期末優惠</option>
+          <option>家長回饋方案</option><option>週年慶限定</option><option>聖誕新年特惠</option>
+          <option>自訂...</option>
+        </select>
+        <input type="text" id="discountCustom" placeholder="輸入自訂名稱" oninput="render()" style="display:none;margin-top:5px">
+      </div>
+      <div class="row2">
+        <div class="fl" style="margin:0;white-space:nowrap">折扣幅度</div>
+        <input type="number" id="discountPct" value="80" min="50" max="99" step="1" oninput="render()">
+        <span style="font-size:12px;color:var(--t2)">% （<span id="discountFold">8折</span>）</span>
+      </div>
+      <div class="hint" id="discountHint"></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">活動加贈</div>
+    <div class="chk-row" onclick="tog('childrensDay')">
+      <div class="chk-box on" id="chk-childrensDay"><span class="chk-tick">✓</span></div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px">
+          <input type="text" id="activityLabel" value="兒童節" oninput="render()"
+            style="width:80px;font-size:12px;padding:3px 7px">
+          <span class="chk-main">加碼</span>
+        </div>
+        <div class="chk-sub" id="sub-cd"></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;padding-left:0" id="actAmtRow">
+      <div class="fl" style="margin:0;white-space:nowrap">加贈堂數</div>
+      <input type="number" id="actAmt" value="40" min="0" step="5" oninput="render()" style="width:60px">
+      <span style="font-size:11px;color:var(--t3)" id="actAmtUnit">堂魔法屋</span>
+    </div>
+    <div class="pill-row" id="giftPills">
+      <button class="pill on" id="pill-magic" onclick="setGift('magic')">魔法屋</button>
+      <button class="pill" id="pill-elec" onclick="setGift('elec')">選修課</button>
+      <button class="pill" id="pill-jingo" onclick="setGift('jingo')">進度課</button>
+    </div>
+    <div class="chk-row" onclick="tog('lumpSum')">
+      <div class="chk-box" id="chk-lumpSum"><span class="chk-tick">✓</span></div>
+      <div><div class="chk-main">一次付清加贈</div><div class="chk-sub" id="sub-lump"></div></div>
+    </div>
+    <div class="chk-row" onclick="tog('regFee')">
+      <div class="chk-box on" id="chk-regFee"><span class="chk-tick">✓</span></div>
+      <div><div class="chk-main">收取報名費 NT$ 2,888</div>
+        <div class="chk-sub">不勾選 → 顯示減免話術</div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">課程顧問特別加贈</div>
+    <div class="chk-row" onclick="tog('biz')">
+      <div class="chk-box on" id="chk-biz"><span class="chk-tick">✓</span></div>
+      <div><div class="chk-main">本次加贈魔法屋</div><div class="chk-sub">額度不須一次用完，可分次保留</div></div>
+    </div>
+    <div id="biz-panel" style="display:flex;flex-direction:column;gap:6px;padding-left:0">
+      <div class="row2">
+        <div class="fl" style="margin:0;white-space:nowrap">本次加贈</div>
+        <input type="number" id="bizAmt" value="20" min="0" step="5" oninput="clampBiz();render()">
+        <span style="font-size:12px;color:var(--t2)">堂（上限 <span id="bizMax">45</span>）</span>
+      </div>
+      <div class="biz-row">
+        <span style="font-size:11px;color:var(--t3);white-space:nowrap">已用</span>
+        <div class="biz-bar"><div class="biz-bar-fill" id="bizFill" style="width:44%"></div></div>
+        <div class="chip" id="bizChip">剩 25 堂</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">優惠截止日</div>
+    <input type="date" id="deadline" onchange="render()">
+    <div class="hint" id="dlHint"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">備註</div>
+    <textarea id="note" rows="2" placeholder="補充說明（選填）" oninput="render()"
+      style="font-size:12px;resize:vertical;border:.5px solid var(--bd);border-radius:8px;padding:6px 9px;background:#fff;color:var(--text);outline:none;font-family:inherit;width:100%"></textarea>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">課程顧問</div>
+    <div id="cfg-st" style="font-size:10px;color:var(--t3);display:flex;align-items:center;gap:4px;margin-bottom:6px">
+      <span id="cfg-dot" style="width:6px;height:6px;border-radius:50%;background:var(--t3);flex-shrink:0;display:inline-block"></span>
+      <span id="cfg-msg">載入設定中…</span>
+    </div>
+    <div id="consultant-chips" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px"></div>
+    <div id="consultant-fields" style="display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;gap:6px">
+        <div style="flex:1">
+          <div class="fl">英文名</div>
+          <input type="text" id="quickEn" placeholder="Wolf" oninput="quickFill()" style="text-transform:capitalize">
+        </div>
+        <div style="width:72px">
+          <div class="fl">中文姓氏</div>
+          <input type="text" id="quickCn" placeholder="黃" oninput="quickFill()" maxlength="1">
+        </div>
+      </div>
+      <div style="height:.5px;background:var(--bd);margin:2px 0"></div>
+      <div><div class="fl" style="color:var(--t3)">姓名</div><input type="text" id="consultant" value="Wolf 黃" oninput="render()"></div>
+      <div><div class="fl" style="color:var(--t3)">電話</div><input type="text" id="cphone" value="(02) 2760-7768 #622" oninput="render()"></div>
+      <div><div class="fl" style="color:var(--t3)">Email</div><input type="text" id="cemail" value="Wolf.Huang@etalkingonline.com" oninput="render()"></div>
+      <div><div class="fl" style="color:var(--t3)">LINE ID</div><input type="text" id="lineId" value="verypigkimo" oninput="render()"></div>
+    </div>
+  </div>
+
+</div></aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div>
+        <div class="brand-name">ETalking Kids · 方案確認卡</div>
+        <div class="brand-tag">課程顧問專用 · 三通路傳送</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn btn-ghost btn-sm" onclick="openCRM()">內部備忘 / CRM</button>
+      <button class="btn btn-ghost btn-sm" onclick="getImg()">下載圖片</button>
+      <button class="btn btn-primary btn-sm" onclick="getPPTX()">下載 PPTX</button>
+    </div>
+  </div>
+
+  <div class="main-body">
+    <div class="preview-col">
+      <div class="edit-tip">
+        <div class="edit-tip-dot"></div>
+        卡片文字可直接點擊編輯，即時連動右側
+        <button onclick="resetCard()" style="margin-left:4px;font-size:10px;padding:2px 8px;border:.5px solid var(--bd);border-radius:10px;background:transparent;cursor:pointer;color:var(--t3)">重設</button>
+      </div>
+      <div id="card">
+        <div class="c-head">
+          <div class="c-eyebrow">ETALKING KIDS</div>
+          <div class="c-name ce" id="c-name" contenteditable="true" spellcheck="false">學員姓名 的專屬學習方案</div>
+          <div class="c-sub ce" contenteditable="true" spellcheck="false">課程顧問已為您整理以下確認內容</div>
+        </div>
+        <div class="c-hero">
+          <div>
+            <div style="font-size:11px;color:var(--mid);margin-bottom:3px" class="ce" contenteditable="true" spellcheck="false">確認方案</div>
+            <div class="hn ce" id="c-plan" contenteditable="true" spellcheck="false">大夢想家</div>
+            <div class="hf ce" id="c-freq" contenteditable="true" spellcheck="false">每週 3 堂・24 個月合約</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:11px;color:var(--mid)" class="ce" contenteditable="true" spellcheck="false">月付款（24期零利率）</div>
+            <div class="rpv ce" id="c-price" contenteditable="true" spellcheck="false">NT$ 5,850</div>
+            <div style="font-size:10px;color:var(--mid)" id="c-ann" class="ce" contenteditable="true" spellcheck="false" style="display:none"></div>
+            <div style="font-size:11px;color:var(--mid);margin-top:2px" id="c-regfee" class="ce" contenteditable="true" spellcheck="false">+ 報名費 NT$ 2,888</div>
+          </div>
+        </div>
+        <div id="c-bonuses" style="display:none;padding:12px 22px;border-bottom:1px solid var(--bd)"></div>
+        <div class="c-deadline" id="c-deadline">
+          <div>
+            <div style="font-size:11px;font-weight:600;margin-bottom:2px" id="dl-lbl" style="color:var(--amber)">優惠截止日</div>
+            <div style="font-size:17px;font-weight:700;color:var(--text)" id="dl-date" class="ce-lt" contenteditable="true" spellcheck="false">—</div>
+          </div>
+          <div class="dl-badge ce-dk" id="dl-badge" contenteditable="true" spellcheck="false" style="background:var(--amber)">—</div>
+        </div>
+        <div id="c-note" style="display:none;padding:10px 22px;background:var(--s2);border-bottom:1px solid var(--bd)">
+          <div style="font-size:10px;color:var(--t3);margin-bottom:3px">顧問備註</div>
+          <div style="font-size:12.5px;color:var(--t2);line-height:1.6" id="note-txt" class="ce-lt" contenteditable="true" spellcheck="false"></div>
+        </div>
+        <div class="c-steps">
+          <div class="c-ey2 ce-lt" contenteditable="true" spellcheck="false">報名流程</div>
+          <div class="step-row"><div class="step-num">1</div><div class="ce-lt" contenteditable="true" spellcheck="false" style="font-size:12.5px;color:var(--t2)">確認方案與付款方式</div></div>
+          <div class="step-row"><div class="step-num">2</div><div class="ce-lt" contenteditable="true" spellcheck="false" style="font-size:12.5px;color:var(--t2)">填寫學員基本資料</div></div>
+          <div class="step-row"><div class="step-num">3</div><div class="ce-lt" contenteditable="true" spellcheck="false" style="font-size:12.5px;color:var(--t2)">課程顧問產出合約，線上簽署</div></div>
+          <div class="step-row" style="margin-bottom:0"><div class="step-num">4</div><div class="ce-lt" contenteditable="true" spellcheck="false" style="font-size:12.5px;color:var(--t2)">刷卡完成，排定首課</div></div>
+        </div>
+        <div class="c-foot">
+          <div>
+            <div style="font-size:13px;font-weight:600" id="c-consultant" class="ce-lt" contenteditable="true" spellcheck="false">Wolf 黃</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:2px;line-height:1.6" id="c-contact" class="ce-lt" contenteditable="true" spellcheck="false"></div>
+          </div>
+          <div style="font-size:10px;color:var(--blue);font-style:italic;margin-top:2px" class="ce-lt" contenteditable="true" spellcheck="false">Learning is fun!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="send-col">
+      <!-- LINE -->
+      <div class="ch-card">
+        <div class="ch-head">
+          <div class="ch-icon" style="background:#00B900;color:#fff;font-weight:700;font-size:12px">L</div>
+          <div><div class="ch-title">LINE</div><div class="ch-desc">下載圖片傳送 + 備用文字訊息</div></div>
+        </div>
+        <div class="ch-body">
+          <div class="ch-prev" id="line-txt"></div>
+          <div class="ch-actions">
+            <button class="btn btn-primary btn-sm" onclick="getImg()">下載圖片</button>
+            <button class="btn btn-outline btn-sm" onclick="copyEl('line-txt')">複製文字</button>
+          </div>
+        </div>
+      </div>
+      <!-- Email -->
+      <div class="ch-card">
+        <div class="ch-head">
+          <div class="ch-icon" style="background:var(--light);font-size:14px">✉</div>
+          <div><div class="ch-title">Email</div><div class="ch-desc">自動帶入主旨與內文</div></div>
+        </div>
+        <div class="ch-body">
+          <div class="ch-prev" id="email-prev"></div>
+          <div class="ch-actions">
+            <button class="btn btn-primary btn-sm" onclick="openEmail()">開啟信件</button>
+            <button class="btn btn-outline btn-sm" onclick="openModal('emailModal')">預覽 / 複製</button>
+          </div>
+        </div>
+      </div>
+      <!-- SMS -->
+      <div class="ch-card">
+        <div class="ch-head">
+          <div class="ch-icon" style="background:var(--al);font-size:14px">💬</div>
+          <div><div class="ch-title">簡訊</div><div class="ch-desc">70 字元內，一鍵複製</div></div>
+        </div>
+        <div class="ch-body">
+          <div class="ch-prev sms" id="sms-txt"></div>
+          <div class="ch-actions">
+            <button class="btn btn-outline btn-sm" onclick="copyEl('sms-txt')">複製簡訊</button>
+            <span class="hint" id="sms-cnt"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ Email Modal ══ -->
+<div class="modal-bg" id="emailModal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">Email 完整預覽</div><button class="modal-close" onclick="closeModal('emailModal')">×</button></div>
+    <div class="modal-body">
+      <div><div class="mlabel">主旨</div><div class="esubj" id="modal-subj"></div></div>
+      <div><div class="mlabel">內文</div><div class="ebody" id="modal-body"></div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary btn-sm" onclick="copyEl('modal-body')">複製內文</button>
+      <button class="btn btn-outline btn-sm" onclick="openEmail()">開啟 Email 客戶端</button>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('emailModal')">關閉</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CRM Modal ══ -->
+<div class="modal-bg" id="crmModal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">內部備忘 / CRM 紀錄</div><button class="modal-close" onclick="closeModal('crmModal')">×</button></div>
+    <div class="modal-body">
+      <div style="font-size:11px;color:var(--t2);background:var(--al);padding:8px 11px;border-radius:var(--r);border:.5px solid #F0D090">
+        僅供課程顧問內部使用，不對外分享。可複製後貼入 CRM 系統或備忘錄，作為下次 Demo 或跟進的參考依據。
+      </div>
+      <div><div class="mlabel">完整紀錄</div><div class="crmbody" id="crm-body"></div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary btn-sm" onclick="copyEl('crm-body')">複製全文</button>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('crmModal')">關閉</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script>
+const PLANS={
+  "輕鬆學":  {monthly:2850,bizMax:20,lump:5, cm:40,ce:8 },
+  "進階學":  {monthly:3850,bizMax:25,lump:8, cm:50,ce:10},
+  "小夢想家":{monthly:4850,bizMax:35,lump:12,cm:60,ce:12},
+  "大夢想家":{monthly:5850,bizMax:45,lump:16,cm:90,ce:18},
+};
+const ST={discount:false,childrensDay:true,childGift:"magic",biz:true,lumpSum:false,regFee:true};
+const $=id=>document.getElementById(id);
+const comma=n=>n.toLocaleString();
+const fmtDate=s=>{const[y,m,d]=s.split("-");return`${y}/${m}/${d}`;};
+const shortDate=s=>{const[,m,d]=s.split("-");return`${+m}/${+d}`;};
+const daysLeft=s=>{const d=new Date(s+"T00:00:00"),t=new Date();t.setHours(0,0,0,0);return Math.ceil((d-t)/86400000);};
+const plusDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().split("T")[0];};
+const todayStr=()=>new Date().toLocaleDateString("zh-TW",{year:"numeric",month:"2-digit",day:"2-digit"});
+
+function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2500);}
+function copyEl(id){const t=$(id).innerText||$(id).textContent;navigator.clipboard.writeText(t.trim()).then(()=>toast("已複製 ✓")).catch(()=>toast("請手動複製"));}
+function openModal(id){$(id).classList.add("open");}
+function closeModal(id){$(id).classList.remove("open");}
+function openCRM(){render();openModal("crmModal");}
+function openEmail(){const{es,eb}=window._D||{};if(!es)return;window.open(`mailto:?subject=${encodeURIComponent(es)}&body=${encodeURIComponent(eb)}`,"_self");}
+
+$("deadline").value=plusDays(7);
+
+function tog(k){
+  ST[k]=!ST[k];
+  $("chk-"+k).classList.toggle("on",ST[k]);
+  if(k==="childrensDay")$("giftPills").style.display=ST[k]?"flex":"none";
+  if(k==="discount")$("discount-panel").style.display=ST[k]?"flex":"none";
+  if(k==="biz")$("biz-panel").style.display=ST[k]?"flex":"none";
+  render();
+}
+function setGift(t){
+  ST.childGift=t;
+  $("pill-magic").classList.toggle("on",t==="magic");
+  $("pill-elec").classList.toggle("on",t==="elec");
+  $("pill-jingo").classList.toggle("on",t==="jingo");
+  const units={magic:"堂魔法屋",elec:"堂選修課",jingo:"堂進度課"};
+  $("actAmtUnit").textContent=units[t]||"堂";
+  render();
+}
+function onLabelChg(){$("discountCustom").style.display=$("discountLabel").value==="自訂..."?"block":"none";render();}
+function clampBiz(){const p=PLANS[$("planSel").value];const e=$("bizAmt");if(+e.value>p.bizMax)e.value=p.bizMax;if(+e.value<0)e.value=0;}
+
+function render(){
+  const planName=$("planSel").value, plan=PLANS[planName];
+  const freq=+$("freqSel").value;
+  const name=$("studentName").value||"學員姓名";
+  const parent=$("parentName").value||"家長";
+  const stSel=$("sessionType").value;
+  const sessionType=stSel==="__custom__"?($("sessionCustom").value||"體驗"):stSel;
+  $("sessionCustom").style.display=stSel==="__custom__"?"block":"none";
+  const note=$("note").value;
+  const consultant=$("consultant").value||"Wolf 黃";
+  const phone=$("cphone").value;
+  const email=$("cemail").value;
+  const lineId=$("lineId").value;
+  const deadline=$("deadline").value;
+  const days=daysLeft(deadline);
+  const urgent=days<=2;
+
+  // Discount
+  const pct=Math.min(99,Math.max(50,+$("discountPct").value||80));
+  const fold=pct%10===0?`${pct/10}折`:`${pct}%`;
+  $("discountFold").textContent=fold;
+  const lsel=$("discountLabel").value;
+  const dlabel=lsel==="自訂..."?($("discountCustom").value||"限時優惠"):lsel;
+  const monthly=ST.discount?Math.round(plan.monthly*(pct/100)):plan.monthly;
+  $("discountHint").textContent=ST.discount?`折後月付款：NT$ ${comma(monthly)}`:"";
+
+  // Biz
+  $("bizAmt").max=plan.bizMax;
+  $("bizMax").textContent=plan.bizMax;
+  const bizAmt=Math.min(plan.bizMax,Math.max(0,+$("bizAmt").value||0));
+  const bizRem=plan.bizMax-bizAmt;
+  $("bizFill").style.width=(plan.bizMax>0?bizAmt/plan.bizMax*100:0)+"%";
+  $("bizChip").textContent=`剩 ${bizRem} 堂`;
+  $("bizChip").className="chip"+(bizRem===0?" zero":"");
+
+  // Sidebar hints
+  $("sub-cd").textContent=ST.childGift==="magic"?`+${plan.cm}堂魔法屋`:`+${plan.ce}堂選修`;
+  $("sub-lump").textContent=`+${plan.lump}堂選修課`;
+  $("priceHint").textContent=`月付款：NT$ ${comma(monthly)}${ST.discount?` (${fold})`:""}`;
+  $("dlHint").textContent=days>0?`剩餘 ${days} 天`:days===0?"今日截止 ⚠":"已過期 ✗";
+  $("dlHint").className="hint"+(urgent?" warn":"");
+
+  // Bonuses
+  const bonuses=[];
+  if(ST.discount) bonuses.push({label:dlabel,val:`月付 NT$ ${comma(monthly)}（${fold}）`,color:"#185FA5",bg:"#E6F1FB",bc:"#B5D4F4"});
+  if(!ST.regFee) bonuses.push({label:"報名費全額減免",val:"省 NT$ 2,888",color:"#3B6D11",bg:"#EAF3DE",bc:"#C5E0A8"});
+  if(ST.biz&&bizAmt>0) bonuses.push({label:"課程顧問特別加贈",val:`+${bizAmt} 堂魔法屋`,color:"#042C53",bg:"#F0EFE9",bc:"#E0DFD8"});
+  if(ST.childrensDay){
+    const albl=($("activityLabel").value||"活動")+"加碼";
+    const amt=Math.max(0,+$("actAmt").value||0);
+    const typeMap={magic:"堂魔法屋",elec:"堂選修課",jingo:"堂進度課"};
+    const v=`+${amt} ${typeMap[ST.childGift]||"堂"}`;
+    bonuses.push({label:albl,val:v,color:"#B85A10",bg:"#FEF0E2",bc:"#F5C080"});
+    $("sub-cd").textContent=v;
+  }
+  if(ST.lumpSum) bonuses.push({label:"一次付清加贈",val:`+${plan.lump} 堂選修課`,color:"#3B6D11",bg:"#EAF3DE",bc:"#C5E0A8"});
+
+  // Card reg fee line
+  $("c-regfee").textContent=ST.regFee?"+ 報名費 NT$ 2,888":"報名費：本次全額減免 🎉";
+  $("c-regfee").style.color=ST.regFee?"var(--mid)":"#86EFAC";
+
+  // Card
+  $("c-name").textContent=name+" 的專屬學習方案";
+  // update subtitle with session type (only if not manually edited)
+  const subEl=document.querySelector(".c-sub");
+  if(subEl) subEl.textContent=`課程顧問已為您整理本次${sessionType}課程內容，請供參考`;
+  $("c-plan").textContent=planName;
+  $("c-freq").textContent=`24 個月合約・建議至少每週 ${freq} 堂`;
+  $("c-price").textContent=`NT$ ${comma(monthly)}`;
+  const ann=$("c-ann");
+  if(ST.discount){ann.style.display="block";ann.textContent=dlabel+" 限定價";}else ann.style.display="none";
+  $("c-consultant").textContent=consultant;
+  const cp=[phone];if(lineId)cp.push(`LINE：${lineId}`);if(email)cp.push(email);
+  $("c-contact").innerHTML=cp.join("<br>");
+
+  const bEl=$("c-bonuses");
+  if(bonuses.length){
+    bEl.style.display="block";
+    bEl.innerHTML=`<div class="c-ey2 ce-lt" contenteditable="true" spellcheck="false">本次優惠加贈</div>`+bonuses.map(b=>`
+      <div class="bonus-item" style="background:${b.bg};border-color:${b.bc}">
+        <span style="font-size:13px;font-weight:700;color:${b.color};flex-shrink:0">✓</span>
+        <span class="b-label ce-lt" contenteditable="true" spellcheck="false" style="font-size:12px;font-weight:600;color:${b.color}">${b.label}</span>
+        <span class="b-val ce-lt" contenteditable="true" spellcheck="false" style="font-size:12px;color:var(--t2)">　${b.val}</span>
+      </div>`).join("");
+  } else bEl.style.display="none";
+
+  $("dl-lbl").style.color=urgent?"var(--red)":"var(--amber)";
+  $("dl-date").textContent=fmtDate(deadline);
+  $("c-deadline").style.background=urgent?"var(--rl)":"var(--al)";
+  $("c-deadline").style.borderBottom=`1px solid ${urgent?"#F09595":"#F0D090"}`;
+  $("dl-badge").style.background=urgent?"var(--red)":"var(--amber)";
+  $("dl-badge").textContent=`剩 ${Math.max(0,days)} 天`;
+  if(note){$("c-note").style.display="block";$("note-txt").textContent=note;}else $("c-note").style.display="none";
+
+  // Text helpers
+  const bonusTxt=bonuses.length?bonuses.map(b=>`• ${b.label}：${b.val}`).join("\n"):"（本次無額外加贈）";
+  const contactBlock=`${consultant}\n${phone}${lineId?`\nLINE ID：${lineId}`:""}${email?`\n${email}`:""}`;
+
+  const regFeeLine=ST.regFee?"（+ 報名費 $2,888）":"（報名費全額減免 🎉）";
+
+  // LINE
+  $("line-txt").textContent=`Hi ${parent}！\n\n這是 ${name} 的 ETalking Kids 方案確認：\n\n📌 方案：${planName}｜每週 ${freq} 堂\n💰 月付款：NT$ ${comma(monthly)} ${regFeeLine}\n${bonuses.length?"🎁 加贈：\n"+bonusTxt+"\n":""}\n⏰ 優惠截止：${fmtDate(deadline)}（剩 ${Math.max(0,days)} 天）\n\n有問題隨時找我！\n${contactBlock}`;
+
+  // Email
+  const es=`【ETalking Kids】${name} 的專屬學習方案確認`;
+  const eb=`${parent}，您好：\n\n感謝您今天撥冗體驗 ETalking Kids！以下是為 ${name} 規劃的專屬方案，請確認：\n\n━━ 課程方案 ━━\n方案：${planName}\n每週頻率：${freq} 堂\n合約期間：24 個月\n月付款：NT$ ${comma(monthly)}（24期零利率分期）\n報名費：${ST.regFee?"NT$ 2,888（一次收取）":"全額減免（省 NT$2,888）"}\n${bonuses.length?"\n━━ 本次優惠加贈 ━━\n"+bonusTxt+"\n":""}\n━━ 優惠截止日 ━━\n${fmtDate(deadline)}（${days>0?`剩餘 ${days} 天`:days===0?"今日截止，請盡快確認":"已過期，請聯繫課程顧問"}）\n${note?"\n━━ 顧問備註 ━━\n"+note+"\n":""}\n━━ 報名流程 ━━\n① 確認方案與付款方式\n② 填寫學員基本資料\n③ 課程顧問產出合約，線上簽署確認\n④ 刷卡完成，排定首課時間\n\n如有任何問題，歡迎隨時聯繫！\n\n${contactBlock}\n\nLearning is fun! 成就孩子的無限可能！\n——————————\nETalking Kids`;
+  $("email-prev").textContent=eb.split("\n").slice(0,4).join("\n")+"…";
+  $("modal-subj").textContent=es;
+  $("modal-body").textContent=eb;
+
+  // SMS ≤70 chars
+  const sms=`ETalking ${name}/${planName}${freq}堂$${plan.monthly}截${shortDate(deadline)} LINE:${lineId}`;
+  $("sms-txt").textContent=sms;
+  const sl=sms.length;
+  $("sms-cnt").textContent=`${sl} / 70 字元`;
+  $("sms-cnt").className="hint"+(sl>70?" warn":"");
+
+  // CRM
+  $("crm-body").textContent=
+`━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ETalking Kids  課程顧問內部備忘
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+紀錄日期：${todayStr()}
+學員姓名：${name}
+稱呼家長：${parent}
+方案：${planName}　每週 ${freq} 堂　24 個月合約
+原月付款：NT$ ${comma(plan.monthly)}
+
+【本次提供優惠】
+${ST.discount?`✓ 折扣（${dlabel}）：${fold} → NT$ ${comma(monthly)}/月`:"✗ 未使用折扣"}
+${ST.biz&&bizAmt>0?`✓ 課程顧問特別加贈：魔法屋 +${bizAmt} 堂`:"✗ 課程顧問加贈：本次未使用"}
+${ST.childrensDay?`✓ 兒童節加碼：${ST.childGift==="magic"?`魔法屋 +${plan.cm}堂`:`選修 +${plan.ce}堂`}`:"✗ 兒童節加碼：未使用"}
+${ST.lumpSum?`✓ 一次付清加贈：選修 +${plan.lump}堂`:"✗ 一次付清加贈：未使用"}
+${ST.regFee?`✗ 報名費：正常收取 NT$ 2,888`:`✓ 報名費全額減免（省 NT$ 2,888）`}
+
+【課程顧問加贈剩餘額度】
+本方案總額度：${plan.bizMax} 堂魔法屋
+本次已使用：${bizAmt} 堂
+★ 保留額度：${bizRem} 堂 ← 下次 Demo 或特殊情況可動用
+
+【優惠截止日】
+${fmtDate(deadline)}（剩 ${Math.max(0,days)} 天）
+
+【備註】
+${note||"（無）"}
+
+【學員狀態】  □ 試聽 □ Demo完成 □ 已成交 □ 考慮中 □ 未成交
+【下次跟進】
+_______________________________________________
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+課程顧問：${consultant}
+${phone}${lineId?`  LINE：${lineId}`:""}`;
+
+  window._D={es,eb,name,monthly};
+}
+
+["emailModal","crmModal"].forEach(id=>$(id).addEventListener("click",e=>{if(e.target===$(id))closeModal(id);}));
+
+async function getImg(){
+  if(!window.html2canvas){toast("載入中...");return;}
+  toast("產生圖片中...");
+  try{
+    const c=await html2canvas($("card"),{scale:2.5,useCORS:true,logging:false,backgroundColor:"#F7F6F3"});
+    const a=document.createElement("a");a.download=`ETalking_${(window._D&&window._D.name)||"學員"}.png`;
+    a.href=c.toDataURL("image/png");a.click();toast("圖片下載完成 ✓");
+  }catch(e){toast("失敗："+e.message);}
+}
+
+function getPPTX(){
+  if(!window.PptxGenJS){toast("載入中...");return;}
+  const D=window._D||{};const note=$("note").value;
+  const planName=$("planSel").value,plan=PLANS[planName];
+  const freq=+$("freqSel").value,name=D.name||"學員";
+  const consultant=$("consultant").value,phone=$("cphone").value;
+  const lineId=$("lineId").value,email=$("cemail").value;
+  const deadline=$("deadline").value,days=daysLeft(deadline);
+  const monthly=D.monthly||plan.monthly;
+  const urgent=days<=2;
+  const bonuses=[];
+  const bEl=$("c-bonuses");
+  bEl.querySelectorAll(".bonus-item").forEach(el=>{
+    const lbl=el.querySelector("span:nth-child(2)").textContent;
+    const val=el.querySelector("span:nth-child(3)").textContent.trim();
+    bonuses.push({label:lbl,val});
+  });
+
+  toast("產生 PPTX...");
+  const pres=new PptxGenJS();pres.layout="LAYOUT_16x9";
+  const s=pres.addSlide();s.background={color:"F7F6F3"};
+
+  s.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:3.9,h:5.625,fill:{color:"042C53"},line:{color:"042C53"}});
+  s.addText("ETALKING KIDS",{x:.22,y:.28,w:3.45,h:.3,fontSize:9,color:"B5D4F4",fontFace:"Calibri",charSpacing:5});
+  s.addText(`${name} 的專屬學習方案`,{x:.22,y:.55,w:3.45,h:.72,fontSize:18,bold:true,color:"FFFFFF",fontFace:"Calibri"});
+  s.addShape(pres.shapes.RECTANGLE,{x:.22,y:1.4,w:3.45,h:2.12,fill:{color:"0D4880"},line:{color:"0D4880"}});
+  s.addText(planName,{x:.32,y:1.5,w:3.25,h:.62,fontSize:24,bold:true,color:"FFFFFF",fontFace:"Calibri"});
+  s.addText(`每週 ${freq} 堂・24 個月`,{x:.32,y:2.1,w:3.25,h:.3,fontSize:11,color:"B5D4F4",fontFace:"Calibri"});
+  s.addShape(pres.shapes.RECTANGLE,{x:.32,y:2.44,w:3.05,h:.02,fill:{color:"B5D4F4"},line:{color:"B5D4F4"}});
+  s.addText(`NT$ ${comma(monthly)} /月`,{x:.32,y:2.5,w:3.25,h:.52,fontSize:20,bold:true,color:"FFFFFF",fontFace:"Calibri"});
+  s.addText("+ 報名費 NT$ 2,888",{x:.32,y:3.0,w:3.25,h:.28,fontSize:10,color:"B5D4F4",fontFace:"Calibri"});
+  s.addShape(pres.shapes.RECTANGLE,{x:.22,y:4.72,w:3.45,h:.02,fill:{color:"1A4A7A"},line:{color:"1A4A7A"}});
+  s.addText(consultant,{x:.22,y:4.78,w:3.45,h:.28,fontSize:12,bold:true,color:"FFFFFF",fontFace:"Calibri"});
+  s.addText(phone+(lineId?`   LINE: ${lineId}`:""),{x:.22,y:5.04,w:3.45,h:.24,fontSize:9.5,color:"B5D4F4",fontFace:"Calibri"});
+  if(email)s.addText(email,{x:.22,y:5.27,w:3.45,h:.22,fontSize:9,color:"B5D4F4",fontFace:"Calibri"});
+
+  let ry=.25;
+  if(bonuses.length){
+    s.addText("本次優惠加贈",{x:4.1,y:ry,w:5.65,h:.28,fontSize:10,bold:true,color:"9C9B96",fontFace:"Calibri"});ry+=.34;
+    bonuses.forEach(b=>{
+      s.addShape(pres.shapes.RECTANGLE,{x:4.1,y:ry,w:5.65,h:.42,fill:{color:"E6F1FB"},line:{color:"B5D4F4",width:.5}});
+      s.addText(`✓  ${b.label}：${b.val}`,{x:4.2,y:ry+.04,w:5.45,h:.34,fontSize:12,color:"185FA5",fontFace:"Calibri"});
+      ry+=.5;
+    });ry+=.1;
+  }
+  s.addShape(pres.shapes.RECTANGLE,{x:4.1,y:ry,w:5.65,h:.76,fill:{color:urgent?"FCEBEB":"FAEEDA"},line:{color:urgent?"F09595":"FAC775",width:.5}});
+  s.addText("優惠截止日",{x:4.2,y:ry+.06,w:3,h:.26,fontSize:11,bold:true,color:urgent?"A32D2D":"BA7517",fontFace:"Calibri"});
+  s.addText(`${fmtDate(deadline)}  （剩 ${Math.max(0,days)} 天）`,{x:4.2,y:ry+.34,w:5.45,h:.34,fontSize:15,bold:true,color:"1A1A18",fontFace:"Calibri"});
+  ry+=.9;
+  if(note){s.addText(`備註：${note}`,{x:4.1,y:ry,w:5.65,h:.42,fontSize:11.5,color:"5C5B57",fontFace:"Calibri",italic:true});ry+=.52;}
+  s.addText("報名流程",{x:4.1,y:ry,w:5.65,h:.28,fontSize:10,bold:true,color:"9C9B96",fontFace:"Calibri"});ry+=.34;
+  ["確認方案與付款方式","填寫學員基本資料","課程顧問產出合約線上確認","刷卡完成排定首課"].forEach((step,i)=>{
+    s.addShape(pres.shapes.OVAL,{x:4.1,y:ry,w:.25,h:.25,fill:{color:"185FA5"},line:{color:"185FA5"}});
+    s.addText(String(i+1),{x:4.1,y:ry,w:.25,h:.25,fontSize:10,bold:true,color:"FFFFFF",align:"center",valign:"middle",fontFace:"Calibri",margin:0});
+    s.addText(step,{x:4.4,y:ry+.02,w:5.28,h:.25,fontSize:12.5,color:"1A1A18",fontFace:"Calibri"});
+    ry+=.35;
+  });
+  s.addText("Learning is fun! 成就孩子的無限可能！",{x:4.1,y:5.28,w:5.65,h:.27,fontSize:10,color:"9C9B96",fontFace:"Calibri",italic:true});
+  pres.writeFile({fileName:`ETalking_${name}.pptx`}).then(()=>toast("PPTX 下載完成 ✓"));
+}
+
+// ── Card inline edit → sync right outputs ──────────────
+function ct(id){return($(id)?.innerText||"").trim();}
+
+function syncCard(){
+  const name      = ct("c-name").replace(/\s*的專屬學習方案\s*$/,"") || "學員";
+  const planName  = ct("c-plan");
+  const freq      = ct("c-freq").match(/\d+/)?.[0] || "3";
+  const priceVal  = ct("c-price");
+  const regLine   = ct("c-regfee");
+  const dlDate    = ct("dl-date");
+  const dlBadge   = ct("dl-badge");
+  const noteVal   = ct("note-txt");
+  const consultant= ct("c-consultant");
+  const contact   = ($("c-contact")?.innerText||"").trim();
+  const lineId    = $("lineId").value;
+  const parent    = $("parentName").value || "家長";
+
+  const bonuses=[];
+  document.querySelectorAll("#c-bonuses .bonus-item").forEach(el=>{
+    const lbl=(el.querySelector(".b-label")?.innerText||"").trim();
+    const val=(el.querySelector(".b-val")?.innerText||"").replace(/^\s*|\s*$/g,"");
+    if(lbl) bonuses.push({label:lbl,val});
+  });
+  const bonusTxt=bonuses.length?bonuses.map(b=>`• ${b.label}：${b.val}`).join("\n"):"（本次無額外加贈）";
+  const contactBlock=consultant+(contact?"\n"+contact:"");
+
+  $("line-txt").textContent=`Hi ${parent}！\n\n這是 ${name} 的 ETalking Kids 方案確認：\n\n📌 方案：${planName}｜每週 ${freq} 堂\n💰 月付款：${priceVal}　${regLine}\n${bonuses.length?"🎁 加贈：\n"+bonusTxt+"\n":""}\n⏰ 優惠截止：${dlDate}（${dlBadge}）\n\n有問題隨時找我！\n${contactBlock}`;
+
+  const es=`【ETalking Kids】${name} 的專屬學習方案確認`;
+  const eb=`${parent}，您好：\n\n感謝您今天撥冗體驗 ETalking Kids！以下是為 ${name} 規劃的專屬方案，請確認：\n\n━━ 課程方案 ━━\n方案：${planName}\n每週頻率：${freq} 堂\n月付款：${priceVal}（24期零利率分期）\n${regLine}\n${bonuses.length?"\n━━ 本次優惠加贈 ━━\n"+bonusTxt+"\n":""}\n━━ 優惠截止日 ━━\n${dlDate}（${dlBadge}）\n${noteVal?"\n━━ 顧問備註 ━━\n"+noteVal+"\n":""}\n━━ 報名流程 ━━\n① 確認方案與付款方式\n② 填寫學員基本資料\n③ 課程顧問產出合約，線上簽署確認\n④ 刷卡完成，排定首課時間\n\n如有任何問題，歡迎隨時聯繫！\n\n${contactBlock}\n\nLearning is fun! 成就孩子的無限可能！\n——————————\nETalking Kids`;
+  $("email-prev").textContent=eb.split("\n").slice(0,4).join("\n")+"…";
+  $("modal-subj").textContent=es;
+  $("modal-body").textContent=eb;
+  window._D=Object.assign(window._D||{},{es,eb,name});
+
+  const priceNum=priceVal.replace(/[^0-9,]/g,"");
+  const dlShort=dlDate.length>=5?dlDate.slice(5):"";
+  const sms=`ETalking ${name}/${planName}${freq}堂$${priceNum}截${dlShort} LINE:${lineId}`;
+  $("sms-txt").textContent=sms;
+  const sl=sms.length;
+  $("sms-cnt").textContent=`${sl} / 70 字元`;
+  $("sms-cnt").className="hint"+(sl>70?" warn":"");
+
+  if($("crmModal").classList.contains("open")) openCRM();
+}
+
+function resetCard(){render();}
+
+// ── Config / consultant loader (mirrors index-v3_1 pattern) ──
+var CONSULTANTS=[];
+
+function cfgStatus(msg,state){
+  $("cfg-msg").textContent=msg;
+  var colors={ok:"var(--green)",err:"var(--red)",warn:"var(--amber)",load:"var(--t3)"};
+  $("cfg-dot").style.background=colors[state]||colors.load;
+}
+
+function parseSheetUrl(url){
+  var idM=url.match(/\/spreadsheets\/d\/([^\/\?#]+)/);
+  var gidM=url.match(/[?&#]gid=(\d+)/);
+  if(!idM)return null;
+  return{id:idM[1],gid:gidM?gidM[1]:"0"};
+}
+
+function extractConsultants(tsv, rules, hardcoded){
+  var cnRe=new RegExp(rules.cn_pattern||"^[\\u4e00-\\u9fff]{2,5}$");
+  var enRe=new RegExp(rules.en_pattern||"^[A-Za-z]{2,15}$");
+  var anchor=rules.row_anchor||"12點半";
+  var phonePfx=rules.phone_prefix||"(02) 2760-7768 #6";
+  var domain=rules.email_domain||"@etalkingonline.com";
+  var seen={};
+  var results=[];
+  tsv.split("\n").forEach(function(line){
+    if(line.indexOf(anchor)<0)return;
+    var cells=line.split("\t");
+    for(var i=0;i<cells.length-1;i++){
+      var cn=cells[i].trim(),en=(cells[i+1]||"").trim();
+      if(cnRe.test(cn)&&enRe.test(en)&&cn!=="姓名"&&!seen[en.toLowerCase()]){
+        seen[en.toLowerCase()]=1;
+        // Match hardcode first (by id or English first name)
+        var hc=(hardcoded||[]).find(function(c){
+          return c.id===en.toLowerCase()||
+            (c.name||"").split(" ")[0].toLowerCase()===en.toLowerCase();
+        });
+        if(hc){results.push(hc);}
+        else{
+          results.push({
+            id:en.toLowerCase(),
+            name:en+" "+cn[0],
+            phone:phonePfx,
+            email:en+"."+domain,
+            lineId:""
+          });
+        }
+      }
+    }
+  });
+  return results;
+}
+
+function buildConsultantChips(){
+  var wrap=$("consultant-chips");
+  wrap.innerHTML="";
+  if(!CONSULTANTS.length){
+    wrap.innerHTML='<span style="font-size:11px;color:var(--t3)">無顧問資料，請直接填寫</span>';
+    return;
+  }
+  CONSULTANTS.forEach(function(c){
+    var btn=document.createElement("button");
+    btn.className="pill";
+    btn.textContent=c.name;
+    btn.style.cssText="font-size:12px;padding:4px 11px";
+    btn.onclick=function(){selectConsultant(c);};
+    wrap.appendChild(btn);
+  });
+}
+
+function quickFill(){
+  var en=($("quickEn").value||"").trim();
+  var cn=($("quickCn").value||"").trim();
+  if(!en)return;
+  var rules=PARSE_RULES;
+  var phonePfx=rules.phone_prefix||"(02) 2760-7768 #6";
+  var domain=rules.email_domain||"@etalkingonline.com";
+  // If en contains dot (e.g. "Wolf.huang"), use as-is with first char uppercased; else capitalize normally
+  var enCap=en.includes(".")?en.charAt(0).toUpperCase()+en.slice(1):en.charAt(0).toUpperCase()+en.slice(1).toLowerCase();
+  $("consultant").value=enCap+(cn?" "+cn:"");
+  $("cphone").value=phonePfx;
+  $("cemail").value=enCap+(enCap.includes(".")?domain:"."+domain);
+  $("lineId").value="";
+  // Clear chip active state (manual entry)
+  document.querySelectorAll("#consultant-chips .pill").forEach(function(b){b.classList.remove("on");});
+  render();
+}
+
+function selectConsultant(c){
+  $("consultant").value=c.name||"";
+  $("cphone").value=c.phone||"";
+  $("cemail").value=c.email||"";
+  $("lineId").value=c.lineId||"";
+  // Clear quick inputs when a chip is selected
+  $("quickEn").value="";
+  $("quickCn").value="";
+  document.querySelectorAll("#consultant-chips .pill").forEach(function(b){
+    b.classList.toggle("on",b.textContent===c.name);
+  });
+  render();
+}
+
+var PARSE_RULES={};
+
+function trySheet(url){
+  cfgStatus("從班表抓取顧問名單…","load");
+  var parsed=parseSheetUrl(url);
+  if(!parsed){cfgStatus("班表 URL 格式有誤，改用 config","warn");buildConsultantChips();if(CONSULTANTS[0])selectConsultant(CONSULTANTS[0]);return;}
+  var csvUrl="https://docs.google.com/spreadsheets/d/"+parsed.id+"/export?format=tsv&gid="+parsed.gid+"&t="+Date.now();
+  fetch(csvUrl,{cache:"no-store"})
+    .then(function(r){if(!r.ok)throw "HTTP "+r.status;return r.text();})
+    .then(function(tsv){
+      var fromSheet=extractConsultants(tsv,PARSE_RULES,CONSULTANTS);
+      if(!fromSheet.length)throw "解析為空（找不到 "+PARSE_RULES.row_anchor+" 列）";
+      // Sheet order + hardcoded-only entries appended at end
+      var merged=fromSheet.slice();
+      CONSULTANTS.forEach(function(hc){
+        if(!merged.find(function(c){return c.id===hc.id;}))merged.push(hc);
+      });
+      CONSULTANTS=merged;
+      buildConsultantChips();
+      cfgStatus("✅ 班表 "+fromSheet.length+" 位 · config "+CONSULTANTS.length+" 位","ok");
+      if(CONSULTANTS[0])selectConsultant(CONSULTANTS[0]);
+    })
+    .catch(function(e){
+      cfgStatus("⚠️ 班表抓取失敗，改用 config（"+e+"）","warn");
+      buildConsultantChips();
+      if(CONSULTANTS[0])selectConsultant(CONSULTANTS[0]);
+    });
+}
+
+function loadConfig(){
+  cfgStatus("載入 config.json…","load");
+  fetch("./config.json?v="+Date.now(),{cache:"no-store"})
+    .then(function(r){if(!r.ok)throw "HTTP "+r.status;return r.json();})
+    .then(function(cfg){
+      CONSULTANTS=cfg.consultants||[];
+      PARSE_RULES=cfg.parse_rules||{};
+      if(cfg.sheet_url&&cfg.sheet_url.trim()){
+        trySheet(cfg.sheet_url);
+      } else {
+        buildConsultantChips();
+        cfgStatus("✅ config.json（"+CONSULTANTS.length+" 位顧問）","ok");
+        if(CONSULTANTS[0])selectConsultant(CONSULTANTS[0]);
+      }
+    })
+    .catch(function(e){
+      cfgStatus("⚠️ 無 config.json（"+e+"），請直接填寫","warn");
+      buildConsultantChips();
+    });
+}
+
+$("card").addEventListener("input", syncCard);
+loadConfig();
+render();
+</script>
+</body>
+</html>

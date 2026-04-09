@@ -1,0 +1,2216 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ETalking Kids · 方案確認卡</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dk:#042C53;--blue:#185FA5;--mid:#B5D4F4;--light:#E6F1FB;
+  --bg:#F7F6F3;--s2:#F0EFE9;--bd:#E0DFD8;
+  --text:#1A1A18;--t2:#5C5B57;--t3:#9C9B96;
+  --green:#3B6D11;--gl:#EAF3DE;
+  --amber:#BA7517;--al:#FAEEDA;
+  --orange:#B85A10;--ol:#FEF0E2;
+  --red:#A32D2D;--rl:#FCEBEB;
+  --r:8px;--rl2:12px;
+}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft JhengHei","PingFang TC",sans-serif;
+  font-size:14px;color:var(--text);background:#E8E7E0;line-height:1.5}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:278px;flex-shrink:0;background:#fff;border-right:.5px solid var(--bd);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-body{flex:1;overflow-y:auto;padding:15px 13px;display:flex;flex-direction:column;gap:14px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--dk);padding:0 18px;height:50px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.main-body{flex:1;overflow-y:auto;padding:18px;display:flex;gap:18px;align-items:flex-start;justify-content:center}
+.preview-col{display:flex;flex-direction:column;gap:12px;flex-shrink:0}
+.send-col{flex:1;min-width:265px;max-width:365px;display:flex;flex-direction:column;gap:10px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-dot{width:7px;height:7px;border-radius:50%;background:var(--mid)}
+.brand-name{font-size:13px;font-weight:600;color:#fff}
+.brand-tag{font-size:10px;color:var(--mid)}
+.top-actions{display:flex;gap:7px}
+.sec{display:flex;flex-direction:column;gap:7px}
+.sec-label{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.08em;text-transform:uppercase}
+.fl{font-size:11px;color:var(--t2);margin-bottom:2px}
+input[type=text],input[type=date],input[type=number],select,textarea{
+  width:100%;padding:6px 9px;border:.5px solid var(--bd);border-radius:var(--r);
+  font-size:12px;background:#fff;color:var(--text);outline:none;font-family:inherit;transition:border-color .12s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(24,95,165,.1)}
+input[type=number]{width:64px}
+.row2{display:flex;gap:8px;align-items:center}
+.hint{font-size:11px;color:var(--t3)}
+.hint.warn{color:var(--red)}
+.chk-row{display:flex;align-items:flex-start;gap:8px;cursor:pointer;padding:2px 0}
+.chk-box{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .12s;background:#fff}
+.chk-box.on{background:var(--blue);border-color:var(--blue)}
+.chk-tick{color:#fff;font-size:10px;font-weight:700;opacity:0;transition:opacity .1s}
+.chk-box.on .chk-tick{opacity:1}
+.chk-main{font-size:12px;color:var(--text)}
+.chk-sub{font-size:11px;color:var(--t3)}
+.pill-row{display:flex;gap:5px;padding-left:23px}
+.pill{font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;border:.5px solid var(--bd);background:transparent;color:var(--t2);transition:all .12s;font-family:inherit}
+.pill.on{background:var(--light);color:var(--blue);border-color:var(--mid)}
+.sub-panel{padding-left:0;display:flex;flex-direction:column;gap:6px}
+.biz-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.biz-bar{flex:1;height:5px;border-radius:3px;background:var(--bd);overflow:hidden;min-width:60px}
+.biz-bar-fill{height:100%;background:var(--blue);transition:width .2s}
+.chip{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--gl);color:var(--green);font-weight:600;white-space:nowrap}
+.chip.zero{background:var(--rl);color:var(--red)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 14px;font-size:12px;font-weight:500;border-radius:var(--r);cursor:pointer;border:none;font-family:inherit;transition:all .12s;white-space:nowrap}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:#0F4A8A}
+.btn-outline{background:#fff;color:var(--text);border:.5px solid var(--bd)}
+.btn-outline:hover{background:var(--bg);border-color:var(--blue);color:var(--blue)}
+.btn-ghost{background:transparent;color:var(--mid);border:.5px solid rgba(181,212,244,.3)}
+.btn-ghost:hover{background:rgba(181,212,244,.1)}
+.btn-sm{padding:6px 11px;font-size:11px}
+.ch-card{background:#fff;border:.5px solid var(--bd);border-radius:var(--rl2);overflow:hidden}
+.ch-head{padding:10px 13px;border-bottom:.5px solid var(--bd);display:flex;align-items:center;gap:9px}
+.ch-icon{width:27px;height:27px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ch-title{font-size:12px;font-weight:600;color:var(--text)}
+.ch-desc{font-size:10px;color:var(--t3);margin-top:1px}
+.ch-body{padding:10px 13px;display:flex;flex-direction:column;gap:7px}
+.ch-prev{background:var(--bg);border-radius:var(--r);padding:8px 10px;font-size:11.5px;color:var(--t2);line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:90px;overflow-y:auto}
+.ch-prev.sms{font-size:13px;max-height:56px}
+.ch-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--dk);color:#fff;padding:7px 16px;border-radius:20px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:999}
+#toast.show{opacity:1}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:var(--rl2);width:580px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-head{padding:13px 17px;border-bottom:.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-title{font-size:14px;font-weight:600}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--t3);padding:2px 6px;line-height:1}
+.modal-body{flex:1;overflow-y:auto;padding:15px 17px;display:flex;flex-direction:column;gap:11px}
+.modal-foot{padding:11px 17px;border-top:.5px solid var(--bd);display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.mlabel{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.esubj{padding:7px 10px;border:.5px solid var(--bd);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--bg)}
+.ebody{padding:9px 10px;border:.5px solid var(--bd);border-radius:var(--r);font-size:11.5px;color:var(--t2);line-height:1.7;white-space:pre-wrap;background:var(--bg);min-height:260px;overflow-y:auto;font-family:monospace}
+.crmbody{padding:9px 10px;border:.5px solid var(--bd);border-radius:var(--r);font-size:11.5px;color:var(--t2);line-height:1.7;white-space:pre-wrap;background:var(--bg);min-height:300px;overflow-y:auto;font-family:monospace}
+#card{width:420px;background:var(--bg);color:var(--text);border-radius:var(--rl2);overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.12);flex-shrink:0;font-family:-apple-system,"Microsoft JhengHei","PingFang TC",sans-serif}
+.c-head{background:var(--dk);padding:17px 22px 13px}
+.c-eyebrow{font-size:10px;color:var(--mid);letter-spacing:.1em;margin-bottom:4px}
+.c-name{font-size:20px;font-weight:700;color:#fff;line-height:1.25}
+.c-sub{font-size:11px;color:var(--mid);margin-top:4px}
+.c-hero{background:var(--blue);padding:13px 22px;display:flex;justify-content:space-between;align-items:flex-end}
+.hn{font-size:23px;font-weight:700;color:#fff}
+.hf{font-size:12px;color:var(--mid);margin-top:3px}
+.rpv{font-size:25px;font-weight:700;color:#fff}
+.c-ey2{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.08em;margin-bottom:7px}
+.bonus-item{display:flex;align-items:center;gap:9px;padding:6px 11px;border-radius:var(--r);margin-bottom:5px;border-width:1px;border-style:solid}
+.c-deadline{padding:11px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bd)}
+.dl-badge{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;color:#fff}
+.c-steps{padding:12px 22px;border-bottom:1px solid var(--bd)}
+.step-row{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.step-num{width:19px;height:19px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.c-foot{padding:11px 22px;background:var(--s2);display:flex;justify-content:space-between;align-items:flex-start}
+@media(max-width:860px){
+  .app{flex-direction:column;height:auto}
+  .sidebar{width:100%;height:auto;border-right:none;border-bottom:.5px solid var(--bd)}
+  .main{height:auto}
+  .main-body{flex-direction:column;align-items:center;padding:14px}
+  #card{width:100%;max-width:420px}
+  .send-col{width:100%;max-width:420px}
+}
+/* ── Inline-editable card text ── */
+.ce,.ce-dk,.ce-lt{outline:none;cursor:text;border-radius:3px;transition:background .15s;white-space:pre-wrap}
+.ce:hover{background:rgba(255,255,255,.15)}
+.ce:focus{background:rgba(255,255,255,.22);box-shadow:0 0 0 1.5px rgba(181,212,244,.6)}
+.ce-dk:hover{background:rgba(0,0,0,.06)}
+.ce-dk:focus{background:rgba(0,0,0,.09);box-shadow:0 0 0 1.5px rgba(24,95,165,.4)}
+.ce-lt:hover{background:rgba(24,95,165,.06)}
+.ce-lt:focus{background:rgba(24,95,165,.1);box-shadow:0 0 0 1.5px rgba(24,95,165,.3)}
+.edit-tip{font-size:10px;color:var(--t3);display:flex;align-items:center;gap:5px}
+.edit-tip-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);opacity:.6}
+
+/* ── 浮動文字格式工具列 ── */
+#fmt-bar{
+  position:fixed;z-index:500;background:#1C2030;border-radius:8px;
+  padding:5px 7px;display:none;gap:3px;align-items:center;
+  box-shadow:0 6px 24px rgba(0,0,0,.45);pointer-events:auto;
+  border:.5px solid rgba(255,255,255,.1);
+}
+#fmt-bar.show{display:flex}
+.fmt-btn{
+  width:26px;height:26px;border-radius:5px;border:none;background:transparent;
+  color:#dde;font-size:11px;font-weight:800;cursor:pointer;display:flex;
+  align-items:center;justify-content:center;transition:background .1s;padding:0;font-family:serif;
+}
+.fmt-btn:hover{background:rgba(255,255,255,.12)}
+.fmt-btn.on{background:rgba(255,255,255,.22);color:#fff}
+.fmt-sep{width:.5px;height:18px;background:rgba(255,255,255,.18);flex-shrink:0;margin:0 2px}
+.fmt-color{
+  width:17px;height:17px;border-radius:3px;cursor:pointer;flex-shrink:0;
+  border:1.5px solid rgba(255,255,255,.25);transition:transform .1s;
+}
+.fmt-color:hover{transform:scale(1.2)}
+.fmt-color.on{border-color:#fff;box-shadow:0 0 0 1.5px rgba(255,255,255,.6)}
+.fmt-sz{
+  font-size:9px;padding:0 5px;height:22px;border-radius:4px;min-width:22px;
+  background:rgba(255,255,255,.08);color:#ccd;border:.5px solid rgba(255,255,255,.15);
+  cursor:pointer;font-family:inherit;transition:background .1s;white-space:nowrap;
+}
+.fmt-sz:hover,.fmt-sz.on{background:rgba(255,255,255,.24);color:#fff}
+
+/* ── 區塊調色系統 ── */
+.s-paint-host{position:relative}
+.sec-paint-btn{
+  position:absolute;top:6px;right:6px;z-index:20;
+  width:24px;height:24px;border-radius:6px;font-size:13px;
+  cursor:pointer;display:none;align-items:center;justify-content:center;
+  transition:all .12s;
+}
+.sec-paint-btn.light-handle{background:rgba(0,0,0,.1);border:.5px solid rgba(0,0,0,.18)}
+.sec-paint-btn.light-handle:hover{background:rgba(0,0,0,.2)}
+.sec-paint-btn.dark-handle{background:rgba(255,255,255,.18);border:.5px solid rgba(255,255,255,.3)}
+.sec-paint-btn.dark-handle:hover{background:rgba(255,255,255,.3)}
+.s-paint-host:hover .sec-paint-btn{display:flex}
+#paint-pop{
+  position:fixed;z-index:501;background:#fff;border-radius:10px;
+  box-shadow:0 10px 36px rgba(0,0,0,.2);padding:13px 15px;
+  width:224px;display:none;flex-direction:column;gap:9px;
+  border:.5px solid var(--bd);
+}
+#paint-pop.show{display:flex}
+.pp-title{font-size:11px;font-weight:700;color:var(--t1);display:flex;align-items:center;justify-content:space-between}
+.pp-close{background:none;border:none;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;padding:0 2px}
+.pp-lbl{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.pp-sw{display:flex;flex-wrap:wrap;gap:4px}
+.pp-swatch{
+  width:20px;height:20px;border-radius:4px;cursor:pointer;flex-shrink:0;
+  border:1.5px solid rgba(0,0,0,.1);transition:transform .1s;
+}
+.pp-swatch:hover{transform:scale(1.18)}
+.pp-swatch.on{border-color:var(--blue);box-shadow:0 0 0 1.5px var(--blue)}
+.pp-swatch.trans{
+  background:repeating-conic-gradient(#ccc 0% 25%,#fff 0% 50%) 0 / 8px 8px !important;
+}
+.pp-row{display:flex;gap:6px;align-items:center}
+.pp-custom{height:24px;border:.5px solid var(--bd);border-radius:4px;cursor:pointer;padding:0 2px;width:34px;flex-shrink:0}
+.pp-rsm{font-size:10px;padding:3px 8px;border-radius:5px;background:var(--bg);border:.5px solid var(--bd);cursor:pointer;color:var(--t2);font-family:inherit;transition:all .12s;white-space:nowrap}
+.pp-rsm:hover{background:var(--rl);color:var(--red);border-color:#FECACA}
+.pp-divider{height:.5px;background:var(--bd);margin:2px 0}
+
+/* ── 樣式管理面板 ── */
+.style-mgr{background:#fff;border:.5px solid var(--bd);border-radius:var(--rl2);overflow:hidden;width:420px;flex-shrink:0}
+.style-mgr-head{padding:8px 14px;background:var(--bg);border-bottom:.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.style-mgr-title{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.style-mgr-body{padding:10px 14px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.smgr-btn{font-size:11px;padding:5px 11px;border-radius:var(--r);border:.5px solid var(--bd);background:#fff;color:var(--t2);cursor:pointer;font-family:inherit;transition:all .12s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.smgr-btn:hover{background:var(--bbg,#EEF2FF);border-color:var(--blt,#C5D5FF);color:var(--blue)}
+.smgr-btn.danger:hover{background:var(--rl);border-color:#FECACA;color:var(--red)}
+.smgr-ls-dot{width:7px;height:7px;border-radius:50%;background:var(--t3);flex-shrink:0;transition:background .2s}
+.smgr-ls-dot.saved{background:#4CAF50}
+.smgr-ls-dot.saving{background:var(--amber)}
+
+/* ── 學員基本資料卡 ── */
+#c-student{width:420px;background:#fff;border-radius:var(--rl2);overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08);flex-shrink:0;border:1.5px solid var(--bd);transition:border-color .2s}
+#c-student.export-on{border-color:var(--blue);box-shadow:0 4px 24px rgba(24,95,165,.18)}
+.sc-head{background:var(--dk);padding:13px 18px;display:flex;align-items:center;justify-content:space-between}
+.sc-head-left .sc-eyebrow{font-size:9px;color:var(--mid);letter-spacing:.12em;margin-bottom:3px}
+.sc-head-left .sc-title{font-size:15px;font-weight:700;color:#fff}
+.sc-export-toggle{display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;padding:5px 10px;border-radius:20px;border:.5px solid rgba(181,212,244,.35);transition:all .15s;background:rgba(181,212,244,.08)}
+.sc-export-toggle:hover{background:rgba(181,212,244,.18)}
+.sc-toggle-track{width:30px;height:16px;border-radius:8px;background:rgba(181,212,244,.3);position:relative;transition:background .2s;flex-shrink:0}
+.sc-toggle-track.on{background:var(--blue)}
+.sc-toggle-knob{position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sc-toggle-track.on .sc-toggle-knob{transform:translateX(14px)}
+.sc-toggle-label{font-size:10px;color:var(--mid);font-weight:500;white-space:nowrap}
+.sc-export-toggle.on .sc-toggle-label{color:#90C8FF}
+.sc-body{padding:14px 18px;display:flex;flex-direction:column;gap:0}
+.sc-field{display:flex;align-items:baseline;gap:0;border-bottom:.5px solid var(--bg);padding:7px 0;min-height:34px}
+.sc-field:last-child{border-bottom:none}
+.sc-label{font-size:11px;color:var(--t3);white-space:nowrap;width:80px;flex-shrink:0;padding-top:1px}
+.sc-hint{font-size:10px;color:var(--t3);margin-left:4px;white-space:nowrap}
+.sc-val{flex:1;font-size:12px;color:var(--text);outline:none;border:none;background:transparent;font-family:inherit;padding:1px 4px;border-radius:3px;transition:background .12s;min-width:0}
+.sc-val:focus{background:rgba(24,95,165,.06)}
+.sc-val::placeholder{color:var(--t3);font-size:11px}
+.sc-pills{display:flex;flex-wrap:wrap;gap:5px;flex:1;padding-left:4px}
+.sc-pill{font-size:11px;padding:2px 9px;border-radius:12px;cursor:pointer;border:.5px solid var(--bd);background:transparent;color:var(--t2);transition:all .1s;font-family:inherit}
+.sc-pill.on{background:var(--light);color:var(--blue);border-color:var(--mid)}
+.sc-export-badge{display:none;font-size:10px;padding:2px 8px;border-radius:10px;background:var(--light);color:var(--blue);border:.5px solid var(--mid);white-space:nowrap}
+#c-student.export-on .sc-export-badge{display:inline-flex;align-items:center;gap:4px}/* ── 空白模板輸出 bar ── */
+.sc-blank-bar{padding:10px 18px;border-top:.5px solid var(--bd);background:var(--s2);display:flex;flex-direction:column;gap:8px}
+.sc-blank-bar-head{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.08em;text-transform:uppercase}
+.sc-blank-actions{display:flex;gap:6px;flex-wrap:wrap}
+.sc-blank-btn{font-size:11px;padding:5px 11px;border-radius:var(--r);border:.5px solid var(--bd);background:#fff;color:var(--t2);cursor:pointer;font-family:inherit;transition:all .12s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.sc-blank-btn:hover{background:var(--light);color:var(--blue);border-color:var(--mid)}
+.sc-blank-append-row{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:4px 0;user-select:none}
+.sc-blank-append-label{font-size:11px;color:var(--t2)}
+.sc-blank-append-label.on{color:var(--blue);font-weight:600}
+.sc-date-btn{
+  flex:1;padding:5px 8px;border:.5px solid var(--bd);border-radius:var(--r);
+  font-size:12px;background:#fff;color:var(--text);cursor:pointer;
+  font-family:inherit;text-align:left;display:flex;align-items:center;
+  justify-content:space-between;transition:border-color .12s;min-width:0;
+}
+.sc-date-btn:hover{border-color:var(--blue)}
+.sc-date-btn .placeholder{color:var(--t3)}
+#cal-pop{
+  position:fixed;z-index:600;background:#fff;border-radius:10px;
+  box-shadow:0 10px 36px rgba(0,0,0,.22);border:.5px solid var(--bd);
+  width:266px;display:none;flex-direction:column;
+}
+#cal-pop.show{display:flex}
+.cal-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 12px;background:var(--dk);
+  border-radius:9px 9px 0 0;
+}
+.cal-nav-btn{
+  background:none;border:none;color:var(--mid);font-size:18px;
+  cursor:pointer;padding:0 7px;line-height:1;transition:background .1s;
+  border-radius:4px;
+}
+.cal-nav-btn:hover{background:rgba(255,255,255,.18)}
+.cal-title{font-size:12px;font-weight:700;color:#fff;letter-spacing:.02em}
+.cal-wdays{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  padding:4px 8px 0;border-bottom:.5px solid var(--bd);
+  background:var(--s2);
+}
+.cal-wd{
+  font-size:10px;font-weight:600;color:var(--t3);
+  text-align:center;padding:5px 0 4px;
+}
+.cal-wd:first-child{color:#c0392b}
+#cal-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  padding:6px 8px 4px;gap:2px;
+}
+.cal-day{
+  height:32px;display:flex;align-items:center;justify-content:center;
+  font-size:11.5px;color:#1A1A18;
+  border-radius:5px;cursor:pointer;
+  transition:background .1s;position:relative;user-select:none;
+}
+.cal-day:hover:not(.blocked):not(.other-month){background:var(--light);color:var(--blue)}
+.cal-day.other-month{color:#C8C7C2;cursor:default}
+.cal-day.today{font-weight:700;color:var(--blue)}
+.cal-day.today::after{
+  content:"";position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
+  width:4px;height:4px;border-radius:50%;background:var(--blue);
+}
+.cal-day.selected{background:var(--blue)!important;color:#fff!important;font-weight:700}
+.cal-day.selected::after{display:none}
+.cal-day.blocked{
+  background:#FEF2F2;color:#c0392b;cursor:not-allowed;
+  position:relative;overflow:hidden;
+}
+.cal-day.blocked::before{
+  content:"";position:absolute;left:4px;right:4px;top:50%;
+  height:1.5px;background:#e74c3c;border-radius:1px;
+  transform:translateY(-50%);
+}
+.cal-day.blocked:hover{background:#FCDDC7}
+.cal-foot{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:7px 10px 9px;border-top:.5px solid var(--bd);background:var(--bg);
+  border-radius:0 0 9px 9px;
+}
+.cal-foot-btn{
+  font-size:10px;padding:4px 12px;border-radius:5px;cursor:pointer;
+  border:.5px solid var(--bd);background:#fff;color:var(--t2);
+  font-family:inherit;transition:all .12s;
+}
+.cal-foot-btn:hover{background:var(--light);color:var(--blue);border-color:var(--mid)}
+.cal-holiday-tip{
+  position:fixed;z-index:700;background:#A32D2D;color:#fff;
+  font-size:10px;padding:5px 11px;border-radius:6px;pointer-events:none;
+  opacity:0;transition:opacity .15s;white-space:nowrap;
+  box-shadow:0 2px 8px rgba(163,45,45,.3);
+}
+.cal-holiday-tip.show{opacity:1}
+@keyframes calShake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-5px)}
+  40%{transform:translateX(5px)}
+  60%{transform:translateX(-3px)}
+  80%{transform:translateX(3px)}
+}</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar"><div class="sidebar-body">
+
+  <div class="sec">
+    <div class="sec-label">學員</div>
+    <div><div class="fl">學員姓名</div><input type="text" id="studentName" placeholder="例：陳小明" oninput="render()"></div>
+    <div><div class="fl">稱呼家長為</div><input type="text" id="parentName" placeholder="例：陳媽媽" oninput="render()"></div>
+    <div><div class="fl">本次課程類型</div>
+      <select id="sessionType" onchange="render()" style="width:100%">
+        <option>體驗</option>
+        <option>檢測</option>
+        <option>Demo</option>
+        <option>說明</option>
+        <option value="__custom__">自訂...</option>
+      </select>
+      <input type="text" id="sessionCustom" placeholder="輸入自訂類型" oninput="render()"
+        style="display:none;margin-top:5px">
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">課程</div>
+    <div><div class="fl">方案</div>
+      <select id="planSel" onchange="render()">
+        <option>輕鬆學</option><option>進階學</option><option>小夢想家</option><option selected>大夢想家</option>
+      </select></div>
+    <div><div class="fl">每週頻率</div>
+      <select id="freqSel" onchange="render()">
+        <option value="1">1 堂 / 週</option><option value="2">2 堂 / 週</option><option value="3" selected>3 堂 / 週</option>
+        <option value="4">4 堂 / 週</option><option value="5">5 堂 / 週</option>
+      </select></div>
+    <div class="hint" id="priceHint"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">折扣方案</div>
+    <div class="chk-row" onclick="tog('discount')">
+      <div class="chk-box" id="chk-discount"><span class="chk-tick">✓</span></div>
+      <div><div class="chk-main">套用折扣</div></div>
+    </div>
+    <div id="discount-panel" style="display:none;flex-direction:column;gap:6px;padding-left:0">
+      <div><div class="fl">優惠名稱</div>
+        <select id="discountLabel" onchange="onLabelChg()" style="width:100%">
+          <option>體驗後當日簽約</option><option>10週年慶</option><option>兒童節促銷</option>
+          <option>暑期限定優惠</option><option>開學特惠</option><option>學期末優惠</option>
+          <option>家長回饋方案</option><option>週年慶限定</option><option>聖誕新年特惠</option>
+          <option>自訂...</option>
+        </select>
+        <input type="text" id="discountCustom" placeholder="輸入自訂名稱" oninput="render()" style="display:none;margin-top:5px">
+      </div>
+      <div class="row2">
+        <div class="fl" style="margin:0;white-space:nowrap">折扣幅度</div>
+        <input type="number" id="discountPct" value="80" min="50" max="99" step="1" oninput="render()">
+        <span style="font-size:12px;color:var(--t2)">% （<span id="discountFold">8折</span>）</span>
+      </div>
+      <div class="hint" id="discountHint"></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">活動加贈</div>
+    <div class="chk-row" onclick="tog('childrensDay')">
+      <div class="chk-box on" id="chk-childrensDay"><span class="chk-tick">✓</span></div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px">
+          <input type="text" id="activityLabel" value="兒童節" oninput="render()"
+            style="width:80px;font-size:12px;padding:3px 7px">
+          <span class="chk-main">加碼</span>
+        </div>
+        <div class="chk-sub" id="sub-cd"></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;padding-left:0" id="actAmtRow">
+      <div class="fl" style="margin:0;white-space:nowrap">加贈堂數</div>
+      <input type="number" id="actAmt" value="40" min="0" step="5" oninput="render()" style="width:60px">
+      <span style="font-size:11px;color:var(--t3)" id="actAmtUnit">堂魔法屋</span>
+    </div>
+    <div class="pill-row" id="giftPills">
+      <button class="pill on" id="pill-magic" onclick="setGift('magic')">魔法屋</button>
+      <button class="pill" id="pill-elec" onclick="setGift('elec')">選修課</button>
+      <button class="pill" id="pill-jingo" onclick="setGift('jingo')">進度課</button>
+    </div>
+    <div class="chk-row" onclick="tog('lumpSum')">
+      <div class="chk-box" id="chk-lumpSum"><span class="chk-tick">✓</span></div>
+      <div><div class="chk-main">一次付清加贈</div><div class="chk-sub" id="sub-lump"></div></div>
+    </div>
+    <div class="chk-row" onclick="tog('regFee')">
+      <div class="chk-box on" id="chk-regFee"><span class="chk-tick">✓</span></div>
+      <div><div class="chk-main">收取報名費 NT$ 2,888</div>
+        <div class="chk-sub">不勾選 → 顯示減免話術</div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">課程顧問特別加贈</div>
+    <div class="chk-row" onclick="tog('biz')">
+      <div class="chk-box on" id="chk-biz"><span class="chk-tick">✓</span></div>
+      <div><div class="chk-main">本次加贈魔法屋</div><div class="chk-sub">額度不須一次用完，可分次保留</div></div>
+    </div>
+    <div id="biz-panel" style="display:flex;flex-direction:column;gap:6px;padding-left:0">
+      <div class="row2">
+        <div class="fl" style="margin:0;white-space:nowrap">本次加贈</div>
+        <input type="number" id="bizAmt" value="20" min="0" step="5" oninput="clampBiz();render()">
+        <span style="font-size:12px;color:var(--t2)">堂（上限 <span id="bizMax">45</span>）</span>
+      </div>
+      <div class="biz-row">
+        <span style="font-size:11px;color:var(--t3);white-space:nowrap">已用</span>
+        <div class="biz-bar"><div class="biz-bar-fill" id="bizFill" style="width:44%"></div></div>
+        <div class="chip" id="bizChip">剩 25 堂</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">優惠截止日</div>
+    <input type="date" id="deadline" onchange="render()">
+    <div class="hint" id="dlHint"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">備註</div>
+    <textarea id="note" rows="2" placeholder="補充說明（選填）" oninput="render()"
+      style="font-size:12px;resize:vertical;border:.5px solid var(--bd);border-radius:8px;padding:6px 9px;background:#fff;color:var(--text);outline:none;font-family:inherit;width:100%"></textarea>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">課程顧問</div>
+    <div id="cfg-st" style="font-size:10px;color:var(--t3);display:flex;align-items:center;gap:4px;margin-bottom:6px">
+      <span id="cfg-dot" style="width:6px;height:6px;border-radius:50%;background:var(--t3);flex-shrink:0;display:inline-block"></span>
+      <span id="cfg-msg">載入設定中…</span>
+    </div>
+    <div id="consultant-chips" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px"></div>
+    <div id="consultant-fields" style="display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;gap:6px">
+        <div style="flex:1">
+          <div class="fl">英文名</div>
+          <input type="text" id="quickEn" placeholder="Wolf" oninput="quickFill()" style="text-transform:capitalize">
+        </div>
+        <div style="width:72px">
+          <div class="fl">中文姓氏</div>
+          <input type="text" id="quickCn" placeholder="黃" oninput="quickFill()" maxlength="1">
+        </div>
+      </div>
+      <div style="height:.5px;background:var(--bd);margin:2px 0"></div>
+      <div><div class="fl" style="color:var(--t3)">姓名</div><input type="text" id="consultant" value="Wolf 黃" oninput="render()"></div>
+      <div><div class="fl" style="color:var(--t3)">電話</div><input type="text" id="cphone" value="(02) 2760-7768 #622" oninput="render()"></div>
+      <div><div class="fl" style="color:var(--t3)">Email</div><input type="text" id="cemail" value="Wolf.Huang@etalkingonline.com" oninput="render()"></div>
+      <div><div class="fl" style="color:var(--t3)">LINE ID</div><input type="text" id="lineId" value="verypigkimo" oninput="render()"></div>
+    </div>
+  </div>
+
+</div></aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div>
+        <div class="brand-name">ETalking Kids · 方案確認卡</div>
+        <div class="brand-tag">課程顧問專用 · 三通路傳送</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn btn-ghost btn-sm" onclick="openCRM()">內部備忘 / CRM</button>
+      <button class="btn btn-ghost btn-sm" onclick="copyImg()">複製圖片</button>
+      <button class="btn btn-ghost btn-sm" onclick="getImg()">下載圖片</button>
+      <button class="btn btn-primary btn-sm" onclick="getPPTX()">下載 PPTX</button>
+    </div>
+  </div>
+
+  <div class="main-body">
+    <div class="preview-col">
+      <div class="edit-tip">
+        <div class="edit-tip-dot"></div>
+        卡片文字可直接點擊編輯，即時連動右側
+        <button onclick="resetCard()" style="margin-left:4px;font-size:10px;padding:2px 8px;border:.5px solid var(--bd);border-radius:10px;background:transparent;cursor:pointer;color:var(--t3)">重設</button>
+      </div>
+      <div id="card">
+        <div class="c-head" id="c-head">
+          <div class="c-eyebrow">ETALKING KIDS</div>
+          <div class="c-name ce" id="c-name" contenteditable="true" spellcheck="false">學員姓名 的專屬學習方案</div>
+          <div class="c-sub ce" contenteditable="true" spellcheck="false">課程顧問已為您整理以下確認內容</div>
+        </div>
+        <div class="c-hero" id="c-hero">
+          <div>
+            <div style="font-size:11px;color:var(--mid);margin-bottom:3px" class="ce" contenteditable="true" spellcheck="false">確認方案</div>
+            <div class="hn ce" id="c-plan" contenteditable="true" spellcheck="false">大夢想家</div>
+            <div class="hf ce" id="c-freq" contenteditable="true" spellcheck="false">每週 3 堂・24 個月合約</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:11px;color:var(--mid)" class="ce" contenteditable="true" spellcheck="false">月付款（24期零利率）</div>
+            <div class="rpv ce" id="c-price" contenteditable="true" spellcheck="false">NT$ 5,850</div>
+            <div style="font-size:10px;color:var(--mid)" id="c-ann" class="ce" contenteditable="true" spellcheck="false" style="display:none"></div>
+            <div style="font-size:11px;color:var(--mid);margin-top:2px" id="c-regfee" class="ce" contenteditable="true" spellcheck="false">+ 報名費 NT$ 2,888</div>
+          </div>
+        </div>
+        <div id="c-bonuses" style="display:none;padding:12px 22px;border-bottom:1px solid var(--bd)"></div>
+        <div class="c-deadline" id="c-deadline">
+          <div>
+            <div style="font-size:11px;font-weight:600;margin-bottom:2px" id="dl-lbl" style="color:var(--amber)">優惠截止日</div>
+            <div style="font-size:17px;font-weight:700;color:var(--text)" id="dl-date" class="ce-lt" contenteditable="true" spellcheck="false">—</div>
+          </div>
+          <div class="dl-badge ce-dk" id="dl-badge" contenteditable="true" spellcheck="false" style="background:var(--amber)">—</div>
+        </div>
+        <div id="c-note" style="display:none;padding:10px 22px;background:var(--s2);border-bottom:1px solid var(--bd)">
+          <div style="font-size:10px;color:var(--t3);margin-bottom:3px">顧問備註</div>
+          <div style="font-size:12.5px;color:var(--t2);line-height:1.6" id="note-txt" class="ce-lt" contenteditable="true" spellcheck="false"></div>
+        </div>
+        <div class="c-steps" id="c-steps">
+          <div class="c-ey2 ce-lt" contenteditable="true" spellcheck="false">報名流程</div>
+          <div class="step-row"><div class="step-num">1</div><div class="ce-lt" contenteditable="true" spellcheck="false" style="font-size:12.5px;color:var(--t2)">確認方案與付款方式</div></div>
+          <div class="step-row"><div class="step-num">2</div><div class="ce-lt" contenteditable="true" spellcheck="false" style="font-size:12.5px;color:var(--t2)">填寫學員基本資料</div></div>
+          <div class="step-row"><div class="step-num">3</div><div class="ce-lt" contenteditable="true" spellcheck="false" style="font-size:12.5px;color:var(--t2)">課程顧問產出合約，線上簽署</div></div>
+          <div class="step-row" style="margin-bottom:0"><div class="step-num">4</div><div class="ce-lt" contenteditable="true" spellcheck="false" style="font-size:12.5px;color:var(--t2)">刷卡完成，排定首課</div></div>
+        </div>
+        <div class="c-foot" id="c-foot">
+          <div>
+            <div style="font-size:13px;font-weight:600" id="c-consultant" class="ce-lt" contenteditable="true" spellcheck="false">Wolf 黃</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:2px;line-height:1.6" id="c-contact" class="ce-lt" contenteditable="true" spellcheck="false"></div>
+          </div>
+          <div style="font-size:10px;color:var(--blue);font-style:italic;margin-top:2px" class="ce-lt" contenteditable="true" spellcheck="false">Learning is fun!</div>
+        </div>
+      </div><!-- /card -->
+
+      <!-- 樣式管理 -->
+      <div class="style-mgr">
+        <div class="style-mgr-head">
+          <div class="style-mgr-title">
+            <span class="smgr-ls-dot" id="ls-dot"></span>
+            🎨 卡片樣式管理
+          </div>
+          <span style="font-size:10px;color:var(--t3)" id="ls-label">未儲存</span>
+        </div>
+        <div class="style-mgr-body">
+          <button class="smgr-btn" onclick="openCardBgPop(this)">🎨 卡片底色</button>
+          <button class="smgr-btn" onclick="exportStyleState()">⬇ 匯出 JSON</button>
+          <button class="smgr-btn" onclick="document.getElementById('style-import-file').click()">⬆ 匯入 JSON</button>
+          <input type="file" id="style-import-file" accept=".json" style="display:none" onchange="importStyleFile(event)">
+          <button class="smgr-btn" onclick="saveStyleLS(true)">💾 儲存到瀏覽器</button>
+          <button class="smgr-btn danger" onclick="resetAllStyles()">↺ 清除樣式</button>
+        </div>
+      </div>
+
+      <!-- ══ 學員基本資料卡 ══ -->
+      <div id="c-student">
+        <div class="sc-head">
+          <div class="sc-head-left">
+            <div class="sc-eyebrow">STUDENT BASIC INFO</div>
+            <div class="sc-title">學員基本資料</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+            <div class="sc-export-toggle" id="sc-toggle" onclick="toggleStudentExport()">
+              <span class="sc-toggle-label" id="sc-toggle-label">不含入匯出</span>
+              <div class="sc-toggle-track" id="sc-track"><div class="sc-toggle-knob"></div></div>
+            </div>
+            <div class="sc-export-badge" id="sc-badge">📋 將含入圖片 / PPTX</div>
+          </div>
+        </div>
+        <div class="sc-body">
+          <div class="sc-field">
+            <span class="sc-label">中文名字</span>
+            <input class="sc-val" id="sf-cn-name" placeholder="陳小明" autocomplete="off">
+          </div>
+          <div class="sc-field">
+            <span class="sc-label">英文名字</span>
+            <input class="sc-val" id="sf-en-first" placeholder="Ming" autocomplete="off">
+          </div>
+          <div class="sc-field">
+            <span class="sc-label">英文姓氏</span>
+            <input class="sc-val" id="sf-en-last" placeholder="Chen" autocomplete="off">
+          </div>
+          <div class="sc-field">
+            <span class="sc-label">身分證字號</span>
+            <input class="sc-val" id="sf-id" placeholder="A123456789" autocomplete="off" maxlength="10">
+          </div>
+          <div class="sc-field">
+            <span class="sc-label">出生年月日</span>
+            <input class="sc-val" id="sf-dob" type="date" style="width:150px;flex:none">
+            <span class="sc-hint">（西元）</span>
+          </div>
+          <div class="sc-field">
+            <span class="sc-label">住家地址</span>
+            <input class="sc-val" id="sf-addr" placeholder="台北市…" autocomplete="off">
+          </div>
+          <div class="sc-field">
+            <span class="sc-label">發票地址</span>
+            <input class="sc-val" id="sf-inv-addr" placeholder="同住家地址" autocomplete="off">
+          </div>
+          <div class="sc-field" style="align-items:center;flex-wrap:wrap;gap:6px">
+            <span class="sc-label">發票抬頭</span>
+            <div class="sc-pills" id="sf-inv-type">
+              <button class="sc-pill on" data-val="個人" onclick="scPill('sf-inv-type',this)">個人</button>
+              <button class="sc-pill"    data-val="公司" onclick="scPill('sf-inv-type',this)">公司</button>
+            </div>
+            <input class="sc-val" id="sf-inv-name" placeholder="公司統編或名稱" autocomplete="off"
+              style="width:160px;flex:none;display:none;margin-top:0">
+          </div>
+          <div class="sc-field" style="align-items:center">
+            <span class="sc-label">發票名目</span>
+            <div class="sc-pills" id="sf-inv-item">
+              <button class="sc-pill on" data-val="線上課程" onclick="scPill('sf-inv-item',this)">線上課程</button>
+              <button class="sc-pill"    data-val="培訓費"   onclick="scPill('sf-inv-item',this)">培訓費</button>
+              <button class="sc-pill"    data-val="服務費"   onclick="scPill('sf-inv-item',this)">服務費</button>
+            </div>
+          </div>
+          <div class="sc-field">
+            <span class="sc-label">首課時間</span>
+            <div style="display:flex;gap:5px;flex:1;align-items:center">
+              <button class="sc-date-btn" id="sf-first-class-date" onclick="openCal('firstClass',this)">
+                <span class="placeholder" id="fc-date-display">選擇日期</span>
+                <span style="font-size:12px;opacity:.5">📅</span>
+              </button>
+              <select id="sf-first-class-time" class="sc-val" style="flex:1;padding:3px 6px"></select>
+            </div>
+          </div>
+          <div class="sc-field">
+            <span class="sc-label">環測時間</span>
+            <div style="display:flex;gap:5px;flex:1;align-items:center">
+              <button class="sc-date-btn" id="sf-env-test-date" onclick="openCal('envTest',this)">
+                <span class="placeholder" id="et-date-display">選擇日期</span>
+                <span style="font-size:12px;opacity:.5">📅</span>
+              </button>
+              <select id="sf-env-test-time" class="sc-val" style="flex:1;padding:3px 6px"></select>
+            </div>
+          </div>
+        </div>
+        <!-- 空白模板輸出 bar -->
+        <div class="sc-blank-bar">
+          <div class="sc-blank-bar-head">空白模板輸出</div>
+          <div class="sc-blank-actions">
+            <button class="sc-blank-btn" onclick="blankCopyImg()">📋 複製圖</button>
+            <button class="sc-blank-btn" onclick="blankDownloadImg()">⬇ 下載圖</button>
+            <button class="sc-blank-btn" onclick="blankPPTX()">📊 PPTX</button>
+            <button class="sc-blank-btn" onclick="blankCopyText()">📝 複製文字</button>
+          </div>
+          <div class="sc-blank-append-row" onclick="toggleBlankAppend()">
+            <span class="sc-blank-append-label" id="blank-append-label">附加到 LINE / Email / CRM</span>
+            <div class="sc-toggle-track" id="blank-track"><div class="sc-toggle-knob"></div></div>
+          </div>
+        </div>
+
+        <div style="padding:8px 18px;background:var(--light);border-top:.5px solid var(--mid);display:flex;align-items:center;gap:6px">
+          <span style="font-size:13px">🔒</span>
+          <span style="font-size:10px;color:var(--blue);line-height:1.5">匯出時自動套用隱私遮蔽（個資法 / GB/T 35273）<br>姓名、身分證、生日、地址均依規遮蔽，原始資料僅顯示於此介面</span>
+        </div>
+      </div>
+
+    </div><!-- /preview-col -->
+
+    <div class="send-col">
+      <!-- LINE -->
+      <div class="ch-card">
+        <div class="ch-head">
+          <div class="ch-icon" style="background:#00B900;color:#fff;font-weight:700;font-size:12px">L</div>
+          <div><div class="ch-title">LINE</div><div class="ch-desc">下載圖片傳送 + 備用文字訊息</div></div>
+        </div>
+        <div class="ch-body">
+          <div class="ch-prev" id="line-txt"></div>
+          <div class="ch-actions">
+            <button class="btn btn-primary btn-sm" onclick="getImg()">下載圖片</button>
+            <button class="btn btn-outline btn-sm" onclick="copyEl('line-txt')">複製文字</button>
+          </div>
+        </div>
+      </div>
+      <!-- Email -->
+      <div class="ch-card">
+        <div class="ch-head">
+          <div class="ch-icon" style="background:var(--light);font-size:14px">✉</div>
+          <div><div class="ch-title">Email</div><div class="ch-desc">自動帶入主旨與內文</div></div>
+        </div>
+        <div class="ch-body">
+          <div class="ch-prev" id="email-prev"></div>
+          <div class="ch-actions">
+            <button class="btn btn-primary btn-sm" onclick="openEmail()">開啟信件</button>
+            <button class="btn btn-outline btn-sm" onclick="openModal('emailModal')">預覽 / 複製</button>
+          </div>
+        </div>
+      </div>
+      <!-- SMS -->
+      <div class="ch-card">
+        <div class="ch-head">
+          <div class="ch-icon" style="background:var(--al);font-size:14px">💬</div>
+          <div><div class="ch-title">簡訊</div><div class="ch-desc">70 字元內，一鍵複製</div></div>
+        </div>
+        <div class="ch-body">
+          <div class="ch-prev sms" id="sms-txt"></div>
+          <div class="ch-actions">
+            <button class="btn btn-outline btn-sm" onclick="copyEl('sms-txt')">複製簡訊</button>
+            <span class="hint" id="sms-cnt"></span>
+          </div>
+        </div>
+      </div>
+    </div><!-- /send-col -->
+  </div><!-- /main-body -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══ Email Modal ══ -->
+<div class="modal-bg" id="emailModal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">Email 完整預覽</div><button class="modal-close" onclick="closeModal('emailModal')">×</button></div>
+    <div class="modal-body">
+      <div><div class="mlabel">主旨</div><div class="esubj" id="modal-subj"></div></div>
+      <div><div class="mlabel">內文</div><div class="ebody" id="modal-body"></div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary btn-sm" onclick="copyEl('modal-body')">複製內文</button>
+      <button class="btn btn-outline btn-sm" onclick="openEmail()">開啟 Email 客戶端</button>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('emailModal')">關閉</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CRM Modal ══ -->
+<div class="modal-bg" id="crmModal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">內部備忘 / CRM 紀錄</div><button class="modal-close" onclick="closeModal('crmModal')">×</button></div>
+    <div class="modal-body">
+      <div style="font-size:11px;color:var(--t2);background:var(--al);padding:8px 11px;border-radius:var(--r);border:.5px solid #F0D090">
+        僅供課程顧問內部使用，不對外分享。可複製後貼入 CRM 系統或備忘錄，作為下次 Demo 或跟進的參考依據。
+      </div>
+      <div><div class="mlabel">完整紀錄</div><div class="crmbody" id="crm-body"></div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary btn-sm" onclick="copyEl('crm-body')">複製全文</button>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('crmModal')">關閉</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ══ 自製日曆 Popover ══ -->
+<div id="cal-pop">
+  <div class="cal-nav">
+    <button class="cal-nav-btn" onmousedown="return false" onclick="calMove(-1)">‹</button>
+    <span class="cal-title" id="cal-title"></span>
+    <button class="cal-nav-btn" onmousedown="return false" onclick="calMove(1)">›</button>
+  </div>
+  <div class="cal-wdays">
+    <div class="cal-wd">日</div><div class="cal-wd">一</div><div class="cal-wd">二</div>
+    <div class="cal-wd">三</div><div class="cal-wd">四</div><div class="cal-wd">五</div>
+    <div class="cal-wd">六</div>
+  </div>
+  <div id="cal-grid"></div>
+  <div class="cal-foot">
+    <button class="cal-foot-btn" onclick="calToday()">今天</button>
+    <button class="cal-foot-btn" onclick="closeCal()">關閉</button>
+  </div>
+</div>
+<div class="cal-holiday-tip" id="cal-holiday-tip"></div>
+
+<!-- ══ 浮動文字格式工具列 ══ -->
+<div id="fmt-bar" onmousedown="return false">
+  <button class="fmt-btn" id="fmt-bold" onclick="fmtBold()" title="粗體">B</button>
+  <div class="fmt-sep"></div>
+  <button class="fmt-sz" onclick="fmtSize(10)" data-sz="10" title="極小">xs</button>
+  <button class="fmt-sz" onclick="fmtSize(12)" data-sz="12" title="小">S</button>
+  <button class="fmt-sz" onclick="fmtSize(14)" data-sz="14" title="中">M</button>
+  <button class="fmt-sz" onclick="fmtSize(18)" data-sz="18" title="大">L</button>
+  <button class="fmt-sz" onclick="fmtSize(24)" data-sz="24" title="特大">XL</button>
+  <div class="fmt-sep"></div>
+  <div class="fmt-color" style="background:#fff"            data-color="#ffffff" onclick="fmtColor('#ffffff')"  title="白"></div>
+  <div class="fmt-color" style="background:#B5D4F4"        data-color="#b5d4f4" onclick="fmtColor('#B5D4F4')"  title="淡藍"></div>
+  <div class="fmt-color" style="background:#E6F1FB"        data-color="#e6f1fb" onclick="fmtColor('#E6F1FB')"  title="冰藍"></div>
+  <div class="fmt-color" style="background:#185FA5"        data-color="#185fa5" onclick="fmtColor('#185FA5')"  title="深藍"></div>
+  <div class="fmt-color" style="background:#042C53"        data-color="#042c53" onclick="fmtColor('#042C53')"  title="海軍藍"></div>
+  <div class="fmt-color" style="background:#1A1A18"        data-color="#1a1a18" onclick="fmtColor('#1A1A18')"  title="深色"></div>
+  <div class="fmt-color" style="background:#9C9B96"        data-color="#9c9b96" onclick="fmtColor('#9C9B96')"  title="灰"></div>
+  <div class="fmt-color" style="background:#BA7517"        data-color="#ba7517" onclick="fmtColor('#BA7517')"  title="琥珀"></div>
+  <div class="fmt-color" style="background:#3B6D11"        data-color="#3b6d11" onclick="fmtColor('#3B6D11')"  title="綠"></div>
+  <div class="fmt-color" style="background:#A32D2D"        data-color="#a32d2d" onclick="fmtColor('#A32D2D')"  title="紅"></div>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="fmtReset()" title="重設此區塊樣式" style="font-size:14px;font-family:sans-serif;font-weight:400">↺</button>
+</div>
+
+<!-- ══ 區塊調色 Popover ══ -->
+<div id="paint-pop">
+  <div class="pp-title">
+    <span id="pp-sec-label">區塊調色</span>
+    <button class="pp-close" onclick="closePaintPop()">×</button>
+  </div>
+  <div class="pp-lbl">底色</div>
+  <div class="pp-sw" id="pp-bg-sw"></div>
+  <div class="pp-row">
+    <span style="font-size:10px;color:var(--t3)">自訂</span>
+    <input type="color" class="pp-custom" id="pp-bg-custom" oninput="applySecBg(this.value)">
+    <button class="pp-rsm" onclick="resetSecStyle('bg')">重設</button>
+  </div>
+  <div class="pp-divider"></div>
+  <div class="pp-lbl">框線色</div>
+  <div class="pp-sw" id="pp-bd-sw"></div>
+  <div class="pp-row">
+    <span style="font-size:10px;color:var(--t3)">自訂</span>
+    <input type="color" class="pp-custom" id="pp-bd-custom" oninput="applySecBorder(this.value)">
+    <button class="pp-rsm" onclick="resetSecStyle('bd')">重設</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script>
+const PLANS={
+  "輕鬆學":  {monthly:2850,bizMax:20,lump:5, cm:40,ce:8 },
+  "進階學":  {monthly:3850,bizMax:25,lump:8, cm:50,ce:10},
+  "小夢想家":{monthly:4850,bizMax:35,lump:12,cm:60,ce:12},
+  "大夢想家":{monthly:5850,bizMax:45,lump:16,cm:90,ce:18},
+};
+const ST={discount:false,childrensDay:true,childGift:"magic",biz:true,lumpSum:false,regFee:true};
+const $=id=>document.getElementById(id);
+const comma=n=>n.toLocaleString();
+const fmtDate=s=>{const[y,m,d]=s.split("-");return`${y}/${m}/${d}`;};
+const shortDate=s=>{const[,m,d]=s.split("-");return`${+m}/${+d}`;};
+const daysLeft=s=>{const d=new Date(s+"T00:00:00"),t=new Date();t.setHours(0,0,0,0);return Math.ceil((d-t)/86400000);};
+const plusDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().split("T")[0];};
+const todayStr=()=>new Date().toLocaleDateString("zh-TW",{year:"numeric",month:"2-digit",day:"2-digit"});
+
+function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2500);}
+function copyEl(id){const t=$(id).innerText||$(id).textContent;navigator.clipboard.writeText(t.trim()).then(()=>toast("已複製 ✓")).catch(()=>toast("請手動複製"));}
+function openModal(id){$(id).classList.add("open");}
+function closeModal(id){$(id).classList.remove("open");}
+function openCRM(){render();openModal("crmModal");}
+function openEmail(){const{es,eb}=window._D||{};if(!es)return;window.open(`mailto:?subject=${encodeURIComponent(es)}&body=${encodeURIComponent(eb)}`,"_self");}
+
+$("deadline").value=plusDays(7);
+
+function tog(k){
+  ST[k]=!ST[k];
+  $("chk-"+k).classList.toggle("on",ST[k]);
+  if(k==="childrensDay")$("giftPills").style.display=ST[k]?"flex":"none";
+  if(k==="discount")$("discount-panel").style.display=ST[k]?"flex":"none";
+  if(k==="biz")$("biz-panel").style.display=ST[k]?"flex":"none";
+  render();
+}
+function setGift(t){
+  ST.childGift=t;
+  $("pill-magic").classList.toggle("on",t==="magic");
+  $("pill-elec").classList.toggle("on",t==="elec");
+  $("pill-jingo").classList.toggle("on",t==="jingo");
+  const units={magic:"堂魔法屋",elec:"堂選修課",jingo:"堂進度課"};
+  $("actAmtUnit").textContent=units[t]||"堂";
+  render();
+}
+function onLabelChg(){$("discountCustom").style.display=$("discountLabel").value==="自訂..."?"block":"none";render();}
+function clampBiz(){const p=PLANS[$("planSel").value];const e=$("bizAmt");if(+e.value>p.bizMax)e.value=p.bizMax;if(+e.value<0)e.value=0;}
+
+function render(){
+  const planName=$("planSel").value, plan=PLANS[planName];
+  const freq=+$("freqSel").value;
+  const name=$("studentName").value||"學員姓名";
+  const parent=$("parentName").value||"家長";
+  const stSel=$("sessionType").value;
+  const sessionType=stSel==="__custom__"?($("sessionCustom").value||"體驗"):stSel;
+  $("sessionCustom").style.display=stSel==="__custom__"?"block":"none";
+  const note=$("note").value;
+  const consultant=$("consultant").value||"Wolf 黃";
+  const phone=$("cphone").value;
+  const email=$("cemail").value;
+  const lineId=$("lineId").value;
+  const deadline=$("deadline").value;
+  const days=daysLeft(deadline);
+  const urgent=days<=2;
+
+  // Discount
+  const pct=Math.min(99,Math.max(50,+$("discountPct").value||80));
+  const fold=pct%10===0?`${pct/10}折`:`${pct}%`;
+  $("discountFold").textContent=fold;
+  const lsel=$("discountLabel").value;
+  const dlabel=lsel==="自訂..."?($("discountCustom").value||"限時優惠"):lsel;
+  // plan.monthly 是已折後價，逆推原架
+  const origMonthly=Math.round(plan.monthly/(pct/100));
+  const monthly=ST.discount?plan.monthly:origMonthly;
+  $("discountHint").textContent=ST.discount?`優惠月付款：NT$ ${comma(plan.monthly)}（原架 NT$ ${comma(origMonthly)}）`:"";
+
+  // Biz
+  $("bizAmt").max=plan.bizMax;
+  $("bizMax").textContent=plan.bizMax;
+  const bizAmt=Math.min(plan.bizMax,Math.max(0,+$("bizAmt").value||0));
+  const bizRem=plan.bizMax-bizAmt;
+  $("bizFill").style.width=(plan.bizMax>0?bizAmt/plan.bizMax*100:0)+"%";
+  $("bizChip").textContent=`剩 ${bizRem} 堂`;
+  $("bizChip").className="chip"+(bizRem===0?" zero":"");
+
+  // Sidebar hints
+  $("sub-cd").textContent=ST.childGift==="magic"?`+${plan.cm}堂魔法屋`:`+${plan.ce}堂選修`;
+  $("sub-lump").textContent=`+${plan.lump}堂選修課`;
+  $("priceHint").innerHTML=ST.discount
+    ?`月付款：<s style="opacity:.55">NT$ ${comma(origMonthly)}</s> → <strong>NT$ ${comma(plan.monthly)}</strong>（${fold}）`
+    :`月付款：NT$ ${comma(origMonthly)}`;
+  $("dlHint").textContent=days>0?`剩餘 ${days} 天`:days===0?"今日截止 ⚠":"已過期 ✗";
+  $("dlHint").className="hint"+(urgent?" warn":"");
+
+  // Bonuses
+  const bonuses=[];
+  if(ST.discount) bonuses.push({slot:"discount",label:dlabel,val:`<s style="opacity:.5">NT$ ${comma(origMonthly)}</s> → NT$ ${comma(plan.monthly)}（${fold}）`,color:"#185FA5",bg:"#E6F1FB",bc:"#B5D4F4"});
+  if(!ST.regFee) bonuses.push({slot:"regFee",label:"報名費全額減免",val:"省 NT$ 2,888",color:"#3B6D11",bg:"#EAF3DE",bc:"#C5E0A8"});
+  if(ST.biz&&bizAmt>0) bonuses.push({slot:"biz",label:"課程顧問特別加贈",val:`+${bizAmt} 堂魔法屋`,color:"#042C53",bg:"#F0EFE9",bc:"#E0DFD8"});
+  if(ST.childrensDay){
+    const albl=($("activityLabel").value||"活動")+"加碼";
+    const amt=Math.max(0,+$("actAmt").value||0);
+    const typeMap={magic:"堂魔法屋",elec:"堂選修課",jingo:"堂進度課"};
+    const v=`+${amt} ${typeMap[ST.childGift]||"堂"}`;
+    bonuses.push({slot:"activity",label:albl,val:v,color:"#B85A10",bg:"#FEF0E2",bc:"#F5C080"});
+    $("sub-cd").textContent=v;
+  }
+  if(ST.lumpSum) bonuses.push({slot:"lump",label:"一次付清加贈",val:`+${plan.lump} 堂選修課`,color:"#3B6D11",bg:"#EAF3DE",bc:"#C5E0A8"});
+
+  // Card reg fee line
+  if(ST.regFee){
+    $("c-regfee").textContent="+ 報名費 NT$ 2,888";
+    $("c-regfee").style.color="var(--mid)";
+  }else{
+    $("c-regfee").innerHTML='報名費 <s style="opacity:.55">NT$ 2,888</s> → <span>免費</span> 🎉';
+    $("c-regfee").style.color="#86EFAC";
+  }
+
+  // Card
+  $("c-name").textContent=name+" 的專屬學習方案";
+  // update subtitle with session type (only if not manually edited)
+  const subEl=document.querySelector(".c-sub");
+  if(subEl) subEl.textContent=`課程顧問已為您整理本次${sessionType}課程內容，請供參考`;
+  $("c-plan").textContent=planName;
+  $("c-freq").textContent=`24 個月合約・建議至少每週 ${freq} 堂`;
+  if(ST.discount){
+    $("c-price").innerHTML=`<s style="font-size:.58em;opacity:.5;display:block;line-height:1.3;margin-bottom:1px;font-weight:400">NT$ ${comma(origMonthly)}</s>NT$ ${comma(plan.monthly)}`;
+  }else{
+    $("c-price").textContent=`NT$ ${comma(origMonthly)}`;
+  }
+  const ann=$("c-ann");
+  if(ST.discount){ann.style.display="block";ann.textContent=dlabel+" 限定價";}else ann.style.display="none";
+  $("c-consultant").textContent=consultant;
+  const cp=[phone];if(lineId)cp.push(`LINE：${lineId}`);if(email)cp.push(email);
+  $("c-contact").innerHTML=cp.join("<br>");
+
+  const bEl=$("c-bonuses");
+  if(bonuses.length){
+    bEl.style.display="block";
+    bEl.innerHTML=`<div class="c-ey2 ce-lt" contenteditable="true" spellcheck="false">本次優惠加贈</div>`+bonuses.map(b=>`
+      <div class="bonus-item" data-slot="${b.slot}" style="background:${b.bg};border-color:${b.bc}">
+        <span style="font-size:13px;font-weight:700;color:${b.color};flex-shrink:0">✓</span>
+        <span class="b-label ce-lt" contenteditable="true" spellcheck="false" style="font-size:12px;font-weight:600;color:${b.color}">${b.label}</span>
+        <span class="b-val ce-lt" contenteditable="true" spellcheck="false" style="font-size:12px;color:var(--t2)">　${b.val}</span>
+      </div>`).join("");
+  } else bEl.style.display="none";
+
+  $("dl-lbl").style.color=urgent?"var(--red)":"var(--amber)";
+  $("dl-date").textContent=fmtDate(deadline);
+  $("c-deadline").style.background=urgent?"var(--rl)":"var(--al)";
+  $("c-deadline").style.borderBottom=`1px solid ${urgent?"#F09595":"#F0D090"}`;
+  $("dl-badge").style.background=urgent?"var(--red)":"var(--amber)";
+  $("dl-badge").textContent=`剩 ${Math.max(0,days)} 天`;
+  if(note){$("c-note").style.display="block";$("note-txt").textContent=note;}else $("c-note").style.display="none";
+
+  // Text helpers
+  const bonusTxt=bonuses.length?bonuses.map(b=>`• ${b.label}：${b.val}`).join("\n"):"（本次無額外加贈）";
+  const contactBlock=`${consultant}\n${phone}${lineId?`\nLINE ID：${lineId}`:""}${email?`\n${email}`:""}`;
+
+  const regFeeLine=ST.regFee?"（+ 報名費 $2,888）":"（報名費全額減免 🎉）";
+
+  const blankAppend=appendBlankToChannels?"\n\n"+getBlankStudentText():"";
+
+  // LINE
+  $("line-txt").textContent=`Hi ${parent}！\n\n這是 ${name} 的 ETalking Kids 方案確認：\n\n📌 方案：${planName}｜每週 ${freq} 堂\n💰 月付款：NT$ ${comma(monthly)} ${regFeeLine}\n${bonuses.length?"🎁 加贈：\n"+bonusTxt+"\n":""}\n⏰ 優惠截止：${fmtDate(deadline)}（剩 ${Math.max(0,days)} 天）\n\n有問題隨時找我！\n${contactBlock}`+blankAppend;
+
+  // Email
+  const es=`【ETalking Kids】${name} 的專屬學習方案確認`;
+  const eb=`${parent}，您好：\n\n感謝您今天撥冗體驗 ETalking Kids！以下是為 ${name} 規劃的專屬方案，請確認：\n\n━━ 課程方案 ━━\n方案：${planName}\n每週頻率：${freq} 堂\n合約期間：24 個月\n月付款：NT$ ${comma(monthly)}（24期零利率分期）\n報名費：${ST.regFee?"NT$ 2,888（一次收取）":"全額減免（省 NT$2,888）"}\n${bonuses.length?"\n━━ 本次優惠加贈 ━━\n"+bonusTxt+"\n":""}\n━━ 優惠截止日 ━━\n${fmtDate(deadline)}（${days>0?`剩餘 ${days} 天`:days===0?"今日截止，請盡快確認":"已過期，請聯繫課程顧問"}）\n${note?"\n━━ 顧問備註 ━━\n"+note+"\n":""}\n━━ 報名流程 ━━\n① 確認方案與付款方式\n② 填寫學員基本資料\n③ 課程顧問產出合約，線上簽署確認\n④ 刷卡完成，排定首課時間\n\n如有任何問題，歡迎隨時聯繫！\n\n${contactBlock}\n\nLearning is fun! 成就孩子的無限可能！\n——————————\nETalking Kids`+blankAppend;
+  $("email-prev").textContent=eb.split("\n").slice(0,4).join("\n")+"…";
+  $("modal-subj").textContent=es;
+  $("modal-body").textContent=eb;
+
+  // SMS ≤70 chars
+  const sms=`ETalking ${name}/${planName}${freq}堂$${plan.monthly}截${shortDate(deadline)} LINE:${lineId}`;
+  $("sms-txt").textContent=sms;
+  const sl=sms.length;
+  $("sms-cnt").textContent=`${sl} / 70 字元`;
+  $("sms-cnt").className="hint"+(sl>70?" warn":"");
+
+  // CRM
+  $("crm-body").textContent=
+`━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ETalking Kids  課程顧問內部備忘
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+紀錄日期：${todayStr()}
+學員姓名：${name}
+稱呼家長：${parent}
+方案：${planName}　每週 ${freq} 堂　24 個月合約
+原架月付款：NT$ ${comma(origMonthly)}
+優惠月付款：NT$ ${comma(plan.monthly)}（${fold}）
+
+【本次提供優惠】
+${ST.discount?`✓ 折扣（${dlabel}）：NT$ ${comma(origMonthly)} → NT$ ${comma(plan.monthly)}/月（${fold}）`:"✗ 未使用折扣（月付款 NT$ "+comma(origMonthly)+"）"}
+${ST.biz&&bizAmt>0?`✓ 課程顧問特別加贈：魔法屋 +${bizAmt} 堂`:"✗ 課程顧問加贈：本次未使用"}
+${ST.childrensDay?`✓ 兒童節加碼：${ST.childGift==="magic"?`魔法屋 +${plan.cm}堂`:`選修 +${plan.ce}堂`}`:"✗ 兒童節加碼：未使用"}
+${ST.lumpSum?`✓ 一次付清加贈：選修 +${plan.lump}堂`:"✗ 一次付清加贈：未使用"}
+${ST.regFee?`✗ 報名費：正常收取 NT$ 2,888`:`✓ 報名費全額減免（省 NT$ 2,888）`}
+
+【課程顧問加贈剩餘額度】
+本方案總額度：${plan.bizMax} 堂魔法屋
+本次已使用：${bizAmt} 堂
+★ 保留額度：${bizRem} 堂 ← 下次 Demo 或特殊情況可動用
+
+【優惠截止日】
+${fmtDate(deadline)}（剩 ${Math.max(0,days)} 天）
+
+【備註】
+${note||"（無）"}
+
+【學員狀態】  □ 試聽 □ Demo完成 □ 已成交 □ 考慮中 □ 未成交
+【下次跟進】
+_______________________________________________
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+課程顧問：${consultant}
+${phone}${lineId?`  LINE：${lineId}`:""}${blankAppend?"\n\n"+blankAppend:""}`;
+
+  window._D={es,eb,name,monthly};
+
+  // 套回自訂樣式並初始化調色按鈕
+  reapplyStyles();
+  applyTextStyles();
+}
+
+["emailModal","crmModal"].forEach(id=>$(id).addEventListener("click",e=>{if(e.target===$(id))closeModal(id);}));
+
+async function getImg(){
+  if(!window.html2canvas){toast("載入中...");return;}
+  toast("產生圖片中...");
+  try{
+    const c=await buildCanvas();
+    const a=document.createElement("a");a.download=`ETalking_${(window._D&&window._D.name)||"學員"}.png`;
+    a.href=c.toDataURL("image/png");a.click();toast("圖片下載完成 ✓");
+  }catch(e){toast("失敗："+e.message);}
+}
+
+async function copyImg(){
+  if(!window.html2canvas){toast("載入中...");return;}
+  toast("複製圖片中...");
+  try{
+    const c=await buildCanvas();
+    c.toBlob(async blob=>{
+      try{
+        await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);
+        toast("圖片已複製到剪貼簿 ✓");
+      }catch(e){toast("複製失敗（需 HTTPS 或允許剪貼簿權限）");}
+    },"image/png");
+  }catch(e){toast("失敗："+e.message);}
+}
+
+function getPPTX(){
+  if(!window.PptxGenJS){toast("載入中...");return;}
+  const D=window._D||{};const note=$("note").value;
+  const planName=$("planSel").value,plan=PLANS[planName];
+  const freq=+$("freqSel").value,name=D.name||"學員";
+  const consultant=$("consultant").value,phone=$("cphone").value;
+  const lineId=$("lineId").value,email=$("cemail").value;
+  const deadline=$("deadline").value,days=daysLeft(deadline);
+  const monthly=D.monthly||plan.monthly;
+  const urgent=days<=2;
+  const bonuses=[];
+  const bEl=$("c-bonuses");
+  bEl.querySelectorAll(".bonus-item").forEach(el=>{
+    const lbl=el.querySelector("span:nth-child(2)").textContent;
+    const val=el.querySelector("span:nth-child(3)").textContent.trim();
+    bonuses.push({label:lbl,val});
+  });
+
+  const headCol=elHex("c-head","042C53");
+  const heroCol=elHex("c-hero","185FA5");
+  const heroCol2=heroCol==="185FA5"?"0D4880":heroCol;
+
+  toast("產生 PPTX...");
+  const pres=new PptxGenJS();pres.layout="LAYOUT_16x9";
+  const s=pres.addSlide();s.background={color:"F7F6F3"};
+
+  s.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:3.9,h:5.625,fill:{color:headCol},line:{color:headCol}});
+  s.addText("ETALKING KIDS",{x:.22,y:.28,w:3.45,h:.3,fontSize:9,color:"B5D4F4",fontFace:"Calibri",charSpacing:5});
+  s.addText(`${name} 的專屬學習方案`,{x:.22,y:.55,w:3.45,h:.72,fontSize:18,bold:true,color:"FFFFFF",fontFace:"Calibri"});
+  s.addShape(pres.shapes.RECTANGLE,{x:.22,y:1.4,w:3.45,h:2.12,fill:{color:heroCol2},line:{color:heroCol2}});
+  s.addText(planName,{x:.32,y:1.5,w:3.25,h:.62,fontSize:24,bold:true,color:"FFFFFF",fontFace:"Calibri"});
+  s.addText(`每週 ${freq} 堂・24 個月`,{x:.32,y:2.1,w:3.25,h:.3,fontSize:11,color:"B5D4F4",fontFace:"Calibri"});
+  s.addShape(pres.shapes.RECTANGLE,{x:.32,y:2.44,w:3.05,h:.02,fill:{color:"B5D4F4"},line:{color:"B5D4F4"}});
+  s.addText(`NT$ ${comma(monthly)} /月`,{x:.32,y:2.5,w:3.25,h:.52,fontSize:20,bold:true,color:"FFFFFF",fontFace:"Calibri"});
+  s.addText("+ 報名費 NT$ 2,888",{x:.32,y:3.0,w:3.25,h:.28,fontSize:10,color:"B5D4F4",fontFace:"Calibri"});
+  s.addShape(pres.shapes.RECTANGLE,{x:.22,y:4.72,w:3.45,h:.02,fill:{color:"1A4A7A"},line:{color:"1A4A7A"}});
+  s.addText(consultant,{x:.22,y:4.78,w:3.45,h:.28,fontSize:12,bold:true,color:"FFFFFF",fontFace:"Calibri"});
+  s.addText(phone+(lineId?`   LINE: ${lineId}`:""),{x:.22,y:5.04,w:3.45,h:.24,fontSize:9.5,color:"B5D4F4",fontFace:"Calibri"});
+  if(email)s.addText(email,{x:.22,y:5.27,w:3.45,h:.22,fontSize:9,color:"B5D4F4",fontFace:"Calibri"});
+
+  let ry=.25;
+  if(bonuses.length){
+    s.addText("本次優惠加贈",{x:4.1,y:ry,w:5.65,h:.28,fontSize:10,bold:true,color:"9C9B96",fontFace:"Calibri"});ry+=.34;
+    bonuses.forEach(b=>{
+      s.addShape(pres.shapes.RECTANGLE,{x:4.1,y:ry,w:5.65,h:.42,fill:{color:"E6F1FB"},line:{color:"B5D4F4",width:.5}});
+      s.addText(`✓  ${b.label}：${b.val}`,{x:4.2,y:ry+.04,w:5.45,h:.34,fontSize:12,color:"185FA5",fontFace:"Calibri"});
+      ry+=.5;
+    });ry+=.1;
+  }
+  s.addShape(pres.shapes.RECTANGLE,{x:4.1,y:ry,w:5.65,h:.76,fill:{color:urgent?"FCEBEB":"FAEEDA"},line:{color:urgent?"F09595":"FAC775",width:.5}});
+  s.addText("優惠截止日",{x:4.2,y:ry+.06,w:3,h:.26,fontSize:11,bold:true,color:urgent?"A32D2D":"BA7517",fontFace:"Calibri"});
+  s.addText(`${fmtDate(deadline)}  （剩 ${Math.max(0,days)} 天）`,{x:4.2,y:ry+.34,w:5.45,h:.34,fontSize:15,bold:true,color:"1A1A18",fontFace:"Calibri"});
+  ry+=.9;
+  if(note){s.addText(`備註：${note}`,{x:4.1,y:ry,w:5.65,h:.42,fontSize:11.5,color:"5C5B57",fontFace:"Calibri",italic:true});ry+=.52;}
+  s.addText("報名流程",{x:4.1,y:ry,w:5.65,h:.28,fontSize:10,bold:true,color:"9C9B96",fontFace:"Calibri"});ry+=.34;
+  ["確認方案與付款方式","填寫學員基本資料","課程顧問產出合約線上確認","刷卡完成排定首課"].forEach((step,i)=>{
+    s.addShape(pres.shapes.OVAL,{x:4.1,y:ry,w:.25,h:.25,fill:{color:"185FA5"},line:{color:"185FA5"}});
+    s.addText(String(i+1),{x:4.1,y:ry,w:.25,h:.25,fontSize:10,bold:true,color:"FFFFFF",align:"center",valign:"middle",fontFace:"Calibri",margin:0});
+    s.addText(step,{x:4.4,y:ry+.02,w:5.28,h:.25,fontSize:12.5,color:"1A1A18",fontFace:"Calibri"});
+    ry+=.35;
+  });
+  s.addText("Learning is fun! 成就孩子的無限可能！",{x:4.1,y:5.28,w:5.65,h:.27,fontSize:10,color:"9C9B96",fontFace:"Calibri",italic:true});
+  pres.writeFile({fileName:`ETalking_${name}.pptx`}).then(()=>{
+    if(includeStudentCard)addStudentSlide(pres,name);
+    toast("PPTX 下載完成 ✓");
+  });
+}
+
+function addStudentSlide(pres, name){
+  const sd=getStudentData();
+  const s2=pres.addSlide();s2.background={color:"FFFFFF"};
+  s2.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:10,h:.72,fill:{color:"042C53"},line:{color:"042C53"}});
+  s2.addText("STUDENT BASIC INFO",{x:.3,y:.06,w:4,h:.24,fontSize:8,color:"B5D4F4",fontFace:"Calibri",charSpacing:4});
+  s2.addText(`${maskPII(name,"name-zh")||name} · 學員基本資料`,{x:.3,y:.3,w:6,h:.32,fontSize:16,bold:true,color:"FFFFFF",fontFace:"Calibri"});
+  s2.addText("🔒 個人資料已依個資法遮蔽",{x:6,y:.3,w:3.7,h:.32,fontSize:9,color:"B5D4F4",fontFace:"Calibri",align:"right",italic:true});
+  const fields=[
+    ["中文名字",   maskPII(sd.cnName,"name-zh")],
+    ["英文姓名",   [maskPII(sd.enFirst,"name-en"),maskPII(sd.enLast,"name-en")].filter(Boolean).join(" ")],
+    ["身分證字號", maskPII(sd.id,"id-tw")],
+    ["出生年月日", maskPII(sd.dob,"dob")],
+    ["住家地址",   maskPII(sd.addr,"address")],
+    ["發票地址",   maskPII(sd.invAddr,"address")],
+    ["發票抬頭",   sd.invType+(sd.invName?" · "+maskPII(sd.invName,"name-org"):"")],
+    ["發票名目",   sd.invItem],
+    ["首課時間",   sd.firstClass],
+    ["環測時間",   sd.envTest],
+  ];
+  let fy=.9;
+  fields.forEach(([lbl,val])=>{
+    s2.addText(lbl,{x:.3,y:fy,w:1.4,h:.3,fontSize:11,color:"9C9B96",fontFace:"Calibri"});
+    s2.addText(val||"—",{x:1.8,y:fy,w:7.8,h:.3,fontSize:12,color:"1A1A18",fontFace:"Calibri"});
+    s2.addShape(pres.shapes.LINE,{x:.3,y:fy+.3,w:9.4,h:0,line:{color:"E0DFD8",width:.5}});
+    fy+=.38;
+  });
+}
+
+// ── Card inline edit → sync right outputs ──────────────
+function ct(id){return($(id)?.innerText||"").trim();}
+
+function syncCard(){
+  const name      = ct("c-name").replace(/\s*的專屬學習方案\s*$/,"") || "學員";
+  const planName  = ct("c-plan");
+  const freq      = ct("c-freq").match(/\d+/)?.[0] || "3";
+  const priceVal  = ct("c-price");
+  const regLine   = ct("c-regfee");
+  const dlDate    = ct("dl-date");
+  const dlBadge   = ct("dl-badge");
+  const noteVal   = ct("note-txt");
+  const consultant= ct("c-consultant");
+  const contact   = ($("c-contact")?.innerText||"").trim();
+  const lineId    = $("lineId").value;
+  const parent    = $("parentName").value || "家長";
+
+  const bonuses=[];
+  document.querySelectorAll("#c-bonuses .bonus-item").forEach(el=>{
+    const lbl=(el.querySelector(".b-label")?.innerText||"").trim();
+    const val=(el.querySelector(".b-val")?.innerText||"").replace(/^\s*|\s*$/g,"");
+    if(lbl) bonuses.push({label:lbl,val});
+  });
+  const bonusTxt=bonuses.length?bonuses.map(b=>`• ${b.label}：${b.val}`).join("\n"):"（本次無額外加贈）";
+  const contactBlock=consultant+(contact?"\n"+contact:"");
+
+  $("line-txt").textContent=`Hi ${parent}！\n\n這是 ${name} 的 ETalking Kids 方案確認：\n\n📌 方案：${planName}｜每週 ${freq} 堂\n💰 月付款：${priceVal}　${regLine}\n${bonuses.length?"🎁 加贈：\n"+bonusTxt+"\n":""}\n⏰ 優惠截止：${dlDate}（${dlBadge}）\n\n有問題隨時找我！\n${contactBlock}`;
+
+  const es=`【ETalking Kids】${name} 的專屬學習方案確認`;
+  const eb=`${parent}，您好：\n\n感謝您今天撥冗體驗 ETalking Kids！以下是為 ${name} 規劃的專屬方案，請確認：\n\n━━ 課程方案 ━━\n方案：${planName}\n每週頻率：${freq} 堂\n月付款：${priceVal}（24期零利率分期）\n${regLine}\n${bonuses.length?"\n━━ 本次優惠加贈 ━━\n"+bonusTxt+"\n":""}\n━━ 優惠截止日 ━━\n${dlDate}（${dlBadge}）\n${noteVal?"\n━━ 顧問備註 ━━\n"+noteVal+"\n":""}\n━━ 報名流程 ━━\n① 確認方案與付款方式\n② 填寫學員基本資料\n③ 課程顧問產出合約，線上簽署確認\n④ 刷卡完成，排定首課時間\n\n如有任何問題，歡迎隨時聯繫！\n\n${contactBlock}\n\nLearning is fun! 成就孩子的無限可能！\n——————————\nETalking Kids`;
+  $("email-prev").textContent=eb.split("\n").slice(0,4).join("\n")+"…";
+  $("modal-subj").textContent=es;
+  $("modal-body").textContent=eb;
+  window._D=Object.assign(window._D||{},{es,eb,name});
+
+  const priceNum=priceVal.replace(/[^0-9,]/g,"");
+  const dlShort=dlDate.length>=5?dlDate.slice(5):"";
+  const sms=`ETalking ${name}/${planName}${freq}堂$${priceNum}截${dlShort} LINE:${lineId}`;
+  $("sms-txt").textContent=sms;
+  const sl=sms.length;
+  $("sms-cnt").textContent=`${sl} / 70 字元`;
+  $("sms-cnt").className="hint"+(sl>70?" warn":"");
+
+  if($("crmModal").classList.contains("open")) openCRM();
+}
+
+function resetCard(){render();}
+
+// ── Config / consultant loader (mirrors index-v3_1 pattern) ──
+var CONSULTANTS=[];
+
+function cfgStatus(msg,state){
+  $("cfg-msg").textContent=msg;
+  var colors={ok:"var(--green)",err:"var(--red)",warn:"var(--amber)",load:"var(--t3)"};
+  $("cfg-dot").style.background=colors[state]||colors.load;
+}
+
+function parseSheetUrl(url){
+  var idM=url.match(/\/spreadsheets\/d\/([^\/\?#]+)/);
+  var gidM=url.match(/[?&#]gid=(\d+)/);
+  if(!idM)return null;
+  return{id:idM[1],gid:gidM?gidM[1]:"0"};
+}
+
+function extractConsultants(tsv, rules, hardcoded){
+  var cnRe=new RegExp(rules.cn_pattern||"^[\\u4e00-\\u9fff]{2,5}$");
+  var enRe=new RegExp(rules.en_pattern||"^[A-Za-z]{2,15}$");
+  var anchor=rules.row_anchor||"12點半";
+  var phonePfx=rules.phone_prefix||"(02) 2760-7768 #6";
+  var domain=rules.email_domain||"@etalkingonline.com";
+  var seen={};
+  var results=[];
+  tsv.split("\n").forEach(function(line){
+    if(line.indexOf(anchor)<0)return;
+    var cells=line.split("\t");
+    for(var i=0;i<cells.length-1;i++){
+      var cn=cells[i].trim(),en=(cells[i+1]||"").trim();
+      if(cnRe.test(cn)&&enRe.test(en)&&cn!=="姓名"&&!seen[en.toLowerCase()]){
+        seen[en.toLowerCase()]=1;
+        // Match hardcode first (by id or English first name)
+        var hc=(hardcoded||[]).find(function(c){
+          return c.id===en.toLowerCase()||
+            (c.name||"").split(" ")[0].toLowerCase()===en.toLowerCase();
+        });
+        if(hc){results.push(hc);}
+        else{
+          results.push({
+            id:en.toLowerCase(),
+            name:en+" "+cn[0],
+            phone:phonePfx,
+            email:en+"."+domain,
+            lineId:""
+          });
+        }
+      }
+    }
+  });
+  return results;
+}
+
+function buildConsultantChips(){
+  var wrap=$("consultant-chips");
+  wrap.innerHTML="";
+  if(!CONSULTANTS.length){
+    wrap.innerHTML='<span style="font-size:11px;color:var(--t3)">無顧問資料，請直接填寫</span>';
+    return;
+  }
+  CONSULTANTS.forEach(function(c){
+    var btn=document.createElement("button");
+    btn.className="pill";
+    btn.textContent=c.name;
+    btn.style.cssText="font-size:12px;padding:4px 11px";
+    btn.onclick=function(){selectConsultant(c);};
+    wrap.appendChild(btn);
+  });
+}
+
+function quickFill(){
+  var en=($("quickEn").value||"").trim();
+  var cn=($("quickCn").value||"").trim();
+  if(!en)return;
+  var rules=PARSE_RULES;
+  var phonePfx=rules.phone_prefix||"(02) 2760-7768 #6";
+  var domain=rules.email_domain||"@etalkingonline.com";
+  // If en contains dot (e.g. "Wolf.huang"), use as-is with first char uppercased; else capitalize normally
+  var enCap=en.includes(".")?en.charAt(0).toUpperCase()+en.slice(1):en.charAt(0).toUpperCase()+en.slice(1).toLowerCase();
+  $("consultant").value=enCap+(cn?" "+cn:"");
+  $("cphone").value=phonePfx;
+  $("cemail").value=enCap+(enCap.includes(".")?domain:"."+domain);
+  $("lineId").value="";
+  // Clear chip active state (manual entry)
+  document.querySelectorAll("#consultant-chips .pill").forEach(function(b){b.classList.remove("on");});
+  render();
+}
+
+function selectConsultant(c){
+  $("consultant").value=c.name||"";
+  $("cphone").value=c.phone||"";
+  $("cemail").value=c.email||"";
+  $("lineId").value=c.lineId||"";
+  // Clear quick inputs when a chip is selected
+  $("quickEn").value="";
+  $("quickCn").value="";
+  document.querySelectorAll("#consultant-chips .pill").forEach(function(b){
+    b.classList.toggle("on",b.textContent===c.name);
+  });
+  render();
+}
+
+var PARSE_RULES={};
+
+function trySheet(url){
+  cfgStatus("從班表抓取顧問名單…","load");
+  var parsed=parseSheetUrl(url);
+  if(!parsed){cfgStatus("班表 URL 格式有誤，改用 config","warn");buildConsultantChips();if(CONSULTANTS[0])selectConsultant(CONSULTANTS[0]);return;}
+  var csvUrl="https://docs.google.com/spreadsheets/d/"+parsed.id+"/export?format=tsv&gid="+parsed.gid+"&t="+Date.now();
+  fetch(csvUrl,{cache:"no-store"})
+    .then(function(r){if(!r.ok)throw "HTTP "+r.status;return r.text();})
+    .then(function(tsv){
+      var fromSheet=extractConsultants(tsv,PARSE_RULES,CONSULTANTS);
+      if(!fromSheet.length)throw "解析為空（找不到 "+PARSE_RULES.row_anchor+" 列）";
+      // Sheet order + hardcoded-only entries appended at end
+      var merged=fromSheet.slice();
+      CONSULTANTS.forEach(function(hc){
+        if(!merged.find(function(c){return c.id===hc.id;}))merged.push(hc);
+      });
+      CONSULTANTS=merged;
+      buildConsultantChips();
+      cfgStatus("✅ 班表 "+fromSheet.length+" 位 · config "+CONSULTANTS.length+" 位","ok");
+      if(CONSULTANTS[0])selectConsultant(CONSULTANTS[0]);
+    })
+    .catch(function(e){
+      cfgStatus("⚠️ 班表抓取失敗，改用 config（"+e+"）","warn");
+      buildConsultantChips();
+      if(CONSULTANTS[0])selectConsultant(CONSULTANTS[0]);
+    });
+}
+
+function loadConfig(){
+  cfgStatus("載入 config.json…","load");
+  fetch("./config.json?v="+Date.now(),{cache:"no-store"})
+    .then(function(r){if(!r.ok)throw "HTTP "+r.status;return r.json();})
+    .then(function(cfg){
+      CONSULTANTS=cfg.consultants||[];
+      PARSE_RULES=cfg.parse_rules||{};
+      if(cfg.sheet_url&&cfg.sheet_url.trim()){
+        trySheet(cfg.sheet_url);
+      } else {
+        buildConsultantChips();
+        cfgStatus("✅ config.json（"+CONSULTANTS.length+" 位顧問）","ok");
+        if(CONSULTANTS[0])selectConsultant(CONSULTANTS[0]);
+      }
+    })
+    .catch(function(e){
+      cfgStatus("⚠️ 無 config.json（"+e+"），請直接填寫","warn");
+      buildConsultantChips();
+    });
+}
+
+$("card").addEventListener("input", syncCard);
+
+/* ══════════════════════════════════════════
+   STYLE STATE  (sections + bonus slots + text elements)
+══════════════════════════════════════════ */
+const LS_STYLE_KEY="et_card_styles_v1";
+
+const SEC_DEFS=[
+  {id:"c-head",    label:"標題區",  dark:true,
+   bgPal:["#042C53","#0A3D6B","#1B4F72","#17202A","#1A5276","#154360","#145A32","#4A235A","#7B241C","#2E4057"],
+   bdPal:["#1A4A7A","#2E86C1","#0B5394","#283747","transparent"]},
+  {id:"c-hero",    label:"方案區",  dark:true,
+   bgPal:["#185FA5","#0B5394","#0D6EFD","#117A65","#1A5276","#6C3483","#B03A2E","#17A589","#5D6D7E","#2E4057"],
+   bdPal:["#2471A3","#1F618D","#0D6EFD","transparent"]},
+  {id:"c-bonuses", label:"加贈容器",dark:false,
+   bgPal:["#F7F6F3","#F0EFE9","#E6F1FB","#EAF3DE","#FEF0E2","#FCEBEB","#FAEEDA","#F0F3FF","#fff","#F8F9FA"],
+   bdPal:["#E0DFD8","#B5D4F4","#C5E0A8","#F5C080","#F09595","transparent"]},
+  {id:"c-deadline",label:"截止日區",dark:false,
+   bgPal:["#FAEEDA","#FEF0E2","#FCEBEB","#E6F1FB","#EAF3DE","#F0EFE9","#F7F6F3","#fff","#FFF9C4"],
+   bdPal:["#F0D090","#FAC775","#F09595","#B5D4F4","#E0DFD8","transparent"]},
+  {id:"c-steps",   label:"流程區",  dark:false,
+   bgPal:["#F7F6F3","#F0EFE9","#E6F1FB","#EAF3DE","#FEF0E2","#fff","#F0F3FF","#FAFAFA","#E8F5E9"],
+   bdPal:["#E0DFD8","#B5D4F4","#C5E0A8","transparent"]},
+  {id:"c-note",    label:"備註區",  dark:false,
+   bgPal:["#F0EFE9","#F7F6F3","#FFF9C4","#FEF0E2","#EAF3DE","#E6F1FB","#fff","#FAEEDA"],
+   bdPal:["#E0DFD8","#F0D090","#B5D4F4","transparent"]},
+  {id:"c-foot",    label:"底部區",  dark:false,
+   bgPal:["#F0EFE9","#F7F6F3","#E6F1FB","#EAF3DE","#FEF0E2","#fff","#042C53","#185FA5","#E8EAF6"],
+   bdPal:["#E0DFD8","#B5D4F4","#042C53","transparent"]},
+];
+
+// bonus slot definitions（fixed order matches render()）
+const BONUS_SLOTS=[
+  {slot:"discount", label:"折扣列",   dark:false,
+   bgPal:["#E6F1FB","#EEF7FF","#DBEAFE","#F0F9FF","#fff","#F0EFE9"],
+   bdPal:["#B5D4F4","#93C5FD","#BAE6FD","transparent"]},
+  {slot:"regFee",   label:"報名費列", dark:false,
+   bgPal:["#EAF3DE","#F0FDF4","#DCFCE7","#F7FEE7","#fff","#F0EFE9"],
+   bdPal:["#C5E0A8","#86EFAC","#BBF7D0","transparent"]},
+  {slot:"biz",      label:"顧問加贈列",dark:false,
+   bgPal:["#F0EFE9","#F7F6F3","#E6F1FB","#EAF3DE","#fff","#F5F5F5"],
+   bdPal:["#E0DFD8","#B5D4F4","#042C53","transparent"]},
+  {slot:"activity", label:"活動加碼列",dark:false,
+   bgPal:["#FEF0E2","#FFF7ED","#FFEDD5","#FEF9C3","#fff","#F0EFE9"],
+   bdPal:["#F5C080","#FCA5A5","#FCD34D","transparent"]},
+  {slot:"lump",     label:"付清加贈列",dark:false,
+   bgPal:["#EAF3DE","#F0FDF4","#DCFCE7","#F7FEE7","#fff","#F0EFE9"],
+   bdPal:["#C5E0A8","#86EFAC","transparent"]},
+];
+
+// 初始化 state
+const CARD_STYLES={};
+SEC_DEFS.forEach(s=>{CARD_STYLES[s.id]={bg:"",bd:""};});
+// 卡片外框底色（獨立管理，避免與 hover 按鈕衝突）
+const CARD_OUTER_DEF={
+  id:"card", label:"卡片底色",
+  bgPal:["#F7F6F3","#F0EFE9","#FFFFFF","#F0F3FF","#EAF3DE","#FEF0E2","#E6F1FB","#FCEBEB","#F5F5F5","#FFFBF0"],
+  bdPal:["#E0DFD8","#B5D4F4","#042C53","#185FA5","transparent"]
+};
+CARD_STYLES["card"]={bg:"",bd:""};
+
+function openCardBgPop(trigBtn){
+  curSecId="card"; curPaintType="section";
+  $("pp-sec-label").textContent=CARD_OUTER_DEF.label;
+  const cur=CARD_STYLES["card"];
+  buildSwatches("pp-bg-sw",CARD_OUTER_DEF.bgPal,cur.bg,applySecBg);
+  buildSwatches("pp-bd-sw",CARD_OUTER_DEF.bdPal,cur.bd,applySecBorder);
+  $("pp-bg-custom").value=cur.bg.startsWith("#")?cur.bg:"#F7F6F3";
+  $("pp-bd-custom").value=cur.bd.startsWith("#")?cur.bd:"#E0DFD8";
+  const pop=$("paint-pop");pop.classList.add("show");
+  const r=trigBtn.getBoundingClientRect();
+  let top=r.bottom+6,left=r.left;
+  if(top+300>window.innerHeight)top=r.top-310;
+  if(left+224>window.innerWidth)left=window.innerWidth-230;
+  pop.style.top=top+"px";pop.style.left=left+"px";
+}
+const BONUS_STYLES={};  // keyed by slot name
+BONUS_SLOTS.forEach(s=>{BONUS_STYLES[s.slot]={bg:"",bd:""};});
+// text element styles by id (fontWeight, fontSize, color)
+const TEXT_STYLES={};
+
+// ── localStorage ──
+let lsTimer=null;
+function saveStyleLS(manual=false){
+  clearTimeout(lsTimer);
+  lsTimer=setTimeout(()=>{
+    try{
+      const state={sections:CARD_STYLES,bonuses:BONUS_STYLES,text:TEXT_STYLES};
+      localStorage.setItem(LS_STYLE_KEY,JSON.stringify(state));
+      setLsDot("saved","已儲存");
+    }catch(e){setLsDot("","儲存失敗");}
+  },manual?0:800);
+  setLsDot("saving","儲存中…");
+}
+function setLsDot(cls,label){
+  const d=$("ls-dot"),l=$("ls-label");if(!d||!l)return;
+  d.className="smgr-ls-dot"+(cls?" "+cls:"");
+  l.textContent=label;
+}
+function loadStyleLS(){
+  try{
+    const raw=localStorage.getItem(LS_STYLE_KEY);if(!raw)return false;
+    const state=JSON.parse(raw);
+    if(state.sections)Object.keys(state.sections).forEach(k=>{if(CARD_STYLES[k])Object.assign(CARD_STYLES[k],state.sections[k]);});
+    if(state.bonuses)Object.keys(state.bonuses).forEach(k=>{if(BONUS_STYLES[k])Object.assign(BONUS_STYLES[k],state.bonuses[k]);});
+    if(state.text)Object.assign(TEXT_STYLES,state.text);
+    setLsDot("saved","已從瀏覽器載入");
+    return true;
+  }catch(e){return false;}
+}
+
+// ── export / import ──
+function exportStyleState(){
+  const state={sections:CARD_STYLES,bonuses:BONUS_STYLES,text:TEXT_STYLES};
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="et-card-styles.json";a.click();URL.revokeObjectURL(a.href);
+  toast("樣式 JSON 已匯出 ✓");
+}
+function importStyleFile(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const state=JSON.parse(ev.target.result);
+      if(state.sections)Object.keys(state.sections).forEach(k=>{if(CARD_STYLES[k])Object.assign(CARD_STYLES[k],state.sections[k]);});
+      if(state.bonuses)Object.keys(state.bonuses).forEach(k=>{if(BONUS_STYLES[k])Object.assign(BONUS_STYLES[k],state.bonuses[k]);});
+      if(state.text)Object.assign(TEXT_STYLES,state.text);
+      reapplyStyles();applyTextStyles();saveStyleLS(true);
+      toast("樣式已匯入 ✓");
+    }catch(err){toast("JSON 格式錯誤，無法匯入");}
+    e.target.value="";
+  };
+  reader.readAsText(file);
+}
+function resetAllStyles(){
+  if(!confirm("確定清除所有卡片樣式設定（底色、框線、文字格式）？"))return;
+  SEC_DEFS.forEach(s=>{CARD_STYLES[s.id]={bg:"",bd:""};});
+  BONUS_SLOTS.forEach(s=>{BONUS_STYLES[s.slot]={bg:"",bd:""};});
+  Object.keys(TEXT_STYLES).forEach(k=>delete TEXT_STYLES[k]);
+  localStorage.removeItem(LS_STYLE_KEY);
+  render();  // 重繪整張卡片回 hardcode 初始值
+  setLsDot("","已清除");toast("樣式已全部清除");
+}
+
+// ── apply styles ──
+function reapplyStyles(){
+  SEC_DEFS.forEach(s=>{
+    const el=$(s.id);if(!el)return;
+    if(CARD_STYLES[s.id].bg)el.style.background=CARD_STYLES[s.id].bg;
+    const bd=CARD_STYLES[s.id].bd;
+    if(bd){
+      if(bd==="transparent")el.style.borderColor="transparent";
+      else{el.style.borderColor=bd;el.style.borderStyle="solid";el.style.borderWidth="1px";}
+    }
+  });
+  initPaintBtns();
+  initBonusPaintBtns();
+}
+
+function applyTextStyles(){
+  Object.keys(TEXT_STYLES).forEach(id=>{
+    const el=$(id);if(!el)return;
+    const ts=TEXT_STYLES[id];
+    if(ts.fw)el.style.fontWeight=ts.fw;
+    if(ts.fs)el.style.fontSize=ts.fs;
+    if(ts.color)el.style.color=ts.color;
+  });
+}
+
+function saveTextStyle(el){
+  if(!el||!el.id)return;
+  const cs=getComputedStyle(el);
+  TEXT_STYLES[el.id]={
+    fw:el.style.fontWeight||"",
+    fs:el.style.fontSize||"",
+    color:el.style.color||""
+  };
+  saveStyleLS();
+}
+
+// ── section paint buttons ──
+function initPaintBtns(){
+  SEC_DEFS.forEach(s=>{
+    const el=$(s.id);if(!el)return;
+    el.querySelectorAll(".sec-paint-btn").forEach(b=>b.remove());
+    el.classList.add("s-paint-host");
+    const btn=document.createElement("div");
+    btn.className="sec-paint-btn "+(s.dark?"dark-handle":"light-handle");
+    btn.innerHTML="🎨";btn.title="調整"+s.label;
+    btn.setAttribute("data-html2canvas-ignore","true");
+    btn.onmousedown=e=>e.preventDefault();
+    btn.onclick=function(e){e.stopPropagation();openPaintPop(s.id,btn,"section");};
+    el.appendChild(btn);
+  });
+}
+
+// ── bonus paint buttons ──
+function initBonusPaintBtns(){
+  document.querySelectorAll(".bonus-item[data-slot]").forEach(item=>{
+    item.querySelectorAll(".sec-paint-btn").forEach(b=>b.remove());
+    item.classList.add("s-paint-host");
+    item.style.position="relative";
+    const slot=item.dataset.slot;
+    const def=BONUS_SLOTS.find(s=>s.slot===slot);if(!def)return;
+    // reapply stored colors
+    if(BONUS_STYLES[slot].bg)item.style.background=BONUS_STYLES[slot].bg;
+    if(BONUS_STYLES[slot].bd){
+      item.style.borderColor=BONUS_STYLES[slot].bd;
+      item.style.borderStyle="solid";item.style.borderWidth="1px";
+    }
+    const btn=document.createElement("div");
+    btn.className="sec-paint-btn light-handle";
+    btn.innerHTML="🎨";btn.title="調整"+def.label;
+    btn.setAttribute("data-html2canvas-ignore","true");
+    btn.onmousedown=e=>e.preventDefault();
+    btn.onclick=function(e){e.stopPropagation();openPaintPop(slot,btn,"bonus");};
+    item.appendChild(btn);
+  });
+}
+
+/* ── paint popover ── */
+let curSecId=null, curPaintType=null;
+function openPaintPop(secId,trigBtn,type){
+  curSecId=secId;curPaintType=type;
+  const def=type==="bonus"
+    ?BONUS_SLOTS.find(s=>s.slot===secId)
+    :SEC_DEFS.find(s=>s.id===secId);
+  if(!def)return;
+  $("pp-sec-label").textContent=def.label;
+  const cur=type==="bonus"?BONUS_STYLES[secId]:CARD_STYLES[secId];
+  buildSwatches("pp-bg-sw",def.bgPal,cur.bg,applySecBg);
+  buildSwatches("pp-bd-sw",def.bdPal,cur.bd,applySecBorder);
+  $("pp-bg-custom").value=cur.bg.startsWith("#")?cur.bg:"#F7F6F3";
+  $("pp-bd-custom").value=cur.bd.startsWith("#")?cur.bd:"#E0DFD8";
+  const pop=$("paint-pop");pop.classList.add("show");
+  const r=trigBtn.getBoundingClientRect();
+  let top=r.bottom+6,left=r.right-224;
+  if(top+300>window.innerHeight)top=r.top-310;
+  if(left<6)left=6;
+  pop.style.top=top+"px";pop.style.left=left+"px";
+}
+function closePaintPop(){$("paint-pop").classList.remove("show");curSecId=null;curPaintType=null;}
+document.addEventListener("click",e=>{
+  if($("paint-pop").classList.contains("show")&&
+     !$("paint-pop").contains(e.target)&&
+     !e.target.classList.contains("sec-paint-btn"))closePaintPop();
+});
+
+function buildSwatches(containerId,palette,current,fn){
+  const wrap=$(containerId);
+  wrap.innerHTML=palette.map(c=>{
+    const isT=c==="transparent";
+    return`<div class="pp-swatch${current===c?" on":""}${isT?" trans":""}" `+
+      `style="${isT?"":"background:"+c}" title="${isT?"透明":c}" data-val="${c}"></div>`;
+  }).join("");
+  wrap.querySelectorAll(".pp-swatch").forEach(el=>{
+    el.addEventListener("click",function(){
+      wrap.querySelectorAll(".pp-swatch").forEach(s=>s.classList.remove("on"));
+      this.classList.add("on");fn(this.dataset.val);
+    });
+  });
+}
+
+function applySecBg(val){
+  if(!curSecId)return;
+  const store=curPaintType==="bonus"?BONUS_STYLES[curSecId]:CARD_STYLES[curSecId];
+  store.bg=val;
+  if(curPaintType==="bonus"){
+    document.querySelectorAll(`.bonus-item[data-slot="${curSecId}"]`).forEach(el=>el.style.background=val);
+  }else{
+    const el=$(curSecId);if(el)el.style.background=val;
+  }
+  if(val.startsWith("#"))$("pp-bg-custom").value=val;
+  saveStyleLS();
+}
+function applySecBorder(val){
+  if(!curSecId)return;
+  const store=curPaintType==="bonus"?BONUS_STYLES[curSecId]:CARD_STYLES[curSecId];
+  store.bd=val;
+  const applyBd=el=>{
+    if(val==="transparent")el.style.borderColor="transparent";
+    else{el.style.borderColor=val;el.style.borderStyle="solid";el.style.borderWidth="1px";}
+  };
+  if(curPaintType==="bonus"){
+    document.querySelectorAll(`.bonus-item[data-slot="${curSecId}"]`).forEach(applyBd);
+  }else{
+    const el=$(curSecId);if(el)applyBd(el);
+  }
+  if(val.startsWith("#"))$("pp-bd-custom").value=val;
+  saveStyleLS();
+}
+function resetSecStyle(type){
+  if(!curSecId)return;
+  const store=curPaintType==="bonus"?BONUS_STYLES[curSecId]:CARD_STYLES[curSecId];
+  if(type==="bg"){
+    store.bg="";
+    if(curPaintType==="bonus")document.querySelectorAll(`.bonus-item[data-slot="${curSecId}"]`).forEach(el=>el.style.background="");
+    else{const el=$(curSecId);if(el)el.style.background="";}
+  }else{
+    store.bd="";
+    const clearBd=el=>{el.style.borderColor="";el.style.borderStyle="";el.style.borderWidth="";};
+    if(curPaintType==="bonus")document.querySelectorAll(`.bonus-item[data-slot="${curSecId}"]`).forEach(clearBd);
+    else{const el=$(curSecId);if(el)clearBd(el);}
+  }
+  const def=curPaintType==="bonus"
+    ?BONUS_SLOTS.find(s=>s.slot===curSecId)
+    :SEC_DEFS.find(s=>s.id===curSecId);
+  const cur=curPaintType==="bonus"?BONUS_STYLES[curSecId]:CARD_STYLES[curSecId];
+  if(def){buildSwatches("pp-bg-sw",def.bgPal,cur.bg,applySecBg);buildSwatches("pp-bd-sw",def.bdPal,cur.bd,applySecBorder);}
+  saveStyleLS();
+}
+
+/* ── 浮動文字格式工具列 ── */
+let fmtEl=null;
+let fmtElOrigStyle="";
+
+$("card").addEventListener("focusin",function(e){
+  const ce=e.target.closest("[contenteditable]");if(!ce)return;
+  fmtEl=ce;
+  fmtElOrigStyle=ce.getAttribute("style")||"";
+  // 工具列錨定到 card 頂端，不跟著元素跑
+  const bar=$("fmt-bar");
+  const cardRect=$("card").getBoundingClientRect();
+  bar.style.top=(cardRect.top-48)+"px";
+  bar.style.left=cardRect.left+"px";
+  bar.style.width=cardRect.width+"px";
+  bar.classList.add("show");
+  updateFmtBar(ce);
+});
+// focusout 只有在焦點完全離開 card 且不在 fmt-bar 內時才隱藏
+$("card").addEventListener("focusout",function(){
+  setTimeout(()=>{
+    const active=document.activeElement;
+    const inCard=$("card").contains(active);
+    const inBar=$("fmt-bar").contains(active);
+    if(!inCard&&!inBar){$("fmt-bar").classList.remove("show");fmtEl=null;}
+  },200);
+});
+
+function updateFmtBar(el){
+  const cs=getComputedStyle(el);
+  $("fmt-bold").classList.toggle("on",+cs.fontWeight>=600);
+  const fsz=Math.round(parseFloat(cs.fontSize));
+  document.querySelectorAll(".fmt-sz").forEach(b=>b.classList.toggle("on",+b.dataset.sz===fsz));
+  const col=cs.color.replace(/\s/g,"");
+  document.querySelectorAll(".fmt-color").forEach(c=>c.classList.toggle("on",rgbMatch(col,c.dataset.color)));
+}
+function rgbMatch(rgb,hex){
+  const m=rgb.match(/\d+/g);if(!m)return false;
+  const h=m.slice(0,3).map(n=>parseInt(n).toString(16).padStart(2,"0")).join("").toLowerCase();
+  return h===hex.replace("#","").toLowerCase();
+}
+function fmtBold(){
+  if(!fmtEl)return;
+  const isBold=+getComputedStyle(fmtEl).fontWeight>=600;
+  fmtEl.style.fontWeight=isBold?"400":"700";
+  $("fmt-bold").classList.toggle("on",!isBold);
+  saveTextStyle(fmtEl);
+}
+function fmtSize(sz){
+  if(!fmtEl)return;
+  fmtEl.style.fontSize=sz+"px";
+  document.querySelectorAll(".fmt-sz").forEach(b=>b.classList.toggle("on",+b.dataset.sz===sz));
+  saveTextStyle(fmtEl);
+}
+function fmtColor(c){
+  if(!fmtEl)return;
+  fmtEl.style.color=c;
+  document.querySelectorAll(".fmt-color").forEach(fc=>fc.classList.toggle("on",fc.dataset.color.toLowerCase()===c.toLowerCase()));
+  saveTextStyle(fmtEl);
+}
+function fmtReset(){
+  if(!fmtEl)return;
+  if(fmtElOrigStyle)fmtEl.setAttribute("style",fmtElOrigStyle);
+  else fmtEl.removeAttribute("style");
+  if(fmtEl.id)delete TEXT_STYLES[fmtEl.id];
+  updateFmtBar(fmtEl);saveStyleLS();
+}
+
+/* ── 擷取 canvas（供下載＆複製共用）── */
+async function buildCanvas(){
+  hidePaintBtns(true);$("fmt-bar").classList.remove("show");
+  try{
+    const c1=await html2canvas($("card"),{scale:2.5,useCORS:true,logging:false,backgroundColor:"#F7F6F3"});
+    if(includeStudentCard && $("c-student")){
+      const c2=await captureStudentCardMasked();
+      const gap=Math.round(12*2.5);
+      const combined=document.createElement("canvas");
+      combined.width=Math.max(c1.width,c2.width);
+      combined.height=c1.height+gap+c2.height;
+      const ctx=combined.getContext("2d");
+      ctx.fillStyle="#E8E7E0";
+      ctx.fillRect(0,0,combined.width,combined.height);
+      ctx.drawImage(c1,(combined.width-c1.width)/2,0);
+      ctx.drawImage(c2,(combined.width-c2.width)/2,c1.height+gap);
+      hidePaintBtns(false);return combined;
+    }
+    hidePaintBtns(false);return c1;
+  }catch(e){hidePaintBtns(false);throw e;}
+}
+function hidePaintBtns(hide){
+  document.querySelectorAll(".sec-paint-btn").forEach(b=>b.style.display=hide?"none":"");
+}
+
+/* ── PPTX 顏色讀取 ── */
+function elHex(id,fallback){
+  const el=$(id);if(!el)return fallback;
+  const bg=getComputedStyle(el).backgroundColor;
+  const m=bg.match(/\d+/g);
+  if(!m||+m[3]===0)return fallback;
+  return m.slice(0,3).map(n=>parseInt(n).toString(16).padStart(2,"0")).join("").toUpperCase();
+}
+
+/* ══════════════════════════════════════════
+   空白模板輸出
+══════════════════════════════════════════ */
+let appendBlankToChannels=false;
+
+function toggleBlankAppend(){
+  appendBlankToChannels=!appendBlankToChannels;
+  $("blank-track").classList.toggle("on",appendBlankToChannels);
+  const lbl=$("blank-append-label");
+  lbl.classList.toggle("on",appendBlankToChannels);
+  render();
+}
+
+function getBlankStudentText(){
+  const u="＿＿＿＿＿＿＿＿＿＿";
+  return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ETalking Kids　學員基本資料
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+中文名字　　：${u}
+英文名字　　：${u}
+英文姓氏　　：${u}
+身分證字號　：${u}
+出生年月日　：${u}（西元）
+住家地址　　：${u}
+發票地址　　：${u}
+發票抬頭　　：□ 個人　□ 公司
+發票名目　　：□ 線上課程　□ 培訓費　□ 服務費
+首課時間　　：${u}
+環測時間　　：${u}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+}
+
+async function captureBlankCard(){
+  const original=$("c-student");
+  const clone=original.cloneNode(true);
+  clone.style.cssText="position:fixed;top:0;left:-9999px;width:420px;z-index:-1";
+  document.body.appendChild(clone);
+  // 文字 input → 空底線 span
+  ["sf-cn-name","sf-en-first","sf-en-last","sf-id","sf-dob",
+   "sf-addr","sf-inv-addr","sf-inv-name"].forEach(id=>{
+    const ci=clone.querySelector("#"+id);if(!ci)return;
+    const sp=document.createElement("span");
+    sp.className="sc-val";
+    sp.style.cssText="display:inline-block;min-width:140px;border-bottom:1.5px solid #bbb;padding:0 2px";
+    sp.textContent="";
+    ci.parentNode.replaceChild(sp,ci);
+  });
+  // 時間 select → 空底線
+  ["sf-first-class-time","sf-env-test-time"].forEach(id=>{
+    const ci=clone.querySelector("#"+id);if(!ci)return;
+    const sp=document.createElement("span");
+    sp.className="sc-val";
+    sp.style.cssText="display:inline-block;min-width:70px;border-bottom:1.5px solid #bbb";
+    sp.textContent="";
+    ci.parentNode.replaceChild(sp,ci);
+  });
+  // 日期按鈕
+  ["fc-date-display","et-date-display"].forEach(id=>{
+    const el=clone.querySelector("#"+id);
+    if(el){el.textContent="____/  /  ";el.style.color="var(--t3)";}
+  });
+  // pill 全清
+  clone.querySelectorAll(".sc-pill").forEach(p=>p.classList.remove("on"));
+  const canvas=await html2canvas(clone,{scale:2.5,useCORS:true,logging:false,backgroundColor:"#ffffff"});
+  document.body.removeChild(clone);
+  return canvas;
+}
+
+async function blankCopyImg(){
+  if(!window.html2canvas){toast("載入中...");return;}
+  toast("產生空白模板...");
+  try{
+    const c=await captureBlankCard();
+    c.toBlob(async blob=>{
+      try{
+        await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);
+        toast("空白模板已複製到剪貼簿 ✓");
+      }catch(e){toast("複製失敗（需 HTTPS 或授權）");}
+    },"image/png");
+  }catch(e){toast("失敗："+e.message);}
+}
+
+async function blankDownloadImg(){
+  if(!window.html2canvas){toast("載入中...");return;}
+  toast("產生空白模板...");
+  try{
+    const c=await captureBlankCard();
+    const a=document.createElement("a");
+    a.download="ETalking_學員基本資料_空白表單.png";
+    a.href=c.toDataURL("image/png");a.click();
+    toast("空白模板下載完成 ✓");
+  }catch(e){toast("失敗："+e.message);}
+}
+
+function blankCopyText(){
+  navigator.clipboard.writeText(getBlankStudentText())
+    .then(()=>toast("空白模板已複製 ✓"))
+    .catch(()=>toast("請手動複製"));
+}
+
+function blankPPTX(){
+  if(!window.PptxGenJS){toast("載入中...");return;}
+  const pres=new PptxGenJS();pres.layout="LAYOUT_16x9";
+  const s=pres.addSlide();s.background={color:"FFFFFF"};
+  s.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:10,h:.72,fill:{color:"042C53"},line:{color:"042C53"}});
+  s.addText("STUDENT BASIC INFO",{x:.3,y:.06,w:5,h:.24,fontSize:8,color:"B5D4F4",fontFace:"Calibri",charSpacing:4});
+  s.addText("ETalking Kids  學員基本資料",{x:.3,y:.3,w:9,h:.32,fontSize:16,bold:true,color:"FFFFFF",fontFace:"Calibri"});
+  const rows=[
+    ["中文名字",""  ],["英文名字",""    ],["英文姓氏",""],
+    ["身分證字號",""],["出生年月日","（西元）"],
+    ["住家地址","" ],["發票地址",""],
+    ["發票抬頭","□ 個人        □ 公司"],
+    ["發票名目","□ 線上課程        □ 培訓費        □ 服務費"],
+    ["首課時間","" ],["環測時間",""],
+  ];
+  let fy=.9;
+  rows.forEach(([lbl,hint])=>{
+    s.addText(lbl,{x:.3,y:fy,w:1.7,h:.28,fontSize:11,color:"9C9B96",fontFace:"Calibri"});
+    s.addShape(pres.shapes.LINE,{x:2.1,y:fy+.26,w:7.5,h:0,line:{color:"CCCCCC",width:1}});
+    if(hint)s.addText(hint,{x:2.1,y:fy,w:7.5,h:.26,fontSize:11,color:"BBBBBB",fontFace:"Calibri"});
+    fy+=.42;
+  });
+  pres.writeFile({fileName:"ETalking_學員基本資料_空白表單.pptx"}).then(()=>toast("空白模板 PPTX 下載完成 ✓"));
+}
+
+/* ══════════════════════════════════════════
+   隱私遮蔽 (個資法 / GB-T 35273 / GDPR TW)
+══════════════════════════════════════════ */
+function maskPII(val, type){
+  if(!val||!val.trim())return "";
+  const v=val.trim();
+  switch(type){
+    case "name-zh":
+      // 保留姓（第1字），名全遮 ＊
+      if(v.length<=1)return v;
+      return v[0]+"＊".repeat(v.length-1);
+    case "name-en":
+      // 保留首字母大寫，其餘 *
+      if(v.length<=1)return v[0].toUpperCase();
+      return v[0].toUpperCase()+"*".repeat(v.length-1);
+    case "id-tw":
+      // 保留前2碼（縣市碼+性別碼），其餘 *
+      if(v.length<=2)return v;
+      return v.slice(0,2)+"*".repeat(v.length-2);
+    case "dob":
+      // 保留年份，月日 **/**
+      const m=v.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+      if(m)return m[1]+"/**/**";
+      if(v.length>=4)return v.slice(0,4)+"/**/**";
+      return v;
+    case "address":
+      // 保留縣市+區（前6字），其餘 ****
+      if(v.length<=6)return v;
+      return v.slice(0,6)+"****";
+    case "name-org":
+      // 公司：保留前2字，其餘 ＊（最多4個）
+      if(v.length<=2)return v;
+      return v.slice(0,2)+"＊".repeat(Math.min(v.length-2,4));
+    default:
+      return val;
+  }
+}
+
+const STUDENT_MASK_RULES=[
+  {id:"sf-cn-name",  type:"name-zh"},
+  {id:"sf-en-first", type:"name-en"},
+  {id:"sf-en-last",  type:"name-en"},
+  {id:"sf-id",       type:"id-tw"},
+  {id:"sf-dob",      type:"dob"},
+  {id:"sf-addr",     type:"address"},
+  {id:"sf-inv-addr", type:"address"},
+  {id:"sf-inv-name", type:"name-org"},
+  // 首課/環測時間：非個人識別資料，不遮蔽
+];
+
+async function captureStudentCardMasked(){
+  const original=$("c-student");
+  // 複製 DOM，用遮蔽值取代 input（避免污染原始資料）
+  const clone=original.cloneNode(true);
+  clone.style.cssText="position:fixed;top:0;left:-9999px;width:420px;z-index:-1";
+  document.body.appendChild(clone);
+
+  // 複製 input values 並套用遮蔽
+  STUDENT_MASK_RULES.forEach(({id,type})=>{
+    const orig=$(id);
+    const ci=clone.querySelector("#"+id);
+    if(!orig||!ci)return;
+    const realVal=orig.value;
+    const maskedVal=type?maskPII(realVal,type):realVal;
+    // 將 input 換成靜態 span（html2canvas 對 input 的渲染更穩定）
+    const span=document.createElement("span");
+    span.className="sc-val";
+    span.style.cssText="display:inline-block;min-height:18px;padding:1px 4px";
+    span.textContent=maskedVal||"";
+    span.style.color=maskedVal?"var(--text)":"var(--t3)";
+    ci.parentNode.replaceChild(span,ci);
+  });
+
+  // pill 選擇器同步顯示
+  ["sf-inv-type","sf-inv-item"].forEach(gid=>{
+    const origActive=document.querySelector("#"+gid+" .sc-pill.on");
+    if(!origActive)return;
+    clone.querySelectorAll("#"+gid+" .sc-pill").forEach(p=>{
+      p.classList.toggle("on",p.dataset.val===origActive.dataset.val);
+    });
+  });
+  // 時間 select 同步並轉為靜態文字
+  ["sf-first-class-time","sf-env-test-time"].forEach(id=>{
+    const orig=$(id),ci=clone.querySelector("#"+id);
+    if(!orig||!ci)return;
+    const span=document.createElement("span");
+    span.className="sc-val";span.style.cssText="display:inline-block;padding:1px 4px";
+    span.textContent=orig.value||"—";
+    ci.parentNode.replaceChild(span,ci);
+  });
+
+  const canvas=await html2canvas(clone,{scale:2.5,useCORS:true,logging:false,backgroundColor:"#ffffff"});
+  document.body.removeChild(clone);
+  return canvas;
+}
+let includeStudentCard = false;
+
+function toggleStudentExport(){
+  includeStudentCard = !includeStudentCard;
+  const track=$("sc-track"), label=$("sc-toggle-label"), tog=$("sc-toggle");
+  const card=$("c-student");
+  track.classList.toggle("on", includeStudentCard);
+  tog.classList.toggle("on", includeStudentCard);
+  label.textContent = includeStudentCard ? "含入匯出" : "不含入匯出";
+  card.classList.toggle("export-on", includeStudentCard);
+}
+
+function scPill(groupId, btn){
+  document.querySelectorAll("#"+groupId+" .sc-pill").forEach(p=>p.classList.remove("on"));
+  btn.classList.add("on");
+  // 公司抬頭時顯示公司名稱欄
+  if(groupId==="sf-inv-type"){
+    const isCompany = btn.dataset.val === "公司";
+    $("sf-inv-name").style.display = isCompany ? "block" : "none";
+  }
+}
+
+function initStudentTimeOpts(){
+  // 首課時間：15:00 ~ 21:00，每半小時
+  const fcSel=$("sf-first-class-time");
+  fcSel.innerHTML='<option value="">— 時間 —</option>';
+  for(let h=15;h<=21;h++){
+    [0,30].forEach(m=>{
+      if(h===21&&m===30)return;
+      const t=`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+      fcSel.innerHTML+=`<option value="${t}">${t}</option>`;
+    });
+  }
+  // 環測時間：13:30 ~ 20:30，僅半點（:30）
+  const etSel=$("sf-env-test-time");
+  etSel.innerHTML='<option value="">— 時間 —</option>';
+  for(let h=13;h<=20;h++){
+    const t=`${String(h).padStart(2,"0")}:30`;
+    etSel.innerHTML+=`<option value="${t}">${t}</option>`;
+  }
+}
+
+function fmtDateTime(dateVal, timeVal){
+  if(!dateVal&&!timeVal)return "";
+  if(dateVal){const[y,m,d]=dateVal.split("-");dateVal=`${y}/${m}/${d}`;}
+  return [dateVal,timeVal].filter(Boolean).join(" ");
+}
+
+function getStudentData(){
+  const invType=document.querySelector("#sf-inv-type .sc-pill.on")?.dataset.val||"個人";
+  const invItem=document.querySelector("#sf-inv-item .sc-pill.on")?.dataset.val||"線上課程";
+  const dob=$("sf-dob").value;
+  return {
+    cnName:     $("sf-cn-name").value,
+    enFirst:    $("sf-en-first").value,
+    enLast:     $("sf-en-last").value,
+    id:         $("sf-id").value,
+    dob:        dob?fmtDate(dob):"",
+    addr:       $("sf-addr").value,
+    invAddr:    $("sf-inv-addr").value||$("sf-addr").value,
+    invType,
+    invName:    invType==="公司"?($("sf-inv-name").value||""):"",
+    invItem,
+    firstClass: fmtDateTime(STUDENT_DATES.firstClass,$("sf-first-class-time").value),
+    envTest:    fmtDateTime(STUDENT_DATES.envTest,$("sf-env-test-time").value),
+  };
+}
+
+/* ══════════════════════════════════════════
+   公休日資料（個資法 / 行事曆 hardcode 2025-2028）
+══════════════════════════════════════════ */
+function buildHolidays(){
+  const H=new Map();
+  // 元旦、聖誕節 — 每年固定
+  [2025,2026,2027,2028,2029].forEach(y=>{
+    H.set(`${y}-01-01`,"元旦");
+    H.set(`${y}-12-25`,"聖誕節");
+  });
+  // 農曆春節（除夕 ~ 初三）—— 逐年 hardcode
+  const cny=[
+    {y:2025,dates:["01-28","01-29","01-30","01-31"],labels:["除夕","初一（春節）","初二","初三"]},
+    {y:2026,dates:["02-16","02-17","02-18","02-19"],labels:["除夕","初一（春節）","初二","初三"]},
+    {y:2027,dates:["02-05","02-06","02-07","02-08"],labels:["除夕","初一（春節）","初二","初三"]},
+    {y:2028,dates:["01-25","01-26","01-27","01-28"],labels:["除夕","初一（春節）","初二","初三"]},
+  ];
+  cny.forEach(({y,dates,labels})=>dates.forEach((d,i)=>H.set(`${y}-${d}`,"農曆"+labels[i])));
+  return H;
+}
+const HOLIDAYS=buildHolidays();
+
+function isHoliday(dateStr){return HOLIDAYS.get(dateStr)||null;}
+
+/* ── 日曆狀態 ── */
+const STUDENT_DATES={firstClass:"",envTest:""};
+let calField=null,calTrigger=null,calYear=0,calMonth=0;
+let tipTimer=null;
+
+function openCal(field,trigBtn){
+  calField=field;calTrigger=trigBtn;
+  const now=new Date();
+  const cur=STUDENT_DATES[field];
+  if(cur){const p=cur.split("-");calYear=+p[0];calMonth=+p[1]-1;}
+  else{calYear=now.getFullYear();calMonth=now.getMonth();}
+  renderCal();
+  const pop=$("cal-pop");pop.classList.add("show");
+  const r=trigBtn.getBoundingClientRect();
+  let top=r.bottom+4,left=r.left;
+  if(top+310>window.innerHeight)top=r.top-316;
+  if(left+260>window.innerWidth)left=window.innerWidth-266;
+  pop.style.top=top+"px";pop.style.left=left+"px";
+}
+function closeCal(){$("cal-pop").classList.remove("show");calField=null;calTrigger=null;}
+document.addEventListener("click",e=>{
+  if($("cal-pop").classList.contains("show")&&
+     !$("cal-pop").contains(e.target)&&
+     !e.target.closest(".sc-date-btn"))closeCal();
+});
+
+function calMove(d){calMonth+=d;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCal();}
+function calToday(){const n=new Date();calYear=n.getFullYear();calMonth=n.getMonth();renderCal();}
+
+function renderCal(){
+  const months=["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+  $("cal-title").textContent=`${calYear}年 ${months[calMonth]}`;
+  const first=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const daysInPrev=new Date(calYear,calMonth,0).getDate();
+  const today=new Date().toISOString().split("T")[0];
+  const selected=STUDENT_DATES[calField]||"";
+  let html="";
+  // 前月補位
+  for(let i=first-1;i>=0;i--){
+    html+=`<div class="cal-day other-month">${daysInPrev-i}</div>`;
+  }
+  // 本月
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const hName=isHoliday(ds);
+    const isSel=ds===selected;
+    const isToday=ds===today;
+    let cls="cal-day";
+    if(hName)cls+=" blocked";
+    if(isSel)cls+=" selected";
+    if(isToday&&!isSel)cls+=" today";
+    if(hName){
+      const safe=hName.replace(/'/g,"\\'");
+      html+=`<div class="${cls}" `+
+        `onmouseenter="showHolidayTip(event,'${safe}')" onmouseleave="hideHolidayTip()" `+
+        `onclick="onBlockedClick(this)">${d}</div>`;
+    }else{
+      html+=`<div class="${cls}" onclick="selectCalDate('${ds}')">${d}</div>`;
+    }
+  }
+  // 後月補位
+  const total=first+daysInMonth;
+  const rem=(7-total%7)%7;
+  for(let i=1;i<=rem;i++)html+=`<div class="cal-day other-month">${i}</div>`;
+  $("cal-grid").innerHTML=html;
+}
+
+function onBlockedClick(el){
+  el.style.animation="none";
+  void el.offsetWidth; // reflow trick to restart animation
+  el.style.animation="calShake .35s ease";
+}
+
+function selectCalDate(ds){
+  STUDENT_DATES[calField]=ds;
+  const[y,m,d]=ds.split("-");
+  const displayId=calField==="firstClass"?"fc-date-display":"et-date-display";
+  const dispEl=$(displayId);
+  dispEl.textContent=`${y}/${m}/${d}`;
+  dispEl.classList.remove("placeholder");
+  renderCal();
+  // 自動關閉（如果時間也已選則更流暢）
+  setTimeout(closeCal,180);
+}
+
+function onBlockedClick(el){
+  el.style.animation="calShake .3s ease";
+  setTimeout(()=>el.style.animation="",320);
+}
+
+function showHolidayTip(e,name){
+  const tip=$("cal-holiday-tip");
+  tip.textContent="🚫 "+name+" — 公休，無法排課";
+  tip.style.left=(e.clientX+12)+"px";
+  tip.style.top=(e.clientY-28)+"px";
+  tip.classList.add("show");
+  clearTimeout(tipTimer);
+}
+function hideHolidayTip(){
+  tipTimer=setTimeout(()=>$("cal-holiday-tip").classList.remove("show"),120);
+}
+
+initStudentTimeOpts();
+loadStyleLS();
+loadConfig();
+render();
+</script>
+</body>
+</html>

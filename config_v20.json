@@ -1,0 +1,55 @@
+{
+  "brand": {
+    "card_eyebrow":   "ETALKING KIDS",
+    "card_tagline":   "課程顧問已為您整理以下確認內容",
+    "footer_slogan":  "Learning is fun!"
+  },
+
+  "plans": {
+    "輕鬆學":   { "monthly": 2850, "bizMax": 20, "lump": 5,  "cm": 40, "ce": 8  },
+    "進階學":   { "monthly": 3850, "bizMax": 25, "lump": 8,  "cm": 50, "ce": 10 },
+    "小夢想家": { "monthly": 4850, "bizMax": 35, "lump": 12, "cm": 60, "ce": 12 },
+    "大夢想家": { "monthly": 5850, "bizMax": 45, "lump": 16, "cm": 90, "ce": 18 }
+  },
+
+  "defaults": {
+    "plan":             "大夢想家",
+    "freq":             3,
+    "reg_fee":          2888,
+    "contract_months":  24,
+    "discount_pct":     80,
+    "deadline_days":    7,
+    "activity_label":   "兒童節",
+    "activity_amount":  40
+  },
+
+  "session_types": [
+    "體驗", "檢測", "Demo", "說明"
+  ],
+
+  "discount_labels": [
+    "體驗後當日簽約", "10週年慶", "兒童節促銷",
+    "暑期限定優惠",   "開學特惠", "學期末優惠",
+    "家長回饋方案",   "週年慶限定", "聖誕新年特惠"
+  ],
+
+  "sheet_url": "https://docs.google.com/spreadsheets/d/13SrI50MGBAJHcRqFXa2TT5EDki3EGd0YL5wAGKXzPuw/edit?gid=1534602765#gid=1534602765",
+
+  "parse_rules": {
+    "row_anchor":   "12點半",
+    "cn_pattern":   "^[\\u4e00-\\u9fff]{2,5}$",
+    "en_pattern":   "^[A-Za-z]{2,15}$",
+    "phone_prefix": "(02) 2760-7768 #6",
+    "email_domain": "@etalkingonline.com"
+  },
+
+  "consultants": [
+    {
+      "id":     "wolf",
+      "name":   "Wolf 黃",
+      "phone":  "(02) 2760-7768 #622",
+      "email":  "Wolf.Huang@etalkingonline.com",
+      "lineId": "verypigkimo"
+    }
+  ]
+}

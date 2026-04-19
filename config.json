@@ -13,7 +13,7 @@
   },
 
   "defaults": {
-    "plan":             "大夢想家",
+    "plan":             "輕鬆學",
     "freq":             1,
     "reg_fee":          2888,
     "contract_months":  24,

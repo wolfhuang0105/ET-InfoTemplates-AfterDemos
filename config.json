@@ -1,40 +1,10 @@
 {
-  "brand": {
-    "card_eyebrow":   "ETALKING KIDS",
-    "card_tagline":   "課程顧問已為您整理以下確認內容",
-    "footer_slogan":  "Learning is fun!"
-  },
+  "_note": "v5.3.2 起 config 只保留三組實際會被 JS 讀取的欄位：sheet_url、parse_rules、consultants。其他如 brand、plans、defaults、session_types、discount_labels 已全部 hardcode 在 HTML 內，從 config 移除。",
 
-  "plans": {
-    "輕鬆學":   { "monthly": 2850, "bizMax": 20, "lump": 5,  "cm": 40, "ce": 8  },
-    "進階學":   { "monthly": 3850, "bizMax": 25, "lump": 8,  "cm": 50, "ce": 10 },
-    "小夢想家": { "monthly": 4850, "bizMax": 35, "lump": 12, "cm": 60, "ce": 12 },
-    "大夢想家": { "monthly": 5850, "bizMax": 45, "lump": 16, "cm": 90, "ce": 18 }
-  },
-
-  "defaults": {
-    "plan":             "輕鬆學",
-    "freq":             1,
-    "reg_fee":          2888,
-    "contract_months":  24,
-    "discount_pct":     80,
-    "deadline_days":    7,
-    "activity_label":   "兒童節",
-    "activity_amount":  5
-  },
-
-  "session_types": [
-    "體驗", "檢測", "Demo", "說明"
-  ],
-
-  "discount_labels": [
-    "體驗後當日簽約", "10週年慶", "兒童節促銷",
-    "暑期限定優惠",   "開學特惠", "學期末優惠",
-    "家長回饋方案",   "週年慶限定", "聖誕新年特惠"
-  ],
-
+  "_sheet_url_note": "Google Sheet 班表網址。啟動時 loadConfig() 讀到後呼叫 trySheet()，以 TSV 匯出格式抓班表、由 parse_rules 解析出當期顧問名單並產生 chips。若抓取失敗或網址為空，fallback 回下方 consultants 硬編碼名單。",
   "sheet_url": "https://docs.google.com/spreadsheets/d/13SrI50MGBAJHcRqFXa2TT5EDki3EGd0YL5wAGKXzPuw/edit?gid=1534602765#gid=1534602765",
 
+  "_parse_rules_note": "trySheet() 解析班表 TSV 時用的規則。row_anchor 是當天上午第一節（用來鎖定要抓哪一列）；cn/en_pattern 是判斷中英文名字格式的正則；phone_prefix、email_domain 用於未在 consultants 硬編碼的顧問自動組出聯絡方式。",
   "parse_rules": {
     "row_anchor":   "12點半",
     "cn_pattern":   "^[\\u4e00-\\u9fff]{2,5}$",
@@ -43,6 +13,7 @@
     "email_domain": "@etalkingonline.com"
   },
 
+  "_consultants_note": "硬編碼顧問名單，作為班表抓取失敗時的 fallback，也用於覆寫班表自動生成的聯絡資訊（若 id 或英文名匹配）。id 用英文全名小寫。",
   "consultants": [
     {
       "id":     "wolf",

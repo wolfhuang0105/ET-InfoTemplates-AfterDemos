@@ -14,13 +14,13 @@
 
   "defaults": {
     "plan":             "大夢想家",
-    "freq":             3,
+    "freq":             1,
     "reg_fee":          2888,
     "contract_months":  24,
     "discount_pct":     80,
     "deadline_days":    7,
     "activity_label":   "兒童節",
-    "activity_amount":  40
+    "activity_amount":  5
   },
 
   "session_types": [

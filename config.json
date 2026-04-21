@@ -2,7 +2,7 @@
   "_note_overview": "v5.5.0 起 config 僅保留四組實際會被 JS 讀取的欄位：gas_url、sheet_url、parse_rules、consultants。個人偏好（三檔模式 / 聯絡資訊變動）一律改由 GAS 維護，config 只負責共用區 + HC fallback。",
 
   "_gas_url_note": "Google Apps Script 部署的 Web App URL，供顧問偏好雲端同步使用。留空則前端自動降級為純 LS（失去跨裝置同步能力，但功能不壞）。部署步驟見 gas_consultant_prefs.gs 檔頭。",
-  "gas_url": "",
+  "gas_url": "https://script.google.com/macros/s/AKfycbz7ydX6cc_K_y0U97H4_2Ho5nONOvJtVOxe5EqVZVukheTDsi3Nt1CUhIcfQjIv5Cvw/exec",
 
   "_sheet_url_note": "班表 Google Sheet URL。啟動時 loadConfig() 讀到後呼叫 trySheet() 以 TSV 格式抓取、由 parse_rules 解析出當期顧問名單產生 chips。抓取失敗或留空則 fallback 回下方 consultants 硬編碼名單。",
   "sheet_url": "https://docs.google.com/spreadsheets/d/13SrI50MGBAJHcRqFXa2TT5EDki3EGd0YL5wAGKXzPuw/edit?gid=1534602765#gid=1534602765",

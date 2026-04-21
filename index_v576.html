@@ -1,0 +1,3838 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ETalking Kids · 方案確認卡</title>
+<!-- ════════════════════════════════════════════════════
+     ETalking Kids · Demo Portal
+     ────────────────────────────────────────────────────
+     CURRENT:  v5.7.6  (2026-04-21)
+     ────────────────────────────────────────────────────
+     CHANGELOG:
+       v5.7.6  LINE 文字區塊全面優化：分隔線區段、加贈列按 slot 分行、標題新格式
+       v5.7.5  LINE 純文字改用括號「(原 X)」制（Mobile/Desktop 一致）
+       v5.7.4  LINE 純文字刪除線改用單波浪符號 ~...~
+       v5.7.3  title 下方加入版本 changelog 註解（單一真實來源）
+       v5.7.2  LINE 刪除線 U+2E3A / PPT 活動列雙行
+       v5.7.1  活動加贈雙模式（勾選 + 套用按鈕）
+       v5.7.0  活動加贈 toggle + 自訂名稱
+       v5.6.1  折扣優惠名稱開放編輯、其他停用
+       v5.6.0  啟動 Mask + 手動重抓 + 折扣刪除線
+       v5.5.1  顧問個人化設定 CTA + LINE 展開預覽
+       v5.5.0  三檔上限模式 + 顧問設定 Modal + GAS 同步
+     ════════════════════════════════════════════════════ -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dk:#042C53;--blue:#185FA5;--mid:#B5D4F4;--light:#E6F1FB;
+  --bg:#F7F6F3;--s2:#F0EFE9;--bd:#E0DFD8;
+  --text:#1A1A18;--t2:#5C5B57;--t3:#9C9B96;
+  --green:#3B6D11;--gl:#EAF3DE;
+  --amber:#BA7517;--al:#FAEEDA;
+  --orange:#B85A10;--ol:#FEF0E2;
+  --red:#A32D2D;--rl:#FCEBEB;
+  --r:8px;--rl2:12px;
+}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft JhengHei","PingFang TC",sans-serif;
+  font-size:14px;color:var(--text);background:#E8E7E0;line-height:1.5}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:278px;flex-shrink:0;background:#fff;border-right:.5px solid var(--bd);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-body{flex:1;overflow-y:auto;padding:15px 13px;display:flex;flex-direction:column;gap:14px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--dk);padding:0 18px;height:50px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.main-body{flex:1;overflow-y:auto;padding:18px;display:flex;gap:18px;align-items:flex-start;justify-content:center}
+.preview-col{display:flex;flex-direction:column;gap:12px;flex-shrink:0}
+.send-col{flex:1;min-width:265px;max-width:365px;display:flex;flex-direction:column;gap:10px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-dot{width:7px;height:7px;border-radius:50%;background:var(--mid)}
+.brand-name{font-size:13px;font-weight:600;color:#fff}
+.brand-tag{font-size:10px;color:var(--mid)}
+.top-actions{display:flex;gap:7px}
+.sec{display:flex;flex-direction:column;gap:7px}
+.sec-label{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.08em;text-transform:uppercase}
+.fl{font-size:11px;color:var(--t2);margin-bottom:2px}
+input[type=text],input[type=date],input[type=number],select,textarea{
+  width:100%;padding:6px 9px;border:.5px solid var(--bd);border-radius:var(--r);
+  font-size:12px;background:#fff;color:var(--text);outline:none;font-family:inherit;transition:border-color .12s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(24,95,165,.1)}
+input[type=number]{width:64px}
+.row2{display:flex;gap:8px;align-items:center}
+.hint{font-size:11px;color:var(--t3)}
+.hint.warn{color:var(--red)}
+.chk-row{display:flex;align-items:flex-start;gap:8px;cursor:pointer;padding:2px 0}
+.chk-box{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .12s;background:#fff}
+.chk-box.on{background:var(--blue);border-color:var(--blue)}
+.chk-tick{color:#fff;font-size:10px;font-weight:700;opacity:0;transition:opacity .1s}
+.chk-box.on .chk-tick{opacity:1}
+.chk-main{font-size:12px;color:var(--text)}
+.chk-sub{font-size:11px;color:var(--t3)}
+.pill-row{display:flex;gap:5px;padding-left:23px}
+.pill{font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;border:.5px solid var(--bd);background:transparent;color:var(--t2);transition:all .12s;font-family:inherit}
+.pill.on{background:var(--light);color:var(--blue);border-color:var(--mid)}
+.pill.on.on-primary{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:700}
+.conv-in{width:58px;text-align:center;background:#fff;font-size:12px;padding:2px 4px;border:.5px solid var(--bd);border-radius:4px;-moz-appearance:textfield}
+.conv-in::-webkit-outer-spin-button,.conv-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.sub-panel{padding-left:0;display:flex;flex-direction:column;gap:6px}
+.biz-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.biz-bar{flex:1;height:5px;border-radius:3px;background:var(--bd);overflow:hidden;min-width:60px}
+.biz-bar-fill{height:100%;background:var(--blue);transition:width .2s}
+.chip{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--gl);color:var(--green);font-weight:600;white-space:nowrap}
+/* ── 活動合計算式排版（完整算式版用） ── */
+.act-expr{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px 8px;width:100%;line-height:1.8}
+.act-chip{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.act-chip-company{background:#F5C080;color:#633806}
+.act-chip-bargain{background:#C0DD97;color:#27500A}
+.act-num{font-size:12.5px;color:#2C2C2A;font-weight:500;white-space:nowrap}
+.act-op{font-size:13px;color:#9C9B96;margin:0 2px}
+.act-divider{flex-basis:100%;height:0;border-top:.5px dashed #F5C080;margin:4px 0 2px}
+.act-sum-eq{font-size:13px;color:#B85A10}
+.act-sum-label{font-size:11px;color:#7A3A08;letter-spacing:.5px}
+.act-sum-val{font-size:15px;font-weight:700;color:#7A3A08}
+.chip.zero{background:var(--rl);color:var(--red)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 14px;font-size:12px;font-weight:500;border-radius:var(--r);cursor:pointer;border:none;font-family:inherit;transition:all .12s;white-space:nowrap}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:#0F4A8A}
+.btn-outline{background:#fff;color:var(--text);border:.5px solid var(--bd)}
+.btn-outline:hover{background:var(--bg);border-color:var(--blue);color:var(--blue)}
+.btn-ghost{background:transparent;color:var(--mid);border:.5px solid rgba(181,212,244,.3)}
+.btn-settings{background:linear-gradient(135deg,#FF8A3D 0%,#FF6B1A 100%);color:#fff;font-weight:700;border:none;box-shadow:0 2px 6px rgba(255,107,26,.35);letter-spacing:.03em}
+.btn-settings:hover{background:linear-gradient(135deg,#FF7A25 0%,#E85B10 100%);box-shadow:0 3px 10px rgba(255,107,26,.5);transform:translateY(-1px)}
+.btn-settings:active{transform:translateY(0)}
+.btn-ghost:hover{background:rgba(181,212,244,.1)}
+.btn-sm{padding:6px 11px;font-size:11px}
+.ch-card{background:#fff;border:.5px solid var(--bd);border-radius:var(--rl2);overflow:hidden}
+.ch-head{padding:10px 13px;border-bottom:.5px solid var(--bd);display:flex;align-items:center;gap:9px}
+.ch-icon{width:27px;height:27px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ch-title{font-size:12px;font-weight:600;color:var(--text)}
+.ch-desc{font-size:10px;color:var(--t3);margin-top:1px}
+.ch-body{padding:10px 13px;display:flex;flex-direction:column;gap:7px}
+.ch-prev{background:var(--bg);border-radius:var(--r);padding:8px 10px;font-size:11.5px;color:var(--t2);line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:90px;overflow-y:auto}
+.ch-prev.sms{font-size:13px;max-height:56px}
+.ch-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--dk);color:#fff;padding:7px 16px;border-radius:20px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:999}
+#toast.show{opacity:1}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:var(--rl2);width:580px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-head{padding:13px 17px;border-bottom:.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-title{font-size:14px;font-weight:600}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--t3);padding:2px 6px;line-height:1}
+.modal-body{flex:1;overflow-y:auto;padding:15px 17px;display:flex;flex-direction:column;gap:11px}
+.modal-foot{padding:11px 17px;border-top:.5px solid var(--bd);display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.mlabel{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.esubj{padding:7px 10px;border:.5px solid var(--bd);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--bg)}
+.ebody{padding:9px 10px;border:.5px solid var(--bd);border-radius:var(--r);font-size:11.5px;color:var(--t2);line-height:1.7;white-space:pre-wrap;background:var(--bg);min-height:260px;overflow-y:auto;font-family:monospace}
+.crmbody{padding:9px 10px;border:.5px solid var(--bd);border-radius:var(--r);font-size:11.5px;color:var(--t2);line-height:1.7;white-space:pre-wrap;background:var(--bg);min-height:300px;overflow-y:auto;font-family:monospace}
+#card{width:420px;background:var(--bg);color:var(--text);border-radius:var(--rl2);overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.12);flex-shrink:0;font-family:-apple-system,"Microsoft JhengHei","PingFang TC",sans-serif}
+.c-head{background:var(--dk);padding:17px 22px 13px}
+.c-eyebrow{font-size:10px;color:var(--mid);letter-spacing:.1em;margin-bottom:4px}
+.c-name{font-size:20px;font-weight:700;color:#fff;line-height:1.25}
+.c-sub{font-size:11px;color:var(--mid);margin-top:4px}
+.c-hero{background:var(--blue);padding:13px 22px;display:flex;justify-content:space-between;align-items:flex-end}
+.hn{font-size:23px;font-weight:700;color:#fff}
+.hf{font-size:12px;color:var(--mid);margin-top:3px}
+.rpv{font-size:25px;font-weight:700;color:#fff}
+.c-ey2{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.08em;margin-bottom:7px}
+.bonus-item{display:flex;align-items:center;gap:9px;padding:6px 11px;border-radius:var(--r);margin-bottom:5px;border-width:1px;border-style:solid;position:relative}
+.bonus-item[data-frozen="1"]{box-shadow:inset 0 0 0 1px rgba(24,95,165,.35)}
+.bonus-reset{position:absolute;top:3px;right:5px;font-size:10px;padding:1px 6px;border-radius:10px;border:.5px solid var(--bd);background:rgba(255,255,255,.85);color:var(--t3);cursor:pointer;opacity:0;transition:opacity .15s;font-family:inherit;line-height:1.3;z-index:2}
+.bonus-item:hover .bonus-reset,.bonus-item[data-frozen="1"] .bonus-reset{opacity:1}
+.bonus-reset:hover{color:var(--blue);border-color:var(--mid)}
+.bonus-item[data-frozen="1"] .bonus-reset{color:var(--blue);background:var(--light);border-color:var(--mid)}
+/* ── 初始載入 Mask ── */
+#boot-mask{position:fixed;inset:0;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);z-index:999;display:flex;align-items:center;justify-content:center;transition:opacity .35s}
+#boot-mask.fade-out{opacity:0;pointer-events:none}
+#boot-mask .boot-box{width:340px;max-width:92vw;padding:26px 28px;background:#fff;border:.5px solid var(--bd);border-radius:12px;box-shadow:0 6px 24px rgba(4,44,83,.08)}
+#boot-mask .boot-brand{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+#boot-mask .boot-dot{width:10px;height:10px;border-radius:50%;background:var(--blue)}
+#boot-mask .boot-title{font-size:14px;font-weight:700;color:var(--dk);letter-spacing:.02em}
+#boot-mask .boot-sub{font-size:11px;color:var(--t3);margin-bottom:14px}
+#boot-mask .boot-stages{display:flex;flex-direction:column;gap:8px}
+#boot-mask .boot-stage{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t2);line-height:1.5}
+#boot-mask .boot-stage .s-icon{width:16px;flex-shrink:0;text-align:center}
+#boot-mask .boot-stage.pending .s-icon{animation:spin 1.2s linear infinite}
+#boot-mask .boot-stage.ok{color:var(--blue)}
+#boot-mask .boot-stage.warn{color:var(--amber)}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ── 重抓班表小按鈕（左下 cfg-st 內）── */
+.cfg-refresh-btn{border:none;background:transparent;color:var(--t3);cursor:pointer;font-size:11px;padding:0 3px;margin-left:auto;border-radius:4px;line-height:1;transition:all .15s}
+.cfg-refresh-btn:hover{color:var(--blue);background:var(--light)}
+.cfg-refresh-btn:disabled{opacity:.4;cursor:wait}
+.cfg-refresh-btn.spinning{animation:spin 1s linear infinite;pointer-events:none}
+/* ── Toggle 開關（區塊頭使用）── */
+.sec-toggle{position:relative;display:inline-block;width:34px;height:18px;cursor:pointer;flex-shrink:0}
+.sec-toggle input{opacity:0;width:0;height:0;position:absolute}
+.sec-toggle .slider{position:absolute;inset:0;background:#CCC;border-radius:10px;transition:.2s}
+.sec-toggle .slider:before{content:"";position:absolute;height:14px;width:14px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sec-toggle input:checked + .slider{background:var(--blue)}
+.sec-toggle input:checked + .slider:before{transform:translateX(16px)}
+/* ── 公司活動遮罩區 ── */
+.company-block{transition:opacity .2s}
+.company-block.disabled{opacity:.4;pointer-events:none;filter:grayscale(.3)}
+/* ── 恢復預設連結 ── */
+.reset-default-btn{border:none;background:transparent;color:var(--t3);cursor:pointer;font-size:10.5px;padding:1px 5px;border-radius:6px;transition:all .15s;letter-spacing:.02em}
+.reset-default-btn:hover{color:var(--blue);background:var(--light)}
+/* ── 加碼名稱雙模式 ── */
+.custom-label-header{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:12px;color:var(--t2);cursor:pointer;user-select:none}
+.custom-label-header input[type=checkbox]{cursor:pointer}
+.custom-label-box{padding:7px 8px;background:var(--s2);border:.5px solid var(--bd);border-radius:var(--r);margin-bottom:6px;transition:opacity .2s}
+.custom-label-box.dimmed .custom-label-body{opacity:.45;pointer-events:none}
+.custom-label-body{display:flex;flex-direction:column;gap:5px;margin-top:5px}
+.custom-label-input-row{display:flex;gap:5px;align-items:center}
+.custom-label-input-row input[type=text]{flex:1;font-size:12px;padding:4px 8px;transition:border-color .15s,box-shadow .15s}
+.custom-label-input-row input[type=text].dirty{border-color:#F5A623;box-shadow:0 0 0 2px rgba(245,166,35,.15)}
+.custom-label-input-row input[type=text]:disabled{background:var(--s2);color:var(--t3);cursor:not-allowed}
+.btn-apply{padding:4px 12px;font-size:11px;border:none;border-radius:6px;background:var(--bd);color:var(--t3);cursor:pointer;font-weight:600;letter-spacing:.04em;transition:all .15s;font-family:inherit;white-space:nowrap;flex-shrink:0}
+.btn-apply.dirty{background:var(--blue);color:#fff;box-shadow:0 2px 6px rgba(24,95,165,.35);animation:pulseApply 1.6s ease-in-out infinite}
+.btn-apply.dirty:hover{background:#0F4A8A;transform:translateY(-1px)}
+.btn-apply:disabled{opacity:.4;cursor:not-allowed;animation:none}
+@keyframes pulseApply{0%,100%{box-shadow:0 2px 6px rgba(24,95,165,.35)}50%{box-shadow:0 2px 12px rgba(24,95,165,.55)}}
+.custom-label-hint{font-size:10px;color:#F5A623;font-style:italic;margin-top:2px;min-height:12px;line-height:1.4}
+.c-deadline{padding:11px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bd)}
+.dl-badge{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;color:#fff}
+.c-steps{padding:12px 22px;border-bottom:1px solid var(--bd)}
+.step-row{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.step-num{width:19px;height:19px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.c-foot{padding:11px 22px;background:var(--s2);display:flex;justify-content:space-between;align-items:flex-start}
+@media(max-width:860px){
+  .app{flex-direction:column;height:auto}
+  .sidebar{width:100%;height:auto;border-right:none;border-bottom:.5px solid var(--bd)}
+  .main{height:auto}
+  .main-body{flex-direction:column;align-items:center;padding:14px}
+  #card{width:100%;max-width:420px}
+  .send-col{width:100%;max-width:420px}
+}
+/* ── Inline-editable card text ── */
+.ce,.ce-dk,.ce-lt{outline:none;cursor:text;border-radius:3px;transition:background .15s;white-space:pre-wrap}
+.ce:hover{background:rgba(255,255,255,.15)}
+.ce:focus{background:rgba(255,255,255,.22);box-shadow:0 0 0 1.5px rgba(181,212,244,.6)}
+.ce-dk:hover{background:rgba(0,0,0,.06)}
+.ce-dk:focus{background:rgba(0,0,0,.09);box-shadow:0 0 0 1.5px rgba(24,95,165,.4)}
+.ce-lt:hover{background:rgba(24,95,165,.06)}
+.ce-lt:focus{background:rgba(24,95,165,.1);box-shadow:0 0 0 1.5px rgba(24,95,165,.3)}
+.edit-tip{font-size:10px;color:var(--t3);display:flex;align-items:center;gap:5px}
+.edit-tip-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);opacity:.6}
+
+/* ── 浮動文字格式工具列 ── */
+#fmt-bar{
+  position:fixed;z-index:500;background:#1C2030;border-radius:8px;
+  padding:5px 7px;display:none;gap:3px;align-items:center;
+  box-shadow:0 6px 24px rgba(0,0,0,.45);pointer-events:auto;
+  border:.5px solid rgba(255,255,255,.1);
+}
+#fmt-bar.show{display:flex}
+.fmt-btn{
+  width:26px;height:26px;border-radius:5px;border:none;background:transparent;
+  color:#dde;font-size:11px;font-weight:800;cursor:pointer;display:flex;
+  align-items:center;justify-content:center;transition:background .1s;padding:0;font-family:serif;
+}
+.fmt-btn:hover{background:rgba(255,255,255,.12)}
+.fmt-btn.on{background:rgba(255,255,255,.22);color:#fff}
+.fmt-sep{width:.5px;height:18px;background:rgba(255,255,255,.18);flex-shrink:0;margin:0 2px}
+.fmt-color{
+  width:17px;height:17px;border-radius:3px;cursor:pointer;flex-shrink:0;
+  border:1.5px solid rgba(255,255,255,.25);transition:transform .1s;
+}
+.fmt-color:hover{transform:scale(1.2)}
+.fmt-color.on{border-color:#fff;box-shadow:0 0 0 1.5px rgba(255,255,255,.6)}
+.fmt-sz{
+  font-size:9px;padding:0 5px;height:22px;border-radius:4px;min-width:22px;
+  background:rgba(255,255,255,.08);color:#ccd;border:.5px solid rgba(255,255,255,.15);
+  cursor:pointer;font-family:inherit;transition:background .1s;white-space:nowrap;
+}
+.fmt-sz:hover,.fmt-sz.on{background:rgba(255,255,255,.24);color:#fff}
+
+/* ── 區塊調色系統 ── */
+.s-paint-host{position:relative}
+.sec-paint-btn{
+  position:absolute;top:6px;right:6px;z-index:20;
+  width:24px;height:24px;border-radius:6px;font-size:13px;
+  cursor:pointer;display:none;align-items:center;justify-content:center;
+  transition:all .12s;
+}
+.sec-paint-btn.light-handle{background:rgba(0,0,0,.1);border:.5px solid rgba(0,0,0,.18)}
+.sec-paint-btn.light-handle:hover{background:rgba(0,0,0,.2)}
+.sec-paint-btn.dark-handle{background:rgba(255,255,255,.18);border:.5px solid rgba(255,255,255,.3)}
+.sec-paint-btn.dark-handle:hover{background:rgba(255,255,255,.3)}
+.s-paint-host:hover .sec-paint-btn{display:flex}
+#paint-pop{
+  position:fixed;z-index:501;background:#fff;border-radius:10px;
+  box-shadow:0 10px 36px rgba(0,0,0,.2);padding:13px 15px;
+  width:224px;display:none;flex-direction:column;gap:9px;
+  border:.5px solid var(--bd);
+}
+#paint-pop.show{display:flex}
+.pp-title{font-size:11px;font-weight:700;color:var(--t1);display:flex;align-items:center;justify-content:space-between}
+.pp-close{background:none;border:none;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;padding:0 2px}
+.pp-lbl{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.pp-sw{display:flex;flex-wrap:wrap;gap:4px}
+.pp-swatch{
+  width:20px;height:20px;border-radius:4px;cursor:pointer;flex-shrink:0;
+  border:1.5px solid rgba(0,0,0,.1);transition:transform .1s;
+}
+.pp-swatch:hover{transform:scale(1.18)}
+.pp-swatch.on{border-color:var(--blue);box-shadow:0 0 0 1.5px var(--blue)}
+.pp-swatch.trans{
+  background:repeating-conic-gradient(#ccc 0% 25%,#fff 0% 50%) 0 / 8px 8px !important;
+}
+.pp-row{display:flex;gap:6px;align-items:center}
+.pp-custom{height:24px;border:.5px solid var(--bd);border-radius:4px;cursor:pointer;padding:0 2px;width:34px;flex-shrink:0}
+.pp-rsm{font-size:10px;padding:3px 8px;border-radius:5px;background:var(--bg);border:.5px solid var(--bd);cursor:pointer;color:var(--t2);font-family:inherit;transition:all .12s;white-space:nowrap}
+.pp-rsm:hover{background:var(--rl);color:var(--red);border-color:#FECACA}
+.pp-divider{height:.5px;background:var(--bd);margin:2px 0}
+
+
+
+/* ── 學員基本資料卡 ── */
+#c-student{width:420px;background:#fff;border-radius:var(--rl2);overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08);flex-shrink:0;border:1.5px solid var(--bd);transition:border-color .2s}
+#c-student.export-on{border-color:var(--blue);box-shadow:0 4px 24px rgba(24,95,165,.18)}
+.sc-head{background:var(--dk);padding:13px 18px;display:flex;align-items:center;justify-content:space-between}
+.sc-head-left .sc-eyebrow{font-size:9px;color:var(--mid);letter-spacing:.12em;margin-bottom:3px}
+.sc-head-left .sc-title{font-size:15px;font-weight:700;color:#fff}
+.sc-export-toggle{display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;padding:5px 10px;border-radius:20px;border:.5px solid rgba(181,212,244,.35);transition:all .15s;background:rgba(181,212,244,.08)}
+.sc-export-toggle:hover{background:rgba(181,212,244,.18)}
+.sc-toggle-track{width:30px;height:16px;border-radius:8px;background:rgba(181,212,244,.3);position:relative;transition:background .2s;flex-shrink:0}
+.sc-toggle-track.on{background:var(--blue)}
+.sc-toggle-knob{position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sc-toggle-track.on .sc-toggle-knob{transform:translateX(14px)}
+.sc-toggle-label{font-size:10px;color:var(--mid);font-weight:500;white-space:nowrap}
+.sc-export-toggle.on .sc-toggle-label{color:#90C8FF}
+.sc-body{padding:14px 18px;display:flex;flex-direction:column;gap:0}
+.sc-field{display:flex;align-items:baseline;gap:0;border-bottom:.5px solid var(--bg);padding:7px 0;min-height:34px}
+.sc-field:last-child{border-bottom:none}
+.sc-label{font-size:11px;color:var(--t3);white-space:nowrap;width:80px;flex-shrink:0;padding-top:1px}
+.sc-hint{font-size:10px;color:var(--t3);margin-left:4px;white-space:nowrap}
+.sc-val{flex:1;font-size:12px;color:var(--text);outline:none;border:none;background:transparent;font-family:inherit;padding:1px 4px;border-radius:3px;transition:background .12s;min-width:0}
+.sc-val:focus{background:rgba(24,95,165,.06)}
+.sc-val::placeholder{color:var(--t3);font-size:11px}
+.sc-pills{display:flex;flex-wrap:wrap;gap:5px;flex:1;padding-left:4px}
+.sc-pill{font-size:11px;padding:2px 9px;border-radius:12px;cursor:pointer;border:.5px solid var(--bd);background:transparent;color:var(--t2);transition:all .1s;font-family:inherit}
+.sc-pill.on{background:var(--light);color:var(--blue);border-color:var(--mid)}
+.sc-export-badge{display:none;font-size:10px;padding:2px 8px;border-radius:10px;background:var(--light);color:var(--blue);border:.5px solid var(--mid);white-space:nowrap}
+#c-student.export-on .sc-export-badge{display:inline-flex;align-items:center;gap:4px}
+/* ── 隱藏此欄按鈕（顧問端控制欄位是否匯出） ── */
+.sc-hide-btn{font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;border:.5px solid var(--bd);background:transparent;color:var(--t3);transition:all .12s;font-family:inherit;margin-left:auto;flex-shrink:0;white-space:nowrap}
+.sc-hide-btn:hover{background:var(--rl);border-color:#F09595;color:var(--red)}
+.sc-field.sc-hidden{opacity:.4}
+.sc-field.sc-hidden .sc-val,.sc-field.sc-hidden .sc-pill,.sc-field.sc-hidden .sc-date-btn,.sc-field.sc-hidden .sc-pills{pointer-events:none;text-decoration:line-through;text-decoration-color:var(--red)}
+.sc-field.sc-hidden .sc-label::before{content:"🚫 ";font-size:10px}
+.sc-field.sc-hidden .sc-hide-btn{background:var(--rl);border-color:#F09595;color:var(--red)}
+.sc-field.sc-hidden .sc-hide-btn::after{content:" (已隱藏)"}
+/* ── 空白模板輸出 bar ── */
+.sc-blank-bar{padding:10px 18px;border-top:.5px solid var(--bd);background:var(--s2);display:flex;flex-direction:column;gap:8px}
+.sc-blank-bar-head{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.08em;text-transform:uppercase}
+.sc-blank-actions{display:flex;gap:6px;flex-wrap:wrap}
+.sc-blank-btn{font-size:11px;padding:5px 11px;border-radius:var(--r);border:.5px solid var(--bd);background:#fff;color:var(--t2);cursor:pointer;font-family:inherit;transition:all .12s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.sc-blank-btn:hover{background:var(--light);color:var(--blue);border-color:var(--mid)}
+.sc-blank-append-row{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:4px 0;user-select:none}
+.sc-blank-append-label{font-size:11px;color:var(--t2)}
+.sc-blank-append-label.on{color:var(--blue);font-weight:600}
+.sc-date-btn{
+  flex:1;padding:5px 8px;border:.5px solid var(--bd);border-radius:var(--r);
+  font-size:12px;background:#fff;color:var(--text);cursor:pointer;
+  font-family:inherit;text-align:left;display:flex;align-items:center;
+  justify-content:space-between;transition:border-color .12s;min-width:0;
+}
+.sc-date-btn:hover{border-color:var(--blue)}
+.sc-date-btn .placeholder{color:var(--t3)}
+#cal-pop{
+  position:fixed;z-index:600;background:#fff;border-radius:10px;
+  box-shadow:0 10px 36px rgba(0,0,0,.22);border:.5px solid var(--bd);
+  width:266px;display:none;flex-direction:column;
+}
+#cal-pop.show{display:flex}
+.cal-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 12px;background:var(--dk);
+  border-radius:9px 9px 0 0;
+}
+.cal-nav-btn{
+  background:none;border:none;color:var(--mid);font-size:18px;
+  cursor:pointer;padding:0 7px;line-height:1;transition:background .1s;
+  border-radius:4px;
+}
+.cal-nav-btn:hover{background:rgba(255,255,255,.18)}
+.cal-title{font-size:12px;font-weight:700;color:#fff;letter-spacing:.02em}
+.cal-wdays{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  padding:4px 8px 0;border-bottom:.5px solid var(--bd);
+  background:var(--s2);
+}
+.cal-wd{
+  font-size:10px;font-weight:600;color:var(--t3);
+  text-align:center;padding:5px 0 4px;
+}
+.cal-wd:first-child{color:#c0392b}
+#cal-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  padding:6px 8px 4px;gap:2px;
+}
+.cal-day{
+  height:32px;display:flex;align-items:center;justify-content:center;
+  font-size:11.5px;color:#1A1A18;
+  border-radius:5px;cursor:pointer;
+  transition:background .1s;position:relative;user-select:none;
+}
+.cal-day:hover:not(.blocked):not(.other-month){background:var(--light);color:var(--blue)}
+.cal-day.other-month{color:#C8C7C2;cursor:default}
+.cal-day.today{font-weight:700;color:var(--blue)}
+.cal-day.today::after{
+  content:"";position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
+  width:4px;height:4px;border-radius:50%;background:var(--blue);
+}
+.cal-day.selected{background:var(--blue)!important;color:#fff!important;font-weight:700}
+.cal-day.selected::after{display:none}
+.cal-day.blocked{
+  background:#FEF2F2;color:#c0392b;cursor:not-allowed;
+  position:relative;overflow:hidden;
+}
+.cal-day.blocked::before{
+  content:"";position:absolute;left:4px;right:4px;top:50%;
+  height:1.5px;background:#e74c3c;border-radius:1px;
+  transform:translateY(-50%);
+}
+.cal-day.blocked:hover{background:#FCDDC7}
+.cal-foot{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:7px 10px 9px;border-top:.5px solid var(--bd);background:var(--bg);
+  border-radius:0 0 9px 9px;
+}
+.cal-foot-btn{
+  font-size:10px;padding:4px 12px;border-radius:5px;cursor:pointer;
+  border:.5px solid var(--bd);background:#fff;color:var(--t2);
+  font-family:inherit;transition:all .12s;
+}
+.cal-foot-btn:hover{background:var(--light);color:var(--blue);border-color:var(--mid)}
+.cal-holiday-tip{
+  position:fixed;z-index:700;background:#A32D2D;color:#fff;
+  font-size:10px;padding:5px 11px;border-radius:6px;pointer-events:none;
+  opacity:0;transition:opacity .15s;white-space:nowrap;
+  box-shadow:0 2px 8px rgba(163,45,45,.3);
+}
+.cal-holiday-tip.show{opacity:1}
+@keyframes calShake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-5px)}
+  40%{transform:translateX(5px)}
+  60%{transform:translateX(-3px)}
+  80%{transform:translateX(3px)}
+}</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar"><div class="sidebar-body">
+
+  <div class="sec">
+    <div class="sec-label">學員</div>
+    <div><div class="fl">學員姓名</div><input type="text" id="studentName" placeholder="例：陳小明" oninput="render()"></div>
+    <div><div class="fl">稱呼家長為</div><input type="text" id="parentName" placeholder="例：陳媽媽" oninput="render()"></div>
+    <div><div class="fl">本次課程類型</div>
+      <select id="sessionType" onchange="render()" style="width:100%">
+        <option>體驗</option>
+        <option>檢測</option>
+        <option>Demo</option>
+        <option>說明</option>
+        <option value="__custom__">自訂...</option>
+      </select>
+      <input type="text" id="sessionCustom" placeholder="輸入自訂類型" oninput="render()"
+        style="display:none;margin-top:5px">
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">課程</div>
+    <div><div class="fl">方案</div>
+      <select id="planSel" onchange="render()">
+        <option selected>輕鬆學</option><option>進階學</option><option>小夢想家</option><option>大夢想家</option>
+      </select></div>
+    <div><div class="fl">每週頻率</div>
+      <div class="pill-row" id="freqPills" style="padding-left:0;gap:4px">
+        <button type="button" class="pill on" data-freq="1" onclick="toggleFreq(1)">1</button>
+        <button type="button" class="pill on on-primary" data-freq="2" onclick="toggleFreq(2)">2</button>
+        <button type="button" class="pill" data-freq="3" onclick="toggleFreq(3)">3</button>
+        <button type="button" class="pill" data-freq="4" onclick="toggleFreq(4)">4</button>
+        <button type="button" class="pill" data-freq="5" onclick="toggleFreq(5)">5</button>
+        <span id="freqLabel" style="font-size:11px;color:var(--t3);margin-left:4px;align-self:center">每週 1~2 堂</span>
+      </div>
+    </div>
+    <div class="hint" id="priceHint"></div>
+  </div>
+
+  <div class="sec" id="discount-sec" style="position:relative" title="折扣幅度現階段停用，僅開放優惠名稱編輯">
+    <div class="sec-label" style="display:flex;align-items:center;gap:6px">
+      折扣方案
+      <span style="font-size:9px;padding:1px 6px;background:var(--s2);border:.5px solid var(--bd);border-radius:8px;color:var(--t3);font-weight:500;letter-spacing:.02em">🚫 折扣幅度停用</span>
+    </div>
+
+    <!-- ── 上半：禁用區（灰階 + 不可點）── -->
+    <div style="opacity:.45;pointer-events:none">
+      <div class="chk-row">
+        <div class="chk-box on" id="chk-discount"><span class="chk-tick">✓</span></div>
+        <div><div class="chk-main">套用折扣</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;padding-left:0;margin-top:5px">
+        <div class="row2">
+          <div class="fl" style="margin:0;white-space:nowrap">折扣幅度</div>
+          <input type="number" id="discountPct" value="80" min="50" max="99" step="1" disabled>
+          <span style="font-size:12px;color:var(--t2)">% （<span id="discountFold">8折</span>）</span>
+        </div>
+        <div class="hint" id="discountHint"></div>
+      </div>
+    </div>
+
+    <!-- ── 下半：開放編輯（折扣話術命名）── -->
+    <div id="discount-panel" style="display:flex;flex-direction:column;gap:4px;padding-left:0;margin-top:10px;padding-top:10px;border-top:.5px dashed var(--bd)">
+      <div style="font-size:10px;color:var(--t3);letter-spacing:.02em;display:flex;align-items:center;gap:5px">
+        <span>✏️ 折扣話術命名</span>
+        <span style="font-size:9px;padding:1px 5px;background:var(--light);color:var(--blue);border-radius:6px">可編輯</span>
+      </div>
+      <div><div class="fl" style="margin-top:3px">優惠名稱</div>
+        <select id="discountLabel" onchange="onLabelChg()" style="width:100%">
+          <option>體驗後當次優惠</option><option>10週年慶</option><option>兒童節促銷</option>
+          <option>暑期限定優惠</option><option>開學特惠</option><option>學期末優惠</option>
+          <option>家長回饋方案</option><option>週年慶限定</option><option>聖誕新年特惠</option>
+          <option>自訂...</option>
+        </select>
+        <input type="text" id="discountCustom" placeholder="輸入自訂名稱" oninput="render()" style="display:none;margin-top:5px">
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <!-- ═══ 標題列：名稱 + 右側 toggle 開關 ═══ -->
+    <div class="sec-label" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <span style="display:flex;align-items:center;gap:6px">
+        活動加贈
+        <button type="button" class="reset-default-btn" id="activityResetBtn" onclick="resetActivityDefaults()" title="恢復預設：兒童節、關閉開關">🔄 恢復預設</button>
+      </span>
+      <label class="sec-toggle" title="啟用公司活動加贈">
+        <input type="checkbox" id="toggle-childrensDay" onchange="toggleCompanyActivity(this.checked)" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- ═══ 公司活動區（受遮罩控制）═══ -->
+    <div class="company-block" id="company-block">
+      <!-- ═══ 加碼名稱區（勾選 + 下拉 + input + 套用）═══ -->
+      <div class="custom-label-box dimmed" id="custom-label-box">
+        <label class="custom-label-header">
+          <input type="checkbox" id="useCustomLabel" onchange="toggleUseCustomLabel(this.checked)">
+          <span>常見活動名稱</span>
+        </label>
+        <div class="custom-label-body">
+          <select id="activityLabel" onchange="onActivityLabelChg()" style="font-size:12px">
+            <option value="兒童節">兒童節</option>
+            <option value="開春新氣象">開春新氣象</option>
+            <option value="春季開學加碼">春季開學加碼</option>
+            <option value="母親節加碼">母親節加碼</option>
+            <option value="畢業季限定">畢業季限定</option>
+            <option value="暑期限定">暑期限定</option>
+            <option value="開學加碼">開學加碼</option>
+            <option value="中秋加碼">中秋加碼</option>
+            <option value="週年慶限定">週年慶限定</option>
+            <option value="雙11加碼">雙11加碼</option>
+            <option value="聖誕新年加碼">聖誕新年加碼</option>
+            <option value="__custom__">自訂...</option>
+          </select>
+          <div class="custom-label-input-row">
+            <input type="text" id="activityLabelCustom" placeholder="可編輯名稱（10 字內）" maxlength="10" oninput="onActivityCustomInput()">
+            <button type="button" class="btn-apply" id="activityApplyBtn" onclick="applyActivityLabel()">套用</button>
+          </div>
+          <div class="custom-label-hint" id="activityApplyHint"></div>
+        </div>
+      </div>
+
+      <!-- 公司活動 input -->
+      <div style="display:flex;align-items:center;gap:6px;padding-left:0" id="actAmtRow">
+        <div class="fl" style="margin:0;white-space:nowrap">公司活動</div>
+        <input type="number" id="actAmt" value="15" min="5" max="15" step="5" oninput="guardActAmt()" style="width:60px">
+        <span style="font-size:11px;color:var(--t3)" id="actAmtUnit">堂魔法屋</span>
+      </div>
+      <div class="pill-row" id="giftPills">
+        <button class="pill on" id="pill-magic" onclick="setGift('magic')">魔法屋</button>
+        <button class="pill" id="pill-elec" onclick="setGift('elec')">選修課</button>
+      </div>
+
+      <!-- 雙向換算工具（5:1） -->
+      <div style="margin-top:4px;padding:7px 8px;background:var(--s2);border:.5px solid var(--bd);border-radius:var(--r);font-size:11px">
+        <div style="color:var(--t3);margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">
+          <span>🧮 換算工具</span><span style="font-size:10px">1 選修 ＝ 5 魔法屋</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">
+          <span style="width:44px;color:var(--t2)">選修</span>
+          <button type="button" class="pill" style="padding:2px 8px;font-size:13px;line-height:1" onclick="convCalc('elec',-1)">−</button>
+          <input type="number" id="convElec" class="conv-in" value="3" readonly>
+          <button type="button" class="pill" style="padding:2px 8px;font-size:13px;line-height:1" onclick="convCalc('elec',1)">＋</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;margin-bottom:6px">
+          <span style="width:44px;color:var(--t2)">魔法屋</span>
+          <button type="button" class="pill" style="padding:2px 8px;font-size:13px;line-height:1" onclick="convCalc('magic',-5)">−</button>
+          <input type="number" id="convMagic" class="conv-in" value="15" readonly>
+          <button type="button" class="pill" style="padding:2px 8px;font-size:13px;line-height:1" onclick="convCalc('magic',5)">＋</button>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="applyConvToActivity()"
+          style="width:100%;font-size:11px;padding:4px 8px;border-color:var(--mid);color:var(--blue)">
+          ↓ 一鍵套用到公司活動
+        </button>
+      </div>
+    </div>
+    <!-- ═══ /公司活動區 ═══ -->
+
+    <!-- ═══ 顧問爭取（獨立、不受遮罩）═══ -->
+    <div style="display:flex;align-items:center;gap:6px;padding-left:0;margin-top:6px">
+      <div class="fl" style="margin:0;white-space:nowrap">顧問爭取</div>
+      <input type="number" id="bargainAmt" value="0" min="0" step="1" onchange="guardBargain()" style="width:60px">
+      <span style="font-size:11px;color:var(--t3)" id="bargainUnit">堂魔法屋</span>
+    </div>
+    <div class="hint" id="bargainHint" style="display:none;margin-left:0;font-size:11px"></div>
+
+    <!-- ── 上限檢查模式（三檔） ── -->
+    <div id="limitModeBox" style="margin-top:6px;padding:7px 8px;background:var(--s2);border:.5px solid var(--bd);border-radius:var(--r);font-size:11px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
+        <span style="color:var(--t3);font-weight:600;letter-spacing:.03em">⚙ 上限檢查模式</span>
+        <button type="button" onclick="openSettingsModal()" title="顧問設定"
+          style="border:none;background:transparent;color:var(--blue);cursor:pointer;font-size:11px;padding:1px 4px">ⓘ 設定</button>
+      </div>
+      <div style="display:flex;gap:3px" id="limitModePills">
+        <button type="button" class="pill" data-mode="conservative" onclick="setLimitMode(&#39;conservative&#39;)" style="flex:1;padding:3px 4px;font-size:10.5px;white-space:nowrap">🛡 保守</button>
+        <button type="button" class="pill" data-mode="reminder"     onclick="setLimitMode(&#39;reminder&#39;)"     style="flex:1;padding:3px 4px;font-size:10.5px;white-space:nowrap">⚠ 提醒</button>
+        <button type="button" class="pill" data-mode="free"         onclick="setLimitMode(&#39;free&#39;)"         style="flex:1;padding:3px 4px;font-size:10.5px;white-space:nowrap">🚀 自由</button>
+      </div>
+      <div id="limitModeDesc" style="margin-top:5px;font-size:10px;color:var(--t3);line-height:1.5">超過授權上限 → 彈窗阻擋（需按確定）</div>
+    </div>
+
+    <div class="chk-row" onclick="tog('lumpSum')">
+      <div class="chk-box on" id="chk-lumpSum"><span class="chk-tick">✓</span></div>
+      <div><div class="chk-main">一次付清加贈</div><div class="chk-sub" id="sub-lump"></div></div>
+    </div>
+    <div class="chk-row" onclick="tog('regFee')">
+      <div class="chk-box" id="chk-regFee"><span class="chk-tick">✓</span></div>
+      <div><div class="chk-main">收取報名費 NT$ 2,888</div>
+        <div class="chk-sub">不勾選 → 顯示減免話術</div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">課程顧問特別加贈</div>
+    <div class="chk-row" onclick="tog('biz')">
+      <div class="chk-box on" id="chk-biz"><span class="chk-tick">✓</span></div>
+      <div><div class="chk-main">本次加贈魔法屋</div><div class="chk-sub">額度不須一次用完，可分次保留</div></div>
+    </div>
+    <div id="biz-panel" style="display:flex;flex-direction:column;gap:6px;padding-left:0">
+      <div class="row2">
+        <div class="fl" style="margin:0;white-space:nowrap">本次加贈</div>
+        <input type="number" id="bizAmt" value="0" min="0" step="5" oninput="clampBiz();render()">
+        <span style="font-size:12px;color:var(--t2)">堂（上限 <span id="bizMax">45</span>）</span>
+      </div>
+      <div class="biz-row">
+        <span style="font-size:11px;color:var(--t3);white-space:nowrap">已用</span>
+        <div class="biz-bar"><div class="biz-bar-fill" id="bizFill" style="width:44%"></div></div>
+        <div class="chip" id="bizChip">剩 25 堂</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">優惠截止日</div>
+    <input type="date" id="deadline" onchange="render()">
+    <div class="hint" id="dlHint"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">備註</div>
+    <textarea id="note" rows="2" placeholder="補充說明（選填）" oninput="render()"
+      style="font-size:12px;resize:vertical;border:.5px solid var(--bd);border-radius:8px;padding:6px 9px;background:#fff;color:var(--text);outline:none;font-family:inherit;width:100%"></textarea>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">課程顧問</div>
+    <div id="cfg-st" style="font-size:10px;color:var(--t3);display:flex;align-items:center;gap:4px;margin-bottom:6px">
+      <span id="cfg-dot" style="width:6px;height:6px;border-radius:50%;background:var(--t3);flex-shrink:0;display:inline-block"></span>
+      <span id="cfg-msg">載入設定中…</span>
+      <button type="button" class="cfg-refresh-btn" onclick="manualRefreshSheet(this)" title="重新抓取班表">🔄</button>
+    </div>
+    <div id="consultant-chips" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px"></div>
+
+    <!-- ── 三檔上限模式（同左上，並同步狀態）── -->
+    <div id="limitModeBox2" style="margin-bottom:8px;padding:7px 8px;background:var(--s2);border:.5px solid var(--bd);border-radius:var(--r);font-size:11px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
+        <span style="color:var(--t3);font-weight:600;letter-spacing:.03em">⚙ 上限檢查模式</span>
+        <button type="button" onclick="openSettingsModal()" title="顧問個人化設定"
+          style="border:none;background:transparent;color:var(--blue);cursor:pointer;font-size:11px;padding:1px 4px">ⓘ 設定</button>
+      </div>
+      <div style="display:flex;gap:3px" id="limitModePills2">
+        <button type="button" class="pill" data-mode="conservative" onclick="setLimitMode(&#39;conservative&#39;)" style="flex:1;padding:3px 4px;font-size:10.5px;white-space:nowrap">🛡 保守</button>
+        <button type="button" class="pill" data-mode="reminder"     onclick="setLimitMode(&#39;reminder&#39;)"     style="flex:1;padding:3px 4px;font-size:10.5px;white-space:nowrap">⚠ 提醒</button>
+        <button type="button" class="pill" data-mode="free"         onclick="setLimitMode(&#39;free&#39;)"         style="flex:1;padding:3px 4px;font-size:10.5px;white-space:nowrap">🚀 自由</button>
+      </div>
+    </div>
+    <div id="consultant-fields" style="display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;gap:6px">
+        <div style="flex:1">
+          <div class="fl">英文名</div>
+          <input type="text" id="quickEn" placeholder="Wolf" oninput="quickFill()" style="text-transform:capitalize">
+        </div>
+        <div style="width:72px">
+          <div class="fl">中文姓氏</div>
+          <input type="text" id="quickCn" placeholder="黃" oninput="quickFill()" maxlength="1">
+        </div>
+      </div>
+      <div style="height:.5px;background:var(--bd);margin:2px 0"></div>
+      <div><div class="fl" style="color:var(--t3)">姓名</div><input type="text" id="consultant" value="Wolf 黃" oninput="render()"></div>
+      <div><div class="fl" style="color:var(--t3)">電話</div><input type="text" id="cphone" value="(02) 2760-7768 #622" oninput="render()"></div>
+      <div><div class="fl" style="color:var(--t3)">Email</div><input type="text" id="cemail" value="Wolf.Huang@etalkingonline.com" oninput="render()"></div>
+      <div><div class="fl" style="color:var(--t3)">LINE ID</div><input type="text" id="lineId" value="verypigkimo" oninput="render()"></div>
+    </div>
+  </div>
+
+</div></aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div>
+        <div class="brand-name" id="brandName">ETalking Kids · 方案確認卡</div>
+        <div class="brand-tag">課程顧問專用 · 三通路傳送</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn btn-settings btn-sm" onclick="openSettingsModal()" title="開啟顧問個人化設定">⚙ 個人化設定</button>
+      <button class="btn btn-ghost btn-sm" onclick="openCRM()">內部備忘 / CRM</button>
+      <button class="btn btn-ghost btn-sm" onclick="copyImg()">複製圖片</button>
+      <button class="btn btn-ghost btn-sm" onclick="getImg()">下載圖片</button>
+      <button class="btn btn-primary btn-sm" onclick="getPPTX()">下載 PPTX</button>
+    </div>
+  </div>
+
+  <div class="main-body">
+    <div class="preview-col">
+      <div class="edit-tip">
+        <div class="edit-tip-dot"></div>
+        卡片文字可直接點擊編輯，即時連動右側
+        <button onclick="resetCard()" style="margin-left:4px;font-size:10px;padding:2px 8px;border:.5px solid var(--bd);border-radius:10px;background:transparent;cursor:pointer;color:var(--t3)">重設</button>
+      </div>
+      <div id="card">
+        <div class="c-head" id="c-head">
+          <div class="c-eyebrow">ETALKING KIDS</div>
+          <div class="c-name ce" id="c-name" contenteditable="true" spellcheck="false">學員姓名 的專屬學習方案</div>
+          <div class="c-sub ce" contenteditable="true" spellcheck="false">課程顧問已為您整理以下確認內容</div>
+        </div>
+        <div class="c-hero" id="c-hero">
+          <div>
+            <div style="font-size:11px;color:var(--mid);margin-bottom:3px" class="ce" contenteditable="true" spellcheck="false">確認方案</div>
+            <div class="hn ce" id="c-plan" contenteditable="true" spellcheck="false">大夢想家</div>
+            <div class="hf ce" id="c-freq" contenteditable="true" spellcheck="false">每週 3 堂・24 個月合約</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:11px;color:var(--mid)" class="ce" contenteditable="true" spellcheck="false">月付款（24期零利率）</div>
+            <div class="rpv ce" id="c-price" contenteditable="true" spellcheck="false">NT$ 5,850</div>
+            <div style="font-size:10px;color:var(--mid)" id="c-ann" class="ce" contenteditable="true" spellcheck="false" style="display:none"></div>
+            <div style="font-size:11px;color:var(--mid);margin-top:2px" id="c-regfee" class="ce" contenteditable="true" spellcheck="false">+ 報名費 NT$ 2,888</div>
+          </div>
+        </div>
+        <div id="c-bonuses" style="display:none;padding:12px 22px;border-bottom:1px solid var(--bd)"></div>
+        <div class="c-deadline" id="c-deadline">
+          <div>
+            <div style="font-size:11px;font-weight:600;margin-bottom:2px" id="dl-lbl" style="color:var(--amber)">優惠截止日</div>
+            <div style="font-size:17px;font-weight:700;color:var(--text)" id="dl-date" class="ce-lt" contenteditable="true" spellcheck="false">—</div>
+            <div style="font-size:10px;color:var(--t3);margin-top:3px;font-style:italic" id="dl-tagline" class="ce-lt" contenteditable="true" spellcheck="false">體驗課後 7 日內簽約</div>
+          </div>
+          <div class="dl-badge ce-dk" id="dl-badge" contenteditable="true" spellcheck="false" style="background:var(--amber)">—</div>
+        </div>
+        <div id="c-note" style="display:none;padding:10px 22px;background:var(--s2);border-bottom:1px solid var(--bd)">
+          <div style="font-size:10px;color:var(--t3);margin-bottom:3px">顧問備註</div>
+          <div style="font-size:12.5px;color:var(--t2);line-height:1.6" id="note-txt" class="ce-lt" contenteditable="true" spellcheck="false"></div>
+        </div>
+        <div class="c-steps" id="c-steps">
+          <div class="c-ey2 ce-lt" contenteditable="true" spellcheck="false">報名流程</div>
+          <div class="step-row"><div class="step-num">1</div><div class="ce-lt" contenteditable="true" spellcheck="false" style="font-size:12.5px;color:var(--t2)">確認方案與付款方式</div></div>
+          <div class="step-row"><div class="step-num">2</div><div class="ce-lt" contenteditable="true" spellcheck="false" style="font-size:12.5px;color:var(--t2)">填寫學員基本資料</div></div>
+          <div class="step-row"><div class="step-num">3</div><div class="ce-lt" contenteditable="true" spellcheck="false" style="font-size:12.5px;color:var(--t2)">課程顧問產出合約，線上簽署</div></div>
+          <div class="step-row" style="margin-bottom:0"><div class="step-num">4</div><div class="ce-lt" contenteditable="true" spellcheck="false" style="font-size:12.5px;color:var(--t2)">刷卡完成，排定首課</div></div>
+        </div>
+        <div class="c-foot" id="c-foot">
+          <div>
+            <div style="font-size:13px;font-weight:600" id="c-consultant" class="ce-lt" contenteditable="true" spellcheck="false">Wolf 黃</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:2px;line-height:1.6" id="c-contact" class="ce-lt" contenteditable="true" spellcheck="false"></div>
+          </div>
+          <div style="font-size:10px;color:var(--blue);font-style:italic;margin-top:2px" class="ce-lt" contenteditable="true" spellcheck="false">Learning is fun!</div>
+        </div>
+      </div><!-- /card -->
+      <!-- ══ 學員基本資料卡 ══ -->
+      <div id="c-student">
+        <div class="sc-head">
+          <div class="sc-head-left">
+            <div class="sc-eyebrow">STUDENT BASIC INFO</div>
+            <div class="sc-title">學員基本資料</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+            <div class="sc-export-toggle" id="sc-toggle" data-no-capture onclick="toggleStudentExport()">
+              <span class="sc-toggle-label" id="sc-toggle-label">不含入匯出</span>
+              <div class="sc-toggle-track" id="sc-track"><div class="sc-toggle-knob"></div></div>
+            </div>
+            <div class="sc-export-badge" id="sc-badge" data-no-capture>📋 將含入圖片 / PPTX</div>
+          </div>
+        </div>
+        <div class="sc-body">
+          <div class="sc-field" data-field="cnName">
+            <span class="sc-label">中文名字</span>
+            <input class="sc-val" id="sf-cn-name" placeholder="陳小明" autocomplete="off" oninput="this.dataset.edited='1'">
+            <button class="sc-hide-btn" data-no-capture onclick="toggleFieldHide('cnName')">隱藏此欄</button>
+          </div>
+          <div class="sc-field" data-field="guardian">
+            <span class="sc-label">法定代理人</span>
+            <input class="sc-val" id="sf-guardian" placeholder="例：陳媽媽" autocomplete="off">
+            <button class="sc-hide-btn" data-no-capture onclick="toggleFieldHide('guardian')">隱藏此欄</button>
+          </div>
+          <div class="sc-field" data-field="enFirst">
+            <span class="sc-label">英文名字</span>
+            <input class="sc-val" id="sf-en-first" placeholder="Ming" autocomplete="off">
+            <button class="sc-hide-btn" data-no-capture onclick="toggleFieldHide('enFirst')">隱藏此欄</button>
+          </div>
+          <div class="sc-field" data-field="enLast">
+            <span class="sc-label">英文姓氏</span>
+            <input class="sc-val" id="sf-en-last" placeholder="Chen" autocomplete="off">
+            <button class="sc-hide-btn" data-no-capture onclick="toggleFieldHide('enLast')">隱藏此欄</button>
+          </div>
+          <div class="sc-field" data-field="id">
+            <span class="sc-label">身分證字號</span>
+            <input class="sc-val" id="sf-id" placeholder="A123456789" autocomplete="off" maxlength="10">
+            <button class="sc-hide-btn" data-no-capture onclick="toggleFieldHide('id')">隱藏此欄</button>
+          </div>
+          <div class="sc-field" data-field="dob">
+            <span class="sc-label">出生年月日</span>
+            <input class="sc-val" id="sf-dob" type="date" style="width:150px;flex:none">
+            <span class="sc-hint">（西元）</span>
+            <button class="sc-hide-btn" data-no-capture onclick="toggleFieldHide('dob')">隱藏此欄</button>
+          </div>
+          <div class="sc-field" data-field="addr">
+            <span class="sc-label">住家地址</span>
+            <input class="sc-val" id="sf-addr" placeholder="台北市…" autocomplete="off">
+            <button class="sc-hide-btn" data-no-capture onclick="toggleFieldHide('addr')">隱藏此欄</button>
+          </div>
+          <div class="sc-field" data-field="invAddr">
+            <span class="sc-label">發票地址</span>
+            <input class="sc-val" id="sf-inv-addr" placeholder="同住家地址" autocomplete="off">
+            <button class="sc-hide-btn" data-no-capture onclick="toggleFieldHide('invAddr')">隱藏此欄</button>
+          </div>
+          <div class="sc-field" data-field="invType" style="align-items:center;flex-wrap:wrap;gap:6px">
+            <span class="sc-label">發票抬頭</span>
+            <div class="sc-pills" id="sf-inv-type">
+              <button class="sc-pill on" data-val="個人" onclick="scPill('sf-inv-type',this)">個人</button>
+              <button class="sc-pill"    data-val="公司" onclick="scPill('sf-inv-type',this)">公司</button>
+            </div>
+            <input class="sc-val" id="sf-inv-name" placeholder="公司統編或名稱" autocomplete="off"
+              style="width:160px;flex:none;display:none;margin-top:0">
+            <button class="sc-hide-btn" data-no-capture onclick="toggleFieldHide('invType')">隱藏此欄</button>
+          </div>
+          <div class="sc-field" data-field="invItem" style="align-items:center">
+            <span class="sc-label">發票名目</span>
+            <div class="sc-pills" id="sf-inv-item">
+              <button class="sc-pill on" data-val="線上課程" onclick="scPill('sf-inv-item',this)">線上課程</button>
+              <button class="sc-pill"    data-val="培訓費"   onclick="scPill('sf-inv-item',this)">培訓費</button>
+              <button class="sc-pill"    data-val="服務費"   onclick="scPill('sf-inv-item',this)">服務費</button>
+            </div>
+            <button class="sc-hide-btn" data-no-capture onclick="toggleFieldHide('invItem')">隱藏此欄</button>
+          </div>
+          <div class="sc-field" data-field="firstClass">
+            <span class="sc-label">首課時間</span>
+            <div style="display:flex;gap:5px;flex:1;align-items:center">
+              <button class="sc-date-btn" id="sf-first-class-date" onclick="openCal('firstClass',this)">
+                <span class="placeholder" id="fc-date-display">選擇日期</span>
+                <span style="font-size:12px;opacity:.5">📅</span>
+              </button>
+              <select id="sf-first-class-time" class="sc-val" style="flex:1;padding:3px 6px"></select>
+            </div>
+            <button class="sc-hide-btn" data-no-capture onclick="toggleFieldHide('firstClass')">隱藏此欄</button>
+          </div>
+          <div class="sc-field" data-field="envTest">
+            <span class="sc-label">環測時間</span>
+            <div style="display:flex;gap:5px;flex:1;align-items:center">
+              <button class="sc-date-btn" id="sf-env-test-date" onclick="openCal('envTest',this)">
+                <span class="placeholder" id="et-date-display">選擇日期</span>
+                <span style="font-size:12px;opacity:.5">📅</span>
+              </button>
+              <select id="sf-env-test-time" class="sc-val" style="flex:1;padding:3px 6px"></select>
+            </div>
+            <button class="sc-hide-btn" data-no-capture onclick="toggleFieldHide('envTest')">隱藏此欄</button>
+          </div>
+        </div>
+        <!-- 空白模板輸出 bar -->
+        <div class="sc-blank-bar" data-no-capture>
+          <div class="sc-blank-bar-head">空白模板輸出</div>
+          <div class="sc-blank-actions">
+            <button class="sc-blank-btn" onclick="blankCopyImg()">📋 複製圖</button>
+            <button class="sc-blank-btn" onclick="blankDownloadImg()">⬇ 下載圖</button>
+            <button class="sc-blank-btn" onclick="blankPPTX()">📊 PPTX</button>
+            <button class="sc-blank-btn" onclick="blankCopyText()">📝 複製文字</button>
+          </div>
+          <div class="sc-blank-append-row" onclick="toggleBlankAppend()">
+            <span class="sc-blank-append-label" id="blank-append-label">附加到 LINE / Email / CRM</span>
+            <div class="sc-toggle-track" id="blank-track"><div class="sc-toggle-knob"></div></div>
+          </div>
+        </div>
+
+        <div data-no-capture style="padding:8px 18px;background:var(--light);border-top:.5px solid var(--mid);display:flex;align-items:center;gap:6px">
+          <span style="font-size:13px">🔒</span>
+          <span style="font-size:10px;color:var(--blue);line-height:1.5">匯出時自動套用隱私遮蔽（個資法 / GB/T 35273）<br>姓名、身分證、生日、地址均依規遮蔽，原始資料僅顯示於此介面</span>
+        </div>
+      </div>
+
+    </div><!-- /preview-col -->
+
+    <div class="send-col">
+      <!-- LINE -->
+      <div class="ch-card">
+        <div class="ch-head">
+          <div class="ch-icon" style="background:#00B900;color:#fff;font-weight:700;font-size:12px">L</div>
+          <div><div class="ch-title">LINE</div><div class="ch-desc">下載圖片傳送 + 備用文字訊息</div></div>
+        </div>
+        <div class="ch-body">
+          <div style="position:relative">
+            <button type="button" onclick="openLineFullPreview()" title="展開 LINE 全文預覽"
+              style="position:absolute;top:4px;right:4px;z-index:2;padding:3px 8px;font-size:10.5px;border:.5px solid var(--bd);background:rgba(255,255,255,.92);color:var(--t3);border-radius:10px;cursor:pointer;font-family:inherit;line-height:1.4;transition:all .15s">🔍 展開</button>
+            <div class="ch-prev" id="line-txt"></div>
+          </div>
+          <div class="ch-actions">
+            <button class="btn btn-primary btn-sm" onclick="getImg()">下載圖片</button>
+            <button class="btn btn-outline btn-sm" onclick="copyImg()">複製圖片</button>
+            <button class="btn btn-outline btn-sm" onclick="copyEl(&#39;line-txt&#39;)">複製文字</button>
+          </div>
+        </div>
+      </div>
+      <!-- Email -->
+      <div class="ch-card">
+        <div class="ch-head">
+          <div class="ch-icon" style="background:var(--light);font-size:14px">✉</div>
+          <div><div class="ch-title">Email</div><div class="ch-desc">自動帶入主旨與內文</div></div>
+        </div>
+        <div class="ch-body">
+          <div class="ch-prev" id="email-prev"></div>
+          <div class="ch-actions">
+            <button class="btn btn-primary btn-sm" onclick="openEmail()">開啟信件</button>
+            <button class="btn btn-outline btn-sm" onclick="openModal('emailModal')">預覽 / 複製</button>
+          </div>
+        </div>
+      </div>
+      <!-- SMS -->
+      <div class="ch-card">
+        <div class="ch-head">
+          <div class="ch-icon" style="background:var(--al);font-size:14px">💬</div>
+          <div><div class="ch-title">簡訊</div><div class="ch-desc">70 字元內，一鍵複製</div></div>
+        </div>
+        <div class="ch-body">
+          <div class="ch-prev sms" id="sms-txt"></div>
+          <div class="ch-actions">
+            <button class="btn btn-outline btn-sm" onclick="copyEl('sms-txt')">複製簡訊</button>
+            <span class="hint" id="sms-cnt"></span>
+          </div>
+        </div>
+      </div>
+    </div><!-- /send-col -->
+  </div><!-- /main-body -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══ LINE 全文預覽 Modal ══ -->
+<div class="modal-bg" id="lineFullModal">
+  <div class="modal" style="width:640px;max-width:94vw">
+    <div class="modal-head">
+      <div class="modal-title">LINE 訊息全文預覽</div>
+      <button class="modal-close" onclick="closeModal(&#39;lineFullModal&#39;)">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:11px;color:var(--t3);margin-bottom:8px">以下為對客端完整文字訊息（已展開易於檢視）。</div>
+      <div id="line-full-text" style="white-space:pre-wrap;word-break:break-word;padding:14px 16px;background:#fff;border:.5px solid var(--bd);border-radius:var(--r);font-size:13px;line-height:1.75;color:var(--text);max-height:65vh;overflow:auto;font-family:inherit"></div>
+    </div>
+    <div class="modal-foot" style="padding:12px 17px;border-top:.5px solid var(--bd);display:flex;justify-content:flex-end;gap:6px">
+      <button class="btn btn-primary btn-sm" onclick="copyEl(&#39;line-full-text&#39;)">📋 複製全文</button>
+      <button class="btn btn-outline btn-sm" onclick="closeModal(&#39;lineFullModal&#39;)">關閉</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Email Modal ══ -->
+<div class="modal-bg" id="emailModal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">Email 完整預覽</div><button class="modal-close" onclick="closeModal('emailModal')">×</button></div>
+    <div class="modal-body">
+      <div><div class="mlabel">主旨</div><div class="esubj" id="modal-subj"></div></div>
+      <div><div class="mlabel">內文</div><div class="ebody" id="modal-body"></div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary btn-sm" onclick="copyEl('modal-body')">複製內文</button>
+      <button class="btn btn-outline btn-sm" onclick="openEmail()">開啟 Email 客戶端</button>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('emailModal')">關閉</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CRM Modal ══ -->
+<div class="modal-bg" id="crmModal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">內部備忘 / CRM 紀錄</div><button class="modal-close" onclick="closeModal('crmModal')">×</button></div>
+    <div class="modal-body">
+      <div style="font-size:11px;color:var(--t2);background:var(--al);padding:8px 11px;border-radius:var(--r);border:.5px solid #F0D090">
+        僅供課程顧問內部使用，不對外分享。可複製後貼入 CRM 系統或備忘錄，作為下次 Demo 或跟進的參考依據。
+      </div>
+      <div><div class="mlabel">完整紀錄</div><div class="crmbody" id="crm-body"></div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary btn-sm" onclick="copyEl('crm-body')">複製全文</button>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('crmModal')">關閉</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 顧問設定 Modal ══════════ -->
+<div class="modal-bg" id="settingsModal">
+  <div class="modal" style="width:620px">
+    <div class="modal-head">
+      <div class="modal-title">⚙ 顧問設定</div>
+      <button class="modal-close" onclick="closeModal(&#39;settingsModal&#39;)">×</button>
+    </div>
+    <div class="modal-body">
+
+      <div style="font-size:11px;color:var(--t3);line-height:1.6">
+        點下方 chip 選擇要編輯的顧問，儲存後即時同步雲端（所有人共用一份資料）。<br>
+        無身份驗證 — 大家互相信任使用，請勿隨意改動他人設定。
+      </div>
+
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <span class="fl" style="color:var(--t3);margin:0">選擇顧問</span>
+          <button type="button" id="settings-refresh-btn" onclick="manualRefreshSheet(this)" title="重新抓取班表"
+            style="border:.5px solid var(--bd);background:#fff;color:var(--t3);cursor:pointer;font-size:11px;padding:3px 9px;border-radius:10px;line-height:1.3;transition:all .15s">🔄 重抓班表</button>
+        </div>
+        <div id="settings-chips" style="display:flex;flex-wrap:wrap;gap:5px"></div>
+      </div>
+
+      <div id="settings-form" style="display:none;flex-direction:column;gap:10px;padding:12px;background:var(--s2);border:.5px solid var(--bd);border-radius:var(--r)">
+        <div style="font-size:11px;font-weight:600;color:var(--t2);letter-spacing:.03em">
+          目前編輯：<span id="settings-current-name" style="color:var(--blue)"></span>
+        </div>
+
+        <div style="font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-top:4px">聯絡資訊</div>
+        <div style="display:flex;gap:6px">
+          <div style="flex:1"><div class="fl">英文名</div><input type="text" id="st-name-en" placeholder="Wolf"></div>
+          <div style="width:80px"><div class="fl">中文姓氏</div><input type="text" id="st-name-cn" placeholder="黃" maxlength="1"></div>
+        </div>
+        <div><div class="fl">完整姓名（顯示用）</div><input type="text" id="st-name" placeholder="Wolf 黃"></div>
+        <div><div class="fl">電話</div><input type="text" id="st-phone" placeholder="(02) 2760-7768 #622"></div>
+        <div><div class="fl">Email</div><input type="text" id="st-email" placeholder="Wolf.Huang@etalkingonline.com"></div>
+        <div><div class="fl">LINE ID</div><input type="text" id="st-lineId" placeholder=""></div>
+
+        <div style="font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-top:6px">個人偏好</div>
+        <div>
+          <div class="fl">上限檢查模式</div>
+          <div style="display:flex;gap:5px" id="st-limit-pills">
+            <button type="button" class="pill" data-mode="conservative" style="flex:1;padding:6px 6px;font-size:11px;line-height:1.4">🛡 保守<br><span style="font-size:9px;color:var(--t3)">彈窗阻擋</span></button>
+            <button type="button" class="pill" data-mode="reminder"     style="flex:1;padding:6px 6px;font-size:11px;line-height:1.4">⚠ 提醒<br><span style="font-size:9px;color:var(--t3)">紅字警告</span></button>
+            <button type="button" class="pill" data-mode="free"         style="flex:1;padding:6px 6px;font-size:11px;line-height:1.4">🚀 自由<br><span style="font-size:9px;color:var(--t3)">灰字提示</span></button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+          <button class="btn btn-primary btn-sm" onclick="saveSettingsForm()">💾 儲存變更</button>
+          <span id="settings-status" style="font-size:11px;color:var(--t3)"></span>
+        </div>
+      </div>
+
+      <div id="settings-hint" style="font-size:11px;color:var(--t3);font-style:italic">
+        💡 請先選擇一位顧問以編輯設定。
+      </div>
+    </div>
+    <div style="padding:10px 17px;border-top:.5px solid var(--bd);display:flex;justify-content:flex-end;gap:6px;flex-shrink:0">
+      <button class="btn btn-outline btn-sm" onclick="closeModal(&#39;settingsModal&#39;)">關閉</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 啟動載入 Mask ══ -->
+<div id="boot-mask">
+  <div class="boot-box">
+    <div class="boot-brand">
+      <div class="boot-dot"></div>
+      <div class="boot-title">ETalking · 方案確認卡</div>
+    </div>
+    <div class="boot-sub">初始化中…</div>
+    <div class="boot-stages">
+      <div class="boot-stage pending" id="boot-stage-sheet">
+        <span class="s-icon">⏳</span>
+        <span class="s-text">班表：連線中…</span>
+      </div>
+      <div class="boot-stage pending" id="boot-stage-gas">
+        <span class="s-icon">⏳</span>
+        <span class="s-text">偏好設定：等待中…</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ══ 自製日曆 Popover ══ -->
+<div id="cal-pop">
+  <div class="cal-nav">
+    <button class="cal-nav-btn" onmousedown="return false" onclick="calMove(-1)">‹</button>
+    <span class="cal-title" id="cal-title"></span>
+    <button class="cal-nav-btn" onmousedown="return false" onclick="calMove(1)">›</button>
+  </div>
+  <div class="cal-wdays">
+    <div class="cal-wd">日</div><div class="cal-wd">一</div><div class="cal-wd">二</div>
+    <div class="cal-wd">三</div><div class="cal-wd">四</div><div class="cal-wd">五</div>
+    <div class="cal-wd">六</div>
+  </div>
+  <div id="cal-grid"></div>
+  <div class="cal-foot">
+    <button class="cal-foot-btn" onclick="calToday()">今天</button>
+    <button class="cal-foot-btn" onclick="closeCal()">關閉</button>
+  </div>
+</div>
+<div class="cal-holiday-tip" id="cal-holiday-tip"></div>
+
+<!-- ══ 浮動文字格式工具列 ══ -->
+<div id="fmt-bar" onmousedown="return false">
+  <button class="fmt-btn" id="fmt-bold" onclick="fmtBold()" title="粗體">B</button>
+  <div class="fmt-sep"></div>
+  <button class="fmt-sz" onclick="fmtSize(10)" data-sz="10" title="極小">xs</button>
+  <button class="fmt-sz" onclick="fmtSize(12)" data-sz="12" title="小">S</button>
+  <button class="fmt-sz" onclick="fmtSize(14)" data-sz="14" title="中">M</button>
+  <button class="fmt-sz" onclick="fmtSize(18)" data-sz="18" title="大">L</button>
+  <button class="fmt-sz" onclick="fmtSize(24)" data-sz="24" title="特大">XL</button>
+  <div class="fmt-sep"></div>
+  <div class="fmt-color" style="background:#fff"            data-color="#ffffff" onclick="fmtColor('#ffffff')"  title="白"></div>
+  <div class="fmt-color" style="background:#B5D4F4"        data-color="#b5d4f4" onclick="fmtColor('#B5D4F4')"  title="淡藍"></div>
+  <div class="fmt-color" style="background:#E6F1FB"        data-color="#e6f1fb" onclick="fmtColor('#E6F1FB')"  title="冰藍"></div>
+  <div class="fmt-color" style="background:#185FA5"        data-color="#185fa5" onclick="fmtColor('#185FA5')"  title="深藍"></div>
+  <div class="fmt-color" style="background:#042C53"        data-color="#042c53" onclick="fmtColor('#042C53')"  title="海軍藍"></div>
+  <div class="fmt-color" style="background:#1A1A18"        data-color="#1a1a18" onclick="fmtColor('#1A1A18')"  title="深色"></div>
+  <div class="fmt-color" style="background:#9C9B96"        data-color="#9c9b96" onclick="fmtColor('#9C9B96')"  title="灰"></div>
+  <div class="fmt-color" style="background:#BA7517"        data-color="#ba7517" onclick="fmtColor('#BA7517')"  title="琥珀"></div>
+  <div class="fmt-color" style="background:#3B6D11"        data-color="#3b6d11" onclick="fmtColor('#3B6D11')"  title="綠"></div>
+  <div class="fmt-color" style="background:#A32D2D"        data-color="#a32d2d" onclick="fmtColor('#A32D2D')"  title="紅"></div>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="fmtReset()" title="重設此區塊樣式" style="font-size:14px;font-family:sans-serif;font-weight:400">↺</button>
+</div>
+
+<!-- ══ 區塊調色 Popover ══ -->
+<div id="paint-pop">
+  <div class="pp-title">
+    <span id="pp-sec-label">區塊調色</span>
+    <button class="pp-close" onclick="closePaintPop()">×</button>
+  </div>
+  <div class="pp-lbl">底色</div>
+  <div class="pp-sw" id="pp-bg-sw"></div>
+  <div class="pp-row">
+    <span style="font-size:10px;color:var(--t3)">自訂</span>
+    <input type="color" class="pp-custom" id="pp-bg-custom" oninput="applySecBg(this.value)">
+    <button class="pp-rsm" onclick="resetSecStyle('bg')">重設</button>
+  </div>
+  <div class="pp-divider"></div>
+  <div class="pp-lbl">框線色</div>
+  <div class="pp-sw" id="pp-bd-sw"></div>
+  <div class="pp-row">
+    <span style="font-size:10px;color:var(--t3)">自訂</span>
+    <input type="color" class="pp-custom" id="pp-bd-custom" oninput="applySecBorder(this.value)">
+    <button class="pp-rsm" onclick="resetSecStyle('bd')">重設</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script>
+// ══════════════════════════════════════════
+//  VERSION — 改版只動這一行，title 與主標題會自動同步
+// ══════════════════════════════════════════
+const APP_VERSION = "v5.7.6";
+const APP_NAME = "ETalking Kids · 方案確認卡";
+document.title = `${APP_NAME} ${APP_VERSION}`;
+document.addEventListener("DOMContentLoaded", () => {
+  const brand = document.getElementById("brandName");
+  if (brand) brand.textContent = `${APP_NAME} ${APP_VERSION}`;
+});
+
+const PLANS={
+  "輕鬆學":  {monthly:2850,bizMax:20,lump:5 },
+  "進階學":  {monthly:3850,bizMax:25,lump:8 },
+  "小夢想家":{monthly:4850,bizMax:35,lump:12},
+  "大夢想家":{monthly:5850,bizMax:45,lump:16},
+};
+const ST={discount:true,childrensDay:true,childGift:"magic",biz:true,lumpSum:true,regFee:false,freq:[1,2],useCustomLabel:false,activityAppliedName:""};
+const $=id=>document.getElementById(id);
+const comma=n=>n.toLocaleString();
+const fmtDate=s=>{const[y,m,d]=s.split("-");return`${y}/${m}/${d}`;};
+const shortDate=s=>{const[,m,d]=s.split("-");return`${+m}/${+d}`;};
+const daysLeft=s=>{const d=new Date(s+"T00:00:00"),t=new Date();t.setHours(0,0,0,0);return Math.ceil((d-t)/86400000);};
+const plusDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().split("T")[0];};
+const todayStr=()=>new Date().toLocaleDateString("zh-TW",{year:"numeric",month:"2-digit",day:"2-digit"});
+
+function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2500);}
+function copyEl(id){const t=$(id).innerText||$(id).textContent;navigator.clipboard.writeText(t.trim()).then(()=>toast("已複製 ✓")).catch(()=>toast("請手動複製"));}
+function openModal(id){$(id).classList.add("open");}
+function closeModal(id){$(id).classList.remove("open");}
+function openCRM(){render();openModal("crmModal");}
+function openEmail(){const{es,eb}=window._D||{};if(!es)return;window.open(`mailto:?subject=${encodeURIComponent(es)}&body=${encodeURIComponent(eb)}`,"_self");}
+
+$("deadline").value=plusDays(7);
+
+function tog(k){
+  ST[k]=!ST[k];
+  $("chk-"+k).classList.toggle("on",ST[k]);
+  if(k==="childrensDay"){
+    // 新版：開關已改為 sec-toggle，這裡只確保 giftPills 顯隱仍生效
+    const gp = $("giftPills"); if(gp) gp.style.display=ST[k]?"flex":"none";
+    const tg = $("toggle-childrensDay"); if(tg) tg.checked = !!ST[k];
+    const block = $("company-block"); if(block) block.classList.toggle("disabled", !ST[k]);
+  }
+  if(k==="discount")$("discount-panel").style.display=ST[k]?"flex":"none";
+  if(k==="biz")$("biz-panel").style.display=ST[k]?"flex":"none";
+  render();
+}
+// ══════════════════════════════════════════
+//  活動加贈 · 公司活動總開關 + 自訂加碼名稱
+// ══════════════════════════════════════════
+function toggleCompanyActivity(on){
+  ST.childrensDay = !!on;
+  const block = $("company-block");
+  if(block) block.classList.toggle("disabled", !on);
+  render();
+}
+
+// ── 勾選「常見活動名稱」切換 ──
+function toggleUseCustomLabel(on){
+  ST.useCustomLabel = !!on;
+  const box = $("custom-label-box");
+  if(box) box.classList.toggle("dimmed", !on);
+  const sel = $("activityLabel");
+  const custom = $("activityLabelCustom");
+  const btn = $("activityApplyBtn");
+  if(sel)    sel.disabled = !on;
+  if(custom) custom.disabled = !on;
+  if(btn)    btn.disabled = !on;
+  if(on){
+    // 打開時：若 input 尚無值，從下拉帶入（並 sync applied）
+    if(custom && !custom.value){
+      custom.value = sel.value === "__custom__" ? "" : sel.value;
+    }
+    ST.activityAppliedName = (custom && custom.value) || (sel && sel.value !== "__custom__" ? sel.value : "");
+    _clearDirty();
+  }else{
+    // 關掉時：清除套用值，回到中性詞模式
+    ST.activityAppliedName = "";
+    _clearDirty();
+  }
+  render();
+}
+
+// ── 下拉變動 ──
+function onActivityLabelChg(){
+  const sel = $("activityLabel");
+  const custom = $("activityLabelCustom");
+  if(!sel || !custom) return;
+  if(sel.value === "__custom__"){
+    // 選「自訂...」→ 清空 input 給顧問自己打
+    custom.value = "";
+    custom.focus();
+    ST.activityAppliedName = "";  // 沒有內容可以套用
+    _markDirty(true);  // 提示需要填入並套用
+  }else{
+    // 選熱詞 → 立刻覆蓋 input、立刻套用（右側即時預覽）
+    custom.value = sel.value;
+    ST.activityAppliedName = sel.value;
+    _clearDirty();
+  }
+  render();
+}
+
+// ── 修改 input（未套用前）──
+function onActivityCustomInput(){
+  // 與當前已套用值不同 → 標髒
+  const custom = $("activityLabelCustom");
+  if(!custom) return;
+  const cur = custom.value.trim();
+  if(cur !== (ST.activityAppliedName||"")) _markDirty();
+  else _clearDirty();
+}
+
+// ── 按「套用」──
+function applyActivityLabel(){
+  const custom = $("activityLabelCustom");
+  if(!custom) return;
+  const v = custom.value.trim();
+  if(!v){
+    toast("⚠ 請先輸入名稱");
+    return;
+  }
+  ST.activityAppliedName = v;
+  _clearDirty();
+  render();
+  toast("已套用 ✓");
+}
+
+function _markDirty(isEmptyCustom){
+  const input = $("activityLabelCustom");
+  const btn = $("activityApplyBtn");
+  const hint = $("activityApplyHint");
+  if(input) input.classList.add("dirty");
+  if(btn)   btn.classList.add("dirty");
+  if(hint)  hint.textContent = isEmptyCustom ? "⚠ 請輸入自訂名稱後按「套用」" : "⚠ 變更尚未套用，請按「套用」";
+}
+function _clearDirty(){
+  const input = $("activityLabelCustom");
+  const btn = $("activityApplyBtn");
+  const hint = $("activityApplyHint");
+  if(input) input.classList.remove("dirty");
+  if(btn)   btn.classList.remove("dirty");
+  if(hint)  hint.textContent = "";
+}
+
+function resetActivityDefaults(){
+  // 恢復預設：開關回 ON（這版預設 ON）、勾選關、下拉回兒童節、清空自訂
+  ST.childrensDay = true;
+  $("toggle-childrensDay").checked = true;
+  const block = $("company-block");
+  if(block) block.classList.remove("disabled");
+
+  ST.useCustomLabel = false;
+  const chk = $("useCustomLabel");
+  if(chk) chk.checked = false;
+  const box = $("custom-label-box");
+  if(box) box.classList.add("dimmed");
+
+  const sel = $("activityLabel");
+  if(sel){ sel.value = "兒童節"; sel.disabled = true; }
+  const custom = $("activityLabelCustom");
+  if(custom){ custom.value = ""; custom.disabled = true; }
+  const btn = $("activityApplyBtn");
+  if(btn) btn.disabled = true;
+
+  ST.activityAppliedName = "";
+  _clearDirty();
+
+  render();
+  toast("已恢復預設");
+}
+
+// 取得當前活動話術名稱（給 render 用）
+// 勾選 OFF → 空字串（渲染端依此走中性詞）
+// 勾選 ON  → 回傳已套用的名稱（ST.activityAppliedName）
+function _getActivityName(){
+  if(!ST.useCustomLabel) return "";
+  return (ST.activityAppliedName || "").trim();
+}
+
+function setGift(t){
+  ST.childGift=t;
+  $("pill-magic").classList.toggle("on",t==="magic");
+  $("pill-elec").classList.toggle("on",t==="elec");
+  const units={magic:"堂魔法屋",elec:"堂選修課"};
+  $("actAmtUnit").textContent=units[t]||"堂";
+  // 切換時同步 input 的 min/max/step 並自動換算數值
+  const ai=$("actAmt");
+  const curr=+ai.value||0;
+  if(t==="magic"){
+    ai.min=5;ai.max=15;ai.step=5;
+    if(curr>=1&&curr<=3) ai.value=curr*5;
+    else if(curr<5) ai.value=15;
+    else if(curr>15) ai.value=15;
+    else ai.value=Math.round(curr/5)*5;
+  }else{
+    ai.min=1;ai.max=3;ai.step=1;
+    if(curr>=5&&curr<=15) ai.value=Math.round(curr/5);
+    else if(curr<1) ai.value=3;
+    else if(curr>3) ai.value=3;
+  }
+  _actAmtLast=+ai.value;
+  // ── 顧問爭取單位跟著切換（鎖同單位）──
+  const bi=$("bargainAmt"), bu=$("bargainUnit");
+  if(bi && bu){
+    const bCurr=+bi.value||0;
+    if(t==="magic"){
+      bu.textContent="堂魔法屋";
+      if(bCurr>0 && bCurr<=5) bi.value=bCurr*5;
+      else if(bCurr>0) bi.value=Math.round(bCurr/5)*5;
+    }else{
+      bu.textContent="堂選修";
+      if(bCurr>=5) bi.value=Math.ceil(bCurr/5);
+      else if(bCurr>0 && bCurr<5) bi.value=1;
+    }
+    _bargainLast=+bi.value||0;
+    if(typeof updateBargainHint==="function") updateBargainHint();
+  }
+  render();
+}
+
+// ══════════════════════════════════════════
+//  學員資料欄位隱藏管理（localStorage 持久化）
+// ══════════════════════════════════════════
+const FIELD_HIDE_KEY = "et_field_hide_v1";
+let HIDDEN_FIELDS = new Set();
+
+function loadHiddenFields(){
+  try{
+    const raw = localStorage.getItem(FIELD_HIDE_KEY);
+    if(raw){
+      const arr = JSON.parse(raw);
+      HIDDEN_FIELDS = new Set(arr);
+    }
+  }catch(e){ HIDDEN_FIELDS = new Set(); }
+}
+
+function saveHiddenFields(){
+  try{
+    localStorage.setItem(FIELD_HIDE_KEY, JSON.stringify([...HIDDEN_FIELDS]));
+  }catch(e){}
+}
+
+function applyHiddenFieldsUI(){
+  document.querySelectorAll("#c-student .sc-field[data-field]").forEach(el=>{
+    const f = el.dataset.field;
+    el.classList.toggle("sc-hidden", HIDDEN_FIELDS.has(f));
+  });
+}
+
+function toggleFieldHide(field){
+  if(HIDDEN_FIELDS.has(field)) HIDDEN_FIELDS.delete(field);
+  else HIDDEN_FIELDS.add(field);
+  saveHiddenFields();
+  applyHiddenFieldsUI();
+  // 欄位隱藏會影響輸出 → 觸發 render / syncCard 重新生成
+  if(typeof render==="function") render();
+  if(typeof syncCard==="function") syncCard();
+}
+
+function isFieldHidden(field){ return HIDDEN_FIELDS.has(field); }
+
+// 啟動時載入
+loadHiddenFields();
+// DOMContentLoaded 後套用到 UI（要等 DOM 建好）
+document.addEventListener("DOMContentLoaded", function(){
+  applyHiddenFieldsUI();
+  // v5.7.2 新增：依 ST 初值同步 UI
+  // 勾選框預設關 → 下拉/input/按鈕禁用（HTML 端已有 class "dimmed"，這裡補 disabled）
+  if(!ST.useCustomLabel){
+    var sel = document.getElementById("activityLabel");
+    var custom = document.getElementById("activityLabelCustom");
+    var btn = document.getElementById("activityApplyBtn");
+    if(sel)    sel.disabled = true;
+    if(custom) custom.disabled = true;
+    if(btn)    btn.disabled = true;
+  }
+});
+
+// ── 公司活動 input：依三檔模式守門 ──
+let _actAmtLast=15;
+let _actAmtApproved=false;  // 已確認超限核准（同 bargain 的機制）
+function guardActAmt(){
+  const ai=$("actAmt");
+  const v=+ai.value;
+  const max=ST.childGift==="magic"?15:3;
+  const min=ST.childGift==="magic"?5:1;
+  const unit=ST.childGift==="magic"?"魔法屋":"選修";
+  const mode=window.LIMIT_MODE||"conservative";
+
+  // 低於下限一律退回（不受模式影響——負值或 0 沒有意義）
+  if(isNaN(v)||v<min){
+    ai.value=min;_actAmtLast=min;_actAmtApproved=false;render();return;
+  }
+
+  // 超過上限依模式決定
+  if(v>max && !_actAmtApproved){
+    if(mode==="conservative"){
+      toast(`⚠ 公司活動${unit}加贈上限 ${max} 堂，請用「顧問爭取」或切換模式`);
+      ai.value=_actAmtLast;return;
+    }else if(mode==="reminder"){
+      const ok=confirm(`公司活動${unit}加贈一般上限為 ${max} 堂，目前輸入 ${v} 堂已超過。\n\n按「確定」＝已確認此為特殊授權\n按「取消」＝退回上一個值`);
+      if(!ok){ ai.value=_actAmtLast;return; }
+      _actAmtApproved=true;
+    }
+    // free 模式 → 靜默放行
+  }else if(v<=max){
+    _actAmtApproved=false;
+  }
+
+  // 魔法屋必須 5 倍數（規則性限制，跟模式無關；但 free 模式下不強制）
+  if(ST.childGift==="magic"&&v%5!==0&&mode!=="free"){
+    ai.value=Math.round(v/5)*5;
+  }
+  _actAmtLast=+ai.value;
+  render();
+}
+
+// ── 顧問爭取欄位：依三檔模式 + 當前單位決定 guard 行為 ──
+// 常規授權門檻：選修 → [3, 5]；魔法屋 → [15, 25]（×5 對應）
+let _bargainLast=0;
+let _bargainApproved=false;
+function _bargainThreshold(){
+  return ST.childGift==="magic" ? [15,25] : [3,5];
+}
+function guardBargain(){
+  const bi=$("bargainAmt");
+  const v=+bi.value||0;
+  const unit=ST.childGift==="magic"?"魔法屋":"選修";
+  const [warnLimit, redLimit]=_bargainThreshold();
+  if(v<0){bi.value=0;_bargainLast=0;_bargainApproved=false;updateBargainHint();render();return;}
+
+  const mode=window.LIMIT_MODE||"conservative";
+  if(v>warnLimit && !_bargainApproved){
+    if(mode==="conservative"){
+      const ok=confirm(`您輸入的「顧問爭取加贈」為 ${v} 堂${unit}，已超過一般授權上限（${warnLimit} 堂）。\n\n請確認已取得主管核准再繼續。\n\n按「確定」＝已確認主管核准\n按「取消」＝退回上一個值`);
+      if(ok){ _bargainApproved=true; _bargainLast=v; }
+      else { bi.value=_bargainLast; updateBargainHint(); render(); return; }
+    }else{
+      // reminder / free 不擋，只靠 hint 呈現差異
+      _bargainApproved=true;
+      _bargainLast=v;
+    }
+  }else{
+    _bargainLast=v;
+    if(v<=warnLimit) _bargainApproved=false;
+  }
+  updateBargainHint();render();
+}
+function updateBargainHint(){
+  const el=$("bargainHint");if(!el)return;
+  const v=+$("bargainAmt").value||0;
+  const unit=ST.childGift==="magic"?"魔法屋":"選修";
+  const [warnLimit, redLimit]=_bargainThreshold();
+  const mode=window.LIMIT_MODE||"conservative";
+  if(v>redLimit){
+    el.textContent=`⚠ 目前爭取 ${v} 堂${unit}已明顯超出常規授權，請務必確認此次特批紀錄可追溯。`;
+    el.style.color= mode==="free" ? "var(--t3)" : "var(--red)";
+    el.style.display="block";
+  }else if(v>warnLimit){
+    if(mode==="free"){
+      el.textContent=`ℹ 超過一般授權上限（${warnLimit} 堂${unit}）`;
+      el.style.color="var(--t3)";
+    }else if(mode==="reminder"){
+      el.textContent=`⚠ 已超過一般授權上限（${warnLimit} 堂${unit}），請確認主管核准`;
+      el.style.color="var(--amber)";
+    }else{
+      el.textContent=`✓ 已確認主管核准（${v} 堂${unit}）`;
+      el.style.color="var(--amber)";
+    }
+    el.style.display="block";
+  }else{
+    el.style.display="none";
+  }
+}
+
+// ══════════════════════════════════════════
+//  三檔上限檢查模式（conservative / reminder / free）
+//  來源優先序：GAS → LS → 預設 conservative
+// ══════════════════════════════════════════
+window.LIMIT_MODE = "conservative";
+const LIMIT_MODE_LS_KEY = "et_limit_mode_v1";
+const LIMIT_MODE_DESC = {
+  conservative: "超過授權上限 → 彈窗阻擋（需按確定）",
+  reminder:     "超過授權上限 → 紅字警告，允許繼續",
+  free:         "超過授權上限 → 只顯示灰字提示，不阻擋"
+};
+
+function applyLimitModeUI(mode){
+  window.LIMIT_MODE = mode || "conservative";
+  // 同步兩組 pills（活動加贈區 + 課程顧問區）
+  document.querySelectorAll("#limitModePills .pill, #limitModePills2 .pill").forEach(function(b){
+    b.classList.toggle("on", b.dataset.mode===window.LIMIT_MODE);
+  });
+  const d=$("limitModeDesc");
+  if(d) d.textContent = LIMIT_MODE_DESC[window.LIMIT_MODE] || "";
+  if(typeof updateBargainHint==="function") updateBargainHint();
+}
+
+function setLimitMode(mode){
+  applyLimitModeUI(mode);
+  try{ localStorage.setItem(LIMIT_MODE_LS_KEY, mode); }catch(e){}
+  const id = window.CURRENT_CONSULTANT_ID;
+  if(id && window.GAS_URL){
+    gasSetPref(id, {limit_mode: mode})
+      .then(function(){ toast("已同步上限模式 ✓"); })
+      .catch(function(){ toast("⚠ 雲端同步失敗（暫存本機）"); });
+  }else{
+    toast("已設定上限模式（本機）");
+  }
+}
+
+// 啟動先讀 LS（之後 GAS 會覆蓋）
+try{
+  const savedMode = localStorage.getItem(LIMIT_MODE_LS_KEY);
+  if(savedMode) window.LIMIT_MODE = savedMode;
+}catch(e){}
+
+// ══════════════════════════════════════════
+//  GAS 通訊層（顧問偏好雲端同步）
+// ══════════════════════════════════════════
+window.GAS_URL = "";
+window.ALL_PREFS = {};
+window.CURRENT_CONSULTANT_ID = "";
+
+function gasGetAllPrefs(){
+  if(!window.GAS_URL) return Promise.reject("GAS_URL 未設定");
+  const url = window.GAS_URL + (window.GAS_URL.indexOf("?")>=0?"&":"?") + "action=getAllPrefs&t=" + Date.now();
+  return fetch(url, {cache:"no-store"})
+    .then(function(r){ if(!r.ok) throw "HTTP "+r.status; return r.json(); })
+    .then(function(j){
+      if(j && j.ok && Array.isArray(j.data)){
+        window.ALL_PREFS = {};
+        j.data.forEach(function(row){
+          if(row && row.consultant_id) window.ALL_PREFS[row.consultant_id]=row;
+        });
+        return window.ALL_PREFS;
+      }
+      throw (j && j.error) || "invalid response";
+    });
+}
+
+function gasSetPref(consultantId, patch){
+  if(!window.GAS_URL) return Promise.reject("GAS_URL 未設定");
+  if(!consultantId)  return Promise.reject("consultantId 不可為空");
+  // 用 text/plain 避開 CORS preflight
+  return fetch(window.GAS_URL, {
+    method:"POST",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body: JSON.stringify({action:"setPref", consultant_id:consultantId, patch:patch||{}})
+  })
+  .then(function(r){ if(!r.ok) throw "HTTP "+r.status; return r.json(); })
+  .then(function(j){
+    if(j && j.ok){
+      if(!window.ALL_PREFS[consultantId]) window.ALL_PREFS[consultantId]={consultant_id:consultantId};
+      Object.assign(window.ALL_PREFS[consultantId], patch, {updated_at: new Date().toISOString()});
+      return j;
+    }
+    throw (j && j.error) || "save failed";
+  });
+}
+
+// 套某位顧問的偏好到 UI
+function applyConsultantPref(consultantId){
+  window.CURRENT_CONSULTANT_ID = consultantId || "";
+  const pref = window.ALL_PREFS[consultantId];
+  if(pref && pref.limit_mode){
+    applyLimitModeUI(pref.limit_mode);
+    try{ localStorage.setItem(LIMIT_MODE_LS_KEY, pref.limit_mode); }catch(e){}
+  }else{
+    applyLimitModeUI(window.LIMIT_MODE);
+  }
+}
+
+// ══════════════════════════════════════════
+//  顧問設定 Modal
+// ══════════════════════════════════════════
+var SETTINGS_SELECTED_ID = "";
+
+function openSettingsModal(){
+  const wrap = $("settings-chips");
+  wrap.innerHTML = "";
+  if(!CONSULTANTS.length){
+    wrap.innerHTML = '<span style="font-size:11px;color:var(--t3)">尚未載入顧問名單</span>';
+  }else{
+    CONSULTANTS.forEach(function(c){
+      const btn=document.createElement("button");
+      btn.type="button";
+      btn.className="pill";
+      btn.textContent=c.name;
+      btn.style.cssText="font-size:12px;padding:4px 11px";
+      btn.onclick=function(){ settingsSelectConsultant(c); };
+      wrap.appendChild(btn);
+    });
+  }
+  SETTINGS_SELECTED_ID = "";
+  $("settings-form").style.display = "none";
+  $("settings-hint").style.display = "block";
+  if(window.GAS_URL){
+    $("settings-status").textContent = "載入雲端資料中…";
+    gasGetAllPrefs()
+      .then(function(){ $("settings-status").textContent = ""; })
+      .catch(function(e){ $("settings-status").textContent = "⚠ 雲端載入失敗：" + e; });
+  }else{
+    $("settings-status").textContent = "⚠ 尚未設定 GAS URL（config.json 的 gas_url）";
+  }
+  openModal("settingsModal");
+}
+
+function settingsSelectConsultant(c){
+  SETTINGS_SELECTED_ID = c.id;
+  document.querySelectorAll("#settings-chips .pill").forEach(function(b){
+    b.classList.toggle("on", b.textContent===c.name);
+  });
+  const pref = window.ALL_PREFS[c.id] || {};
+  const nameFull = pref.name || c.name || "";
+  let nameEn = pref.name_en || "";
+  let nameCn = pref.name_cn || "";
+  if(!nameEn && !nameCn && nameFull){
+    const parts = nameFull.split(/\s+/);
+    nameEn = parts[0] || "";
+    nameCn = parts[1] || "";
+  }
+  $("st-name-en").value = nameEn;
+  $("st-name-cn").value = nameCn;
+  $("st-name").value    = nameFull;
+  $("st-phone").value   = pref.phone  || c.phone  || "";
+  $("st-email").value   = pref.email  || c.email  || "";
+  $("st-lineId").value  = pref.lineId || c.lineId || "";
+  const mode = pref.limit_mode || "conservative";
+  document.querySelectorAll("#st-limit-pills .pill").forEach(function(b){
+    b.classList.toggle("on", b.dataset.mode===mode);
+    b.onclick = function(){
+      document.querySelectorAll("#st-limit-pills .pill").forEach(function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+    };
+  });
+  $("settings-current-name").textContent = c.name;
+  $("settings-form").style.display = "flex";
+  $("settings-hint").style.display = "none";
+  $("settings-status").textContent = pref.updated_at ? "雲端最後更新：" + _fmtPrefTime(pref.updated_at) : "此顧問尚無雲端設定";
+}
+
+function _fmtPrefTime(iso){
+  try{
+    const d = new Date(iso);
+    if(isNaN(d.getTime())) return iso;
+    const p=(n)=>String(n).padStart(2,"0");
+    return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+  }catch(e){ return iso; }
+}
+
+function saveSettingsForm(){
+  if(!SETTINGS_SELECTED_ID){ toast("⚠ 請先選擇一位顧問"); return; }
+  let selectedMode = "conservative";
+  document.querySelectorAll("#st-limit-pills .pill").forEach(function(b){
+    if(b.classList.contains("on")) selectedMode = b.dataset.mode;
+  });
+  const patch = {
+    name_en:    $("st-name-en").value.trim(),
+    name_cn:    $("st-name-cn").value.trim(),
+    name:       $("st-name").value.trim(),
+    phone:      $("st-phone").value.trim(),
+    email:      $("st-email").value.trim(),
+    lineId:     $("st-lineId").value.trim(),
+    limit_mode: selectedMode
+  };
+  if(!window.GAS_URL){
+    toast("⚠ 尚未設定 GAS URL，無法同步雲端");
+    return;
+  }
+  $("settings-status").textContent = "儲存中…";
+  gasSetPref(SETTINGS_SELECTED_ID, patch)
+    .then(function(){
+      $("settings-status").textContent = "✓ 已儲存於 " + _fmtPrefTime(new Date().toISOString());
+      toast("設定已儲存 ✓");
+      if(SETTINGS_SELECTED_ID === window.CURRENT_CONSULTANT_ID){
+        applyConsultantPref(SETTINGS_SELECTED_ID);
+        $("consultant").value = patch.name  || $("consultant").value;
+        $("cphone").value     = patch.phone || $("cphone").value;
+        $("cemail").value     = patch.email || $("cemail").value;
+        $("lineId").value     = patch.lineId || $("lineId").value;
+        render();
+      }
+    })
+    .catch(function(e){
+      $("settings-status").textContent = "⚠ 儲存失敗：" + e;
+      toast("儲存失敗");
+    });
+}
+
+// ══════════════════════════════════════════
+//  LINE 全文預覽
+// ══════════════════════════════════════════
+function openLineFullPreview(){
+  const src = $("line-txt");
+  const tgt = $("line-full-text");
+  if(!src || !tgt) return;
+  // 取純文字（ch-prev 裡面是 <pre>/純文字結構）
+  tgt.textContent = src.innerText || src.textContent || "";
+  openModal("lineFullModal");
+}
+
+// ══════════════════════════════════════════
+//  Bonus 列重置（解除凍結、恢復系統生成）
+// ══════════════════════════════════════════
+function resetBonusItem(btn){
+  const item = btn.closest(".bonus-item");
+  if(!item) return;
+  item.dataset.frozen = "";
+  delete item.dataset.frozen;
+  if(typeof render==="function") render();
+  toast("已重置為系統預設");
+}
+
+// ── 雙向換算工具（5:1）──
+function convCalc(side, delta){
+  const ei=$("convElec"), mi=$("convMagic");
+  if(side==="elec"){
+    let v=(+ei.value||0)+delta;
+    if(v<0)v=0;if(v>20)v=20;
+    ei.value=v;mi.value=v*5;
+  }else{
+    let v=(+mi.value||0)+delta;
+    if(v<0)v=0;if(v>100)v=100;
+    v=Math.round(v/5)*5;
+    mi.value=v;ei.value=v/5;
+  }
+}
+
+// ── 將換算工具的值套用到「公司活動」input ──
+// 依當前 gift 類型決定用哪個值：選修 → convElec，魔法屋 → convMagic
+function applyConvToActivity(){
+  const gift=ST.childGift;
+  const elec=+$("convElec").value||0;
+  const magic=+$("convMagic").value||0;
+  const mode=window.LIMIT_MODE||"conservative";
+  const v = gift==="elec" ? elec : magic;
+  const [min,max] = gift==="elec" ? [1,3] : [5,15];
+  const unit = gift==="elec" ? "選修" : "魔法屋";
+
+  // 低於下限一律不套用（沒意義）
+  if(v<min){
+    toast(`⚠ 數值需 ≥ ${min}，請調整換算工具`);
+    return;
+  }
+
+  // 超過上限：依模式決定
+  if(v>max){
+    if(mode==="conservative"){
+      toast(`⚠ 公司活動${unit}加贈上限 ${max} 堂，請用「顧問爭取」或切換模式`);
+      return;
+    }else if(mode==="reminder"){
+      const ok=confirm(`公司活動-${unit}加贈一般上限為 ${max} 堂，目前換算工具為 ${v} 堂已超過。\n\n按「確定」＝已確認此為特殊授權、直接套用\n按「取消」＝放棄套用`);
+      if(!ok) return;
+      _actAmtApproved=true;  // 同步跟 guardActAmt 的核准 flag
+    }
+    // free 模式 → 靜默放行
+  }
+
+  // 魔法屋 5 倍數：保守/提醒模式強制收斂、自由模式放行
+  let finalVal = v;
+  if(gift==="magic" && v%5!==0 && mode!=="free"){
+    finalVal = Math.round(v/5)*5;
+    toast(`已自動收斂為 5 倍數：${finalVal} 魔法屋`);
+  }
+
+  $("actAmt").value = finalVal;
+  _actAmtLast = finalVal;
+  render();
+  toast("已套用到公司活動 ✓");
+}
+
+// ── 每週頻率 pill：單選或相鄰雙選（最多 2 顆）──
+// 主要頻率規則：單選→唯一那顆；雙選→較高的那顆為主要（深色）
+function toggleFreq(n){
+  const cur=ST.freq.slice().sort((a,b)=>a-b);
+  let next;
+  if(cur.includes(n)){
+    // 取消該顆
+    next=cur.filter(x=>x!==n);
+    if(next.length===0) next=[n];  // 至少保留自己
+  }else if(cur.length===1){
+    const only=cur[0];
+    if(Math.abs(n-only)===1){
+      // 相鄰 → 變成雙選
+      next=[only,n].sort((a,b)=>a-b);
+    }else{
+      // 非相鄰 → 取消舊的、只留新的
+      next=[n];
+    }
+  }else{
+    // 已兩顆，點新的 → 重置為單選
+    next=[n];
+  }
+  ST.freq=next;
+  // 更新 UI：主要 pill = 較高值那顆（單選就是唯一那顆）
+  const primary=Math.max.apply(null, ST.freq);
+  document.querySelectorAll("#freqPills .pill[data-freq]").forEach(b=>{
+    const f=+b.dataset.freq;
+    const on=ST.freq.includes(f);
+    b.classList.toggle("on", on);
+    b.classList.toggle("on-primary", on && f===primary);
+  });
+  const lbl=$("freqLabel");
+  if(lbl){
+    lbl.textContent = ST.freq.length===1
+      ? `每週 ${ST.freq[0]} 堂`
+      : `每週 ${ST.freq[0]}~${ST.freq[1]} 堂`;
+  }
+  render();
+}
+
+// ── Unicode combining strikethrough（U+0336）— 給 Email/CRM 純文字 ──
+function _strike(s){
+  return String(s||"").split("").map(function(ch){ return ch + "\u0336"; }).join("");
+}
+// ── LINE 專用：括號「原」標注（Mobile / Desktop App 渲染一致，無依賴特殊符號） ──
+function _strikeLine(s){
+  var raw = String(s||"").trim();
+  if(!raw) return "";
+  return "(原 " + raw + ")";
+}
+// ── 取得頻率顯示字串（給 Card / Line / Email / CRM / PPT 用）──
+function getFreqStr(){
+  return ST.freq.length===1 ? `${ST.freq[0]}` : `${ST.freq[0]}~${ST.freq[1]}`;
+}
+// ── 取得頻率代表值（給 SMS 等需要單一數字的場合，取較高值）──
+function getFreqMax(){
+  return Math.max.apply(null, ST.freq);
+}
+function onLabelChg(){$("discountCustom").style.display=$("discountLabel").value==="自訂..."?"block":"none";render();}
+function clampBiz(){const p=PLANS[$("planSel").value];const e=$("bizAmt");if(+e.value>p.bizMax)e.value=p.bizMax;if(+e.value<0)e.value=0;}
+
+function render(){
+  const planName=$("planSel").value, plan=PLANS[planName];
+  const freq=getFreqStr();
+  const name=$("studentName").value||"學員姓名";
+  {const _cn=$("sf-cn-name");if(_cn&&!_cn.dataset.edited)_cn.value=$("studentName").value||"";}
+  const parent=$("parentName").value||"家長";
+  const stSel=$("sessionType").value;
+  const sessionType=stSel==="__custom__"?($("sessionCustom").value||"體驗"):stSel;
+  $("sessionCustom").style.display=stSel==="__custom__"?"block":"none";
+  const note=$("note").value;
+  const consultant=$("consultant").value||"Wolf 黃";
+  const phone=$("cphone").value;
+  const email=$("cemail").value;
+  const lineId=$("lineId").value;
+  const deadline=$("deadline").value;
+  const days=daysLeft(deadline);
+  const urgent=days<=2;
+
+  // Discount
+  const pct=Math.min(99,Math.max(50,+$("discountPct").value||80));
+  const fold=pct%10===0?`${pct/10}折`:`${pct}%`;
+  $("discountFold").textContent=fold;
+  const lsel=$("discountLabel").value;
+  const dlabel=lsel==="自訂..."?($("discountCustom").value||"限時優惠"):lsel;
+  // plan.monthly 是已折後價，逆推原架
+  const origMonthly=Math.round(plan.monthly/(pct/100));
+  const monthly=ST.discount?plan.monthly:origMonthly;
+  $("discountHint").textContent=ST.discount?`優惠月付款：NT$ ${comma(plan.monthly)}（原架 NT$ ${comma(origMonthly)}）`:"";
+
+  // Biz
+  $("bizAmt").max=plan.bizMax;
+  $("bizMax").textContent=plan.bizMax;
+  const bizAmt=Math.min(plan.bizMax,Math.max(0,+$("bizAmt").value||0));
+  const bizRem=plan.bizMax-bizAmt;
+  $("bizFill").style.width=(plan.bizMax>0?bizAmt/plan.bizMax*100:0)+"%";
+  $("bizChip").textContent=`剩 ${bizRem} 堂`;
+  $("bizChip").className="chip"+(bizRem===0?" zero":"");
+
+  // Sidebar hints
+  // sub-cd 元素已於 v5.7.2 移除，保留此註解以免遺忘舊邏輯位置
+  $("sub-lump").textContent=`+${plan.lump}堂選修課`;
+  $("priceHint").innerHTML=ST.discount
+    ?`月付款：<s style="opacity:.55">NT$ ${comma(origMonthly)}</s> → <strong>NT$ ${comma(plan.monthly)}</strong>（${fold}）`
+    :`月付款：NT$ ${comma(origMonthly)}`;
+  $("dlHint").textContent=days>0?`剩餘 ${days} 天`:days===0?"今日截止 ⚠":"已過期 ✗";
+  $("dlHint").className="hint"+(urgent?" warn":"");
+
+  // Bonuses
+  const bonuses=[];
+  if(ST.discount) bonuses.push({slot:"discount",label:dlabel,
+    val:`<s style="opacity:.5">NT$ ${comma(origMonthly)}</s> → NT$ ${comma(plan.monthly)}（${fold}）`,
+    valPlain:`${_strike("NT$ "+comma(origMonthly))} → NT$ ${comma(plan.monthly)}（${fold}）`,
+    valPlainLine:`${_strikeLine("NT$ "+comma(origMonthly))} → NT$ ${comma(plan.monthly)}（${fold}）`,
+    color:"#185FA5",bg:"#E6F1FB",bc:"#B5D4F4"});
+  if(ST.biz&&bizAmt>0) bonuses.push({slot:"biz",label:"課程顧問特別加贈",val:`+${bizAmt} 堂魔法屋`,color:"#042C53",bg:"#F0EFE9",bc:"#E0DFD8"});
+  // ── 活動加贈（合併列：公司活動 ＋ 顧問爭取 ＝ 合計，全部鎖同單位）──
+  const bargainN=Math.max(0,+($("bargainAmt")?.value||0));
+  let activityLabel="", activityVal="";  // 給 CRM 重用
+  if(ST.childrensDay || bargainN>0){
+    const actAmt = ST.childrensDay ? Math.max(0,+$("actAmt").value||0) : 0;
+    const unit   = ST.childGift==="magic" ? "魔法屋" : "選修";
+    // 單位鎖定：公司活動 + 顧問爭取 皆為當前單位，直接相加
+    const total  = actAmt + bargainN;
+
+    // ── label 規則 ──
+    // 勾選 OFF → 中性詞；勾選 ON + 已套用 → 自訂詞
+    const activityName = _getActivityName();  // 勾選 OFF 或未套用 → 空字串
+    let val, valPlain, label;
+    if(bargainN>0 && ST.childrensDay){
+      val = `<span class="act-expr">`+
+        `<span class="act-chip act-chip-company">公司</span>`+
+        `<span class="act-num">+${actAmt} ${unit}</span>`+
+        `<span class="act-op">＋</span>`+
+        `<span class="act-chip act-chip-bargain">爭取</span>`+
+        `<span class="act-num">+${bargainN} ${unit}</span>`+
+        `<span class="act-divider"></span>`+
+        `<span class="act-sum-eq">＝</span>`+
+        `<span class="act-sum-label">合計</span>`+
+        `<span class="act-sum-val">${total} ${unit}</span>`+
+        `</span>`;
+      valPlain = `公司活動 (+${actAmt}${unit}) ＋ 顧問爭取 (+${bargainN}${unit})\n                          ↓\n                   ＝ 合計 ${total}${unit}`;
+      label = activityName ? `本次${activityName}合計` : "本次活動合計";
+    }else if(bargainN>0){
+      // 公司活動 OFF、只有爭取 → 沿用「顧問爭取加贈」（不受自訂名稱影響）
+      val = `顧問爭取 +${bargainN} ${unit}`;
+      valPlain = val;
+      label = "顧問爭取加贈";
+    }else{
+      // 只有公司活動
+      val = `+${actAmt} 堂${unit}`;
+      valPlain = val;
+      label = activityName || `公司活動-${unit}`;
+    }
+    activityLabel=label; activityVal=valPlain;
+    bonuses.push({slot:"activity",label:label,val:val,valPlain:valPlain,color:"#B85A10",bg:"#FEF0E2",bc:"#F5C080"});
+    // sub-cd 已於 v5.7.2 移除
+  }
+  if(!ST.regFee) bonuses.push({slot:"regFee",label:"報名費全額減免",val:"省 NT$ 2,888",color:"#3B6D11",bg:"#EAF3DE",bc:"#C5E0A8"});
+  if(ST.lumpSum) bonuses.push({slot:"lump",label:"一次付清加贈",val:`+${plan.lump} 堂選修課`,color:"#3B6D11",bg:"#EAF3DE",bc:"#C5E0A8"});
+
+  // Card reg fee line
+  if(ST.regFee){
+    $("c-regfee").textContent="+ 報名費 NT$ 2,888";
+    $("c-regfee").style.color="var(--mid)";
+  }else{
+    $("c-regfee").innerHTML='報名費 <s style="opacity:.55">NT$ 2,888</s> → <span>免費</span> 🎉';
+    $("c-regfee").style.color="#86EFAC";
+  }
+
+  // Card
+  $("c-name").textContent=name+" 的專屬學習方案";
+  // update subtitle with session type (only if not manually edited)
+  const subEl=document.querySelector(".c-sub");
+  if(subEl) subEl.textContent=`課程顧問已為您整理本次${sessionType}課程內容，請供參考`;
+  $("c-plan").textContent=planName;
+  $("c-freq").textContent=`24 個月合約・建議至少每週 ${freq} 堂`;
+  if(ST.discount){
+    $("c-price").innerHTML=`<s style="font-size:.58em;opacity:.5;display:block;line-height:1.3;margin-bottom:1px;font-weight:400">NT$ ${comma(origMonthly)}</s>NT$ ${comma(plan.monthly)}`;
+  }else{
+    $("c-price").textContent=`NT$ ${comma(origMonthly)}`;
+  }
+  const ann=$("c-ann");
+  if(ST.discount){ann.style.display="block";ann.textContent=dlabel+" 限定價";}else ann.style.display="none";
+  $("c-consultant").textContent=consultant;
+  const cp=[phone];if(lineId)cp.push(`LINE：${lineId}`);if(email)cp.push(email);
+  $("c-contact").innerHTML=cp.join("<br>");
+
+  const bEl=$("c-bonuses");
+  if(bonuses.length){
+    bEl.style.display="block";
+    // ── 凍結保留：已被編輯（data-frozen="1"）的列重渲染時不覆蓋 ──
+    const frozenMap = {};
+    bEl.querySelectorAll('.bonus-item[data-frozen="1"]').forEach(el=>{
+      const slot = el.dataset.slot;
+      if(slot) frozenMap[slot] = el.outerHTML;
+    });
+    const header = `<div class="c-ey2 ce-lt" contenteditable="true" spellcheck="false">本次優惠加贈</div>`;
+    bEl.innerHTML = header + bonuses.map(b=>{
+      if(frozenMap[b.slot]) return frozenMap[b.slot];
+      const isExpr = b.slot==="activity" && b.val.indexOf("act-expr")>=0;
+      const plainAttr = b.valPlain ? ` data-plain="${b.valPlain.replace(/"/g,"&quot;").replace(/\n/g,"&#10;")}"` : "";
+      const resetBtn = `<button type="button" class="bonus-reset" data-no-capture onclick="resetBonusItem(this)" title="重置此列為系統預設">🔄 重置</button>`;
+      if(isExpr){
+        return `
+      <div class="bonus-item" data-slot="${b.slot}"${plainAttr} style="background:${b.bg};border-color:${b.bc};padding:10px 14px;flex-direction:column;align-items:stretch;gap:8px">
+        ${resetBtn}
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:13px;font-weight:700;color:${b.color};flex-shrink:0">✓</span>
+          <span class="b-label ce-lt" contenteditable="true" spellcheck="false" style="font-size:12px;font-weight:600;color:${b.color};flex-shrink:0;white-space:nowrap">${b.label}</span>
+        </div>
+        <div class="b-val ce-lt" contenteditable="true" spellcheck="false" style="padding-left:24px">${b.val}</div>
+      </div>`;
+      }
+      return `
+      <div class="bonus-item" data-slot="${b.slot}"${plainAttr} style="background:${b.bg};border-color:${b.bc}">
+        ${resetBtn}
+        <span style="font-size:13px;font-weight:700;color:${b.color};flex-shrink:0">✓</span>
+        <span class="b-label ce-lt" contenteditable="true" spellcheck="false" style="font-size:12px;font-weight:600;color:${b.color};flex-shrink:0;white-space:nowrap">${b.label}</span>
+        <span class="b-val ce-lt" contenteditable="true" spellcheck="false" style="font-size:12px;color:var(--t2);white-space:nowrap;line-height:1.45">　${b.val}</span>
+      </div>`;
+    }).join("");
+
+    // 綁定 input → 第一次編輯即凍結該列
+    bEl.querySelectorAll('.bonus-item').forEach(item=>{
+      if(item.dataset.boundFreeze==="1") return;
+      item.dataset.boundFreeze="1";
+      item.querySelectorAll('[contenteditable="true"]').forEach(ce=>{
+        ce.addEventListener('input', function(){
+          if(item.dataset.frozen !== "1"){
+            item.dataset.frozen = "1";
+          }
+          // 觸發 syncCard（LINE/MAIL 同步吃編輯後純文字）
+          if(typeof syncCard==="function") syncCard();
+        });
+      });
+    });
+  } else bEl.style.display="none";
+
+  $("dl-lbl").style.color=urgent?"var(--red)":"var(--amber)";
+  $("dl-date").textContent=fmtDate(deadline);
+  $("c-deadline").style.background=urgent?"var(--rl)":"var(--al)";
+  $("c-deadline").style.borderBottom=`1px solid ${urgent?"#F09595":"#F0D090"}`;
+  $("dl-badge").style.background=urgent?"var(--red)":"var(--amber)";
+  $("dl-badge").textContent=`剩 ${Math.max(0,days)} 天`;
+  if(note){$("c-note").style.display="block";$("note-txt").textContent=note;}else $("c-note").style.display="none";
+
+  // Text helpers — 若 bonus 列被編輯凍結則抓 DOM 純文字，否則用 valPlain
+  function _bonusItemPlain(itemEl, fallback){
+    if(!itemEl) return fallback;
+    const clone = itemEl.cloneNode(true);
+    clone.querySelectorAll('.bonus-reset,[data-no-capture]').forEach(el=>el.remove());
+    clone.querySelectorAll('br').forEach(br=>br.replaceWith('\n'));
+    const label = (clone.querySelector('.b-label')?.innerText || '').trim();
+    const valEl = clone.querySelector('.b-val');
+    let valText = '';
+    if(valEl){
+      valText = (valEl.innerText || '').replace(/\u3000/g,' ').trim();
+    }else{
+      valText = clone.innerText.replace(label,'').trim();
+    }
+    if(!label && !valText) return fallback;
+    return label ? `${label}：${valText}` : valText;
+  }
+  const _bItems = $("c-bonuses").querySelectorAll('.bonus-item');
+  const bonusTxt = bonuses.length
+    ? bonuses.map(b=>{
+        const itemEl = Array.from(_bItems).find(el=>el.dataset.slot===b.slot);
+        if(itemEl && itemEl.dataset.frozen==="1"){
+          const plain = _bonusItemPlain(itemEl, null);
+          if(plain) return `• ${plain}`;
+        }
+        return `• ${b.label}：${b.valPlain||b.val}`;
+      }).join("\n")
+    : "（本次無額外加贈）";
+  const contactBlock=`${consultant}\n${phone}${lineId?`\nLINE ID：${lineId}`:""}${email?`\n${email}`:""}`;
+
+  const regFeeLine=ST.regFee?"（+ 報名費 $2,888）":"（報名費全額減免 🎉）";
+
+  const blankAppend=appendBlankToChannels?"\n\n"+getFilledStudentText():"";
+  const blankAppendLine=appendBlankToChannels?"\n\n─────────\n"+getFilledStudentText():"";
+
+  // ══ LINE v5.7.6 新格式 ══
+  // 折扣月付款行
+  const linePriceLine = ST.discount
+    ? `${_strikeLine("NT$ "+comma(origMonthly))} → NT$ ${comma(plan.monthly)}（${fold}）`
+    : `NT$ ${comma(monthly)}`;
+
+  // 月付款下方額外一行（免報名費提示，僅在減免時顯示）
+  const lineRegFeeExtra = ST.regFee ? "" : "\n🎉報名費全額減免";
+
+  // 加贈列分行規則（按 slot 寫死）：
+  //   discount → 3 行（label / 原價 / 優惠價）
+  //   activity → 若是複合算式用原 valPlain（多行），否則 2 行
+  //   regFee / biz → 2 行
+  //   lump → 1 行（label：value）
+  function _lineBonusItem(b, itemEl){
+    // 若使用者編輯凍結該列 → 優先用 DOM 純文字
+    if(itemEl && itemEl.dataset.frozen==="1"){
+      const plain = _bonusItemPlain(itemEl, null);
+      if(plain) return `▪️ ${plain}`;
+    }
+    if(b.slot === "discount"){
+      // 3 行：label / (原 X) / → Y（X 折）
+      // valPlainLine 形如「(原 NT$ 3,563) → NT$ 2,850（8折）」切開
+      const parts = (b.valPlainLine || b.valPlain || "").split(/\s*→\s*/);
+      if(parts.length === 2){
+        return `▪️ ${b.label}\n${parts[0].trim()}\n→ ${parts[1].trim()}`;
+      }
+      // 無法切 → 退 2 行
+      return `▪️ ${b.label}\n${b.valPlainLine || b.valPlain || b.val}`;
+    }
+    if(b.slot === "activity"){
+      // 若 valPlain 含換行（公司+爭取合計算式） → 保留多行、label 在頭
+      const v = b.valPlain || b.val;
+      if(v.indexOf("\n") >= 0){
+        return `▪️ ${b.label}\n${v}`;
+      }
+      // 單純情境 → 2 行
+      return `▪️ ${b.label}\n${v}`;
+    }
+    if(b.slot === "regFee" || b.slot === "biz"){
+      return `▪️ ${b.label}\n${b.valPlain || b.val}`;
+    }
+    // lump 或其他 → 同行（全形冒號連接）
+    return `▪️ ${b.label}：${b.valPlain || b.val}`;
+  }
+
+  const bonusTxtLine = bonuses.length
+    ? bonuses.map(b => {
+        const itemEl = Array.from(_bItems).find(el => el.dataset.slot === b.slot);
+        return _lineBonusItem(b, itemEl);
+      }).join("\n\n")  // 列與列之間空一行
+    : "（本次無額外加贈）";
+
+  // 組裝最終文字
+  const SEP = "─────────";
+  const linePartPlan = `${SEP}\n📌 方案\n${SEP}\n【${planName}】 每週約 ${freq} 堂\n💰 月付款：${linePriceLine}${lineRegFeeExtra}`;
+  const linePartBonus = bonuses.length
+    ? `\n\n${SEP}\n🎁 加贈\n${SEP}\n${bonusTxtLine}`
+    : "";
+  const linePartDeadline = `\n\n${SEP}\n⏰ 優惠截止\n${SEP}\n${fmtDate(deadline)}（剩 ${Math.max(0,days)} 天）\n（體驗課後 7 日內簽約）`;
+  const linePartSign = `\n\n${SEP}\n有問題隨時找我！\n${contactBlock}`;
+
+  $("line-txt").textContent =
+    `Hi ${parent}！這是 ${name} 的\nETalking 線上英語課程 參考方案`
+    + "\n" + linePartPlan
+    + linePartBonus
+    + linePartDeadline
+    + linePartSign
+    + blankAppendLine;
+
+  // Email
+  const es=`【ETalking Kids】${name} 的專屬學習方案確認`;
+  const eb=`${parent}，您好：\n\n感謝您今天撥冗體驗 ETalking Kids！以下是為 ${name} 規劃的專屬方案，請確認：\n\n━━ 課程方案 ━━\n方案：${planName}\n每週頻率：${freq} 堂\n合約期間：24 個月\n月付款：${ST.discount?`${_strike("NT$ "+comma(origMonthly))} → NT$ ${comma(plan.monthly)}（${fold}，24 期零利率分期）`:`NT$ ${comma(monthly)}（24期零利率分期）`}\n報名費：${ST.regFee?"NT$ 2,888（一次收取）":"全額減免（省 NT$2,888）"}\n${bonuses.length?"\n━━ 本次優惠加贈 ━━\n"+bonusTxt+"\n":""}\n━━ 優惠截止日 ━━\n${fmtDate(deadline)}（${days>0?`剩餘 ${days} 天`:days===0?"今日截止，請盡快確認":"已過期，請聯繫課程顧問"}）
+（體驗課後 7 日內簽約）\n${note?"\n━━ 顧問備註 ━━\n"+note+"\n":""}\n━━ 報名流程 ━━\n① 確認方案與付款方式\n② 填寫學員基本資料\n③ 課程顧問產出合約，線上簽署確認\n④ 刷卡完成，排定首課時間\n\n如有任何問題，歡迎隨時聯繫！\n\n${contactBlock}\n\nLearning is fun! 成就孩子的無限可能！\n——————————\nETalking Kids`+blankAppend;
+  $("email-prev").textContent=eb.split("\n").slice(0,4).join("\n")+(appendBlankToChannels?"\n…（末尾含學員基本資料）":"…");
+  $("modal-subj").textContent=es;
+  $("modal-body").textContent=eb;
+
+  // SMS ≤70 chars
+  const sms=`ETalking ${name}/${planName}${freq}堂$${plan.monthly}截${shortDate(deadline)} LINE:${lineId}`;
+  $("sms-txt").textContent=sms;
+  const sl=sms.length;
+  $("sms-cnt").textContent=`${sl} / 70 字元`;
+  $("sms-cnt").className="hint"+(sl>70?" warn":"");
+
+  // CRM
+  $("crm-body").textContent=
+`━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ETalking Kids  課程顧問內部備忘
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+紀錄日期：${todayStr()}
+學員姓名：${name}
+稱呼家長：${parent}
+方案：${planName}　每週 ${freq} 堂　24 個月合約
+原架月付款：NT$ ${comma(origMonthly)}
+優惠月付款：NT$ ${comma(plan.monthly)}（${fold}）
+
+【本次提供優惠】
+${ST.discount?`✓ 折扣（${dlabel}）：${_strike("NT$ "+comma(origMonthly))} → NT$ ${comma(plan.monthly)}/月（${fold}）`:"✗ 未使用折扣（月付款 NT$ "+comma(origMonthly)+"）"}
+${ST.biz&&bizAmt>0?`✓ 課程顧問特別加贈：魔法屋 +${bizAmt} 堂`:"✗ 課程顧問加贈：本次未使用"}
+${(ST.childrensDay||bargainN>0)?`✓ ${activityLabel}：${activityVal}`:"✗ 活動加碼：未使用"}
+${ST.lumpSum?`✓ 一次付清加贈：選修 +${plan.lump}堂`:"✗ 一次付清加贈：未使用"}
+${ST.regFee?`✗ 報名費：正常收取 NT$ 2,888`:`✓ 報名費全額減免（省 NT$ 2,888）`}
+
+【課程顧問加贈剩餘額度】
+本方案總額度：${plan.bizMax} 堂魔法屋
+本次已使用：${bizAmt} 堂
+★ 保留額度：${bizRem} 堂 ← 下次 Demo 或特殊情況可動用
+
+【優惠截止日】
+${fmtDate(deadline)}（剩 ${Math.max(0,days)} 天）
+（體驗課後 7 日內簽約）
+
+【備註】
+${note||"（無）"}
+
+【學員狀態】  □ 試聽 □ Demo完成 □ 已成交 □ 考慮中 □ 未成交
+【下次跟進】
+_______________________________________________
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+課程顧問：${consultant}
+${phone}${lineId?`  LINE：${lineId}`:""}${blankAppend?"\n\n"+blankAppend:""}`;
+
+  window._D={es,eb,name,monthly};
+
+  // 套回自訂樣式並初始化調色按鈕
+  reapplyStyles();
+  applyTextStyles();
+}
+
+["emailModal","crmModal"].forEach(id=>$(id).addEventListener("click",e=>{if(e.target===$(id))closeModal(id);}));
+
+async function getImg(){
+  if(!window.html2canvas){toast("載入中...");return;}
+  toast("產生圖片中...");
+  try{
+    const c=await buildCanvas();
+    const a=document.createElement("a");a.download=`ETalking_${(window._D&&window._D.name)||"學員"}.png`;
+    a.href=c.toDataURL("image/png");a.click();toast("圖片下載完成 ✓");
+  }catch(e){toast("失敗："+e.message);}
+}
+
+async function copyImg(){
+  if(!window.html2canvas){toast("載入中...");return;}
+  toast("複製圖片中...");
+  try{
+    const c=await buildCanvas();
+    c.toBlob(async blob=>{
+      try{
+        await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);
+        toast("圖片已複製到剪貼簿 ✓");
+      }catch(e){toast("複製失敗（需 HTTPS 或允許剪貼簿權限）");}
+    },"image/png");
+  }catch(e){toast("失敗："+e.message);}
+}
+
+function getPPTX(){
+  if(!window.PptxGenJS){toast("載入中...");return;}
+  const D=window._D||{};
+  const note=$("note").value;
+  const planName=$("planSel").value, plan=PLANS[planName];
+  const freq=getFreqStr(), name=D.name||"學員";
+  const consultant=$("consultant").value, phone=$("cphone").value;
+  const lineId=$("lineId").value, email=$("cemail").value;
+  const deadline=$("deadline").value, days=daysLeft(deadline);
+  const urgent=days<=2;
+  const stSel=$("sessionType").value;
+  const sessionType=stSel==="__custom__"?($("sessionCustom").value||"體驗"):stSel;
+
+  // ── 價格計算（與 render() 一致）──
+  const pct=Math.min(99,Math.max(50,+$("discountPct").value||80));
+  const fold=pct%10===0?`${pct/10}折`:`${pct}%`;
+  const lsel=$("discountLabel").value;
+  const dlabel=lsel==="自訂..."?($("discountCustom").value||"限時優惠"):lsel;
+  const origMonthly=Math.round(plan.monthly/(pct/100));
+  const monthly=ST.discount?plan.monthly:origMonthly;
+
+  // ── bonus slot 顏色對照表（與 render() 相同）──
+  const SLOT_CLR={
+    discount:{bg:"E6F1FB",bc:"B5D4F4",tc:"185FA5"},
+    regFee:  {bg:"EAF3DE",bc:"C5E0A8",tc:"3B6D11"},
+    biz:     {bg:"F0EFE9",bc:"E0DFD8",tc:"042C53"},
+    activity:{bg:"FEF0E2",bc:"F5C080",tc:"B85A10"},
+    lump:    {bg:"EAF3DE",bc:"C5E0A8",tc:"3B6D11"},
+  };
+
+  // ── 從 DOM 抓 bonus 資訊（含 <s> 刪除號偵測）──
+  const bonuses=[];
+  $("c-bonuses").querySelectorAll(".bonus-item[data-slot]").forEach(el=>{
+    const slot=el.dataset.slot;
+    const lbl=(el.querySelector(".b-label")?.innerText||"").trim();
+    const valEl=el.querySelector(".b-val");
+    const sEl=valEl?.querySelector("s");
+    const strikeText=sEl?.textContent?.trim()||"";
+    // 結構化算式列 → 讀 data-plain；其他 → 讀 innerText
+    const fullText=(el.getAttribute("data-plain") || valEl?.innerText || "").trim();
+    bonuses.push({slot,label:lbl,fullText,strikeText,clr:SLOT_CLR[slot]||SLOT_CLR.biz});
+  });
+
+  const headCol=elHex("c-head","042C53");
+  const heroCol=elHex("c-hero","185FA5");
+
+  toast("產生 PPTX...");
+  const pres=new PptxGenJS(); pres.layout="LAYOUT_16x9";
+  const s=pres.addSlide(); s.background={color:"F7F6F3"};
+  const F="Microsoft JhengHei";
+
+  /* ════════════════════════════════
+     左欄：卡片主體（寬 3.92"）
+  ════════════════════════════════ */
+  const CW=3.92;
+
+  // ── c-head 背景
+  s.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:CW,h:5.625,fill:{color:headCol},line:{color:headCol}});
+
+  // ── 標題區
+  s.addText("ETALKING KIDS",{x:.2,y:.2,w:CW-.25,h:.2,fontSize:8,color:"B5D4F4",fontFace:F,charSpacing:4,bold:false});
+  s.addText(`${name} 的專屬學習方案`,{x:.2,y:.38,w:CW-.25,h:.56,fontSize:17,bold:true,color:"FFFFFF",fontFace:F,wrap:true});
+  s.addText(`課程顧問已為您整理本次${sessionType}課程內容，請供參考`,
+    {x:.2,y:.95,w:CW-.25,h:.26,fontSize:9,color:"B5D4F4",fontFace:F});
+
+  // ── c-hero 方案區（深藍背景）
+  const HY=1.26, HH=2.18;
+  s.addShape(pres.shapes.RECTANGLE,{x:0,y:HY,w:CW,h:HH,fill:{color:heroCol},line:{color:heroCol}});
+
+  // 確認方案 label
+  s.addText("確認方案",{x:.2,y:HY+.1,w:1.6,h:.19,fontSize:8.5,color:"B5D4F4",fontFace:F});
+  // 方案名稱
+  s.addText(planName,{x:.2,y:HY+.27,w:2.0,h:.44,fontSize:22,bold:true,color:"FFFFFF",fontFace:F});
+  // 頻率
+  s.addText(`24 個月合約・建議至少每週 ${freq} 堂`,
+    {x:.2,y:HY+.72,w:CW-.3,h:.2,fontSize:9,color:"B5D4F4",fontFace:F});
+
+  // 月付款 label（右對齊）
+  s.addText("月付款（24期零利率）",{x:.1,y:HY+.98,w:CW-.2,h:.2,fontSize:9,color:"B5D4F4",fontFace:F,align:"right"});
+
+  // 價格（有折扣時顯示刪除號）
+  if(ST.discount){
+    // 原架刪除號
+    s.addText([{text:`NT$ ${comma(origMonthly)}`,options:{strike:true,fontSize:12,color:"B5D4F4",bold:false}}],
+      {x:.1,y:HY+1.16,w:CW-.2,h:.22,fontFace:F,align:"right"});
+    // 折扣後大字
+    s.addText(`NT$ ${comma(monthly)}`,
+      {x:.1,y:HY+1.36,w:CW-.2,h:.46,fontSize:24,bold:true,color:"FFFFFF",fontFace:F,align:"right"});
+    // 折扣 label
+    s.addText(`${dlabel} 限定價`,
+      {x:.1,y:HY+1.82,w:CW-.2,h:.2,fontSize:9,color:"E6F1FB",fontFace:F,align:"right",italic:true});
+  }else{
+    s.addText(`NT$ ${comma(origMonthly)}`,
+      {x:.1,y:HY+1.14,w:CW-.2,h:.7,fontSize:26,bold:true,color:"FFFFFF",fontFace:F,align:"right"});
+  }
+
+  // 報名費行（hero 下方）
+  const RFY=HY+HH+.06;
+  if(ST.regFee){
+    s.addText("+ 報名費 NT$ 2,888",{x:.1,y:RFY,w:CW-.15,h:.22,fontSize:9.5,color:"B5D4F4",fontFace:F,align:"right"});
+  }else{
+    s.addText([
+      {text:"報名費 NT$ 2,888",options:{strike:true,fontSize:9.5,color:"86EFAC"}},
+      {text:"  →  免費 🎉",    options:{fontSize:9.5,color:"FFFFFF",bold:true}},
+    ],{x:.1,y:RFY,w:CW-.15,h:.22,fontFace:F,align:"right"});
+  }
+
+  // ── 顧問資訊（左欄底部）
+  const FTY=4.72;
+  s.addShape(pres.shapes.LINE,{x:.2,y:FTY,w:CW-.3,h:0,line:{color:"1A4A7A",width:1}});
+  s.addText(consultant,{x:.2,y:FTY+.07,w:CW-.3,h:.28,fontSize:12,bold:true,color:"FFFFFF",fontFace:F});
+  const cLines=[phone, lineId?`LINE：${lineId}`:"", email].filter(Boolean).join("  ");
+  s.addText(cLines,{x:.2,y:FTY+.35,w:CW-.3,h:.42,fontSize:9,color:"B5D4F4",fontFace:F,wrap:true});
+
+  /* ════════════════════════════════
+     右欄：加贈 + 截止日 + 流程
+  ════════════════════════════════ */
+  const RX=4.04, RW=5.72;
+  let ry=.16;
+
+  // ── bonus 列表
+  if(bonuses.length){
+    s.addText("本次優惠加贈",{x:RX,y:ry,w:RW,h:.22,fontSize:9,bold:true,color:"9C9B96",fontFace:F,charSpacing:1});
+    ry+=.28;
+    bonuses.forEach(b=>{
+      const c=b.clr;
+      // 活動合計列含完整算式（公司+爭取）→ 雙行特殊版面；其他列維持單行
+      const isActivityExpr = b.slot==="activity" && /公司活動.*顧問爭取/.test(b.fullText);
+      const BH = isActivityExpr ? 0.92 : 0.44;
+      s.addShape(pres.shapes.RECTANGLE,{x:RX,y:ry,w:RW,h:BH,fill:{color:c.bg},line:{color:c.bc,width:.5}});
+
+      if(isActivityExpr){
+        // ── 仿卡片：上排 label、下排算式（chip + 數字 + 虛線 + 合計）──
+        // 1. 上排：✓ + label
+        s.addText("✓",{x:RX+.1,y:ry+.06,w:.3,h:.3,fontSize:13,bold:true,color:c.tc,fontFace:F,valign:"middle"});
+        s.addText(b.label,{x:RX+.38,y:ry+.06,w:RW-.5,h:.3,fontSize:11,bold:true,color:c.tc,fontFace:F,valign:"middle"});
+
+        // 2. 解析 fullText，取出公司/爭取數字與單位、合計
+        //    範例：「公司活動 (+13選修) ＋ 顧問爭取 (+11選修)\n  ↓\n  ＝ 合計 24選修」
+        const mCompany = b.fullText.match(/公司活動\s*\(\+(\d+)\s*(魔法屋|選修)\)/);
+        const mBargain = b.fullText.match(/顧問爭取\s*\(\+(\d+)\s*(魔法屋|選修)\)/);
+        const mTotal   = b.fullText.match(/合計\s*(\d+)\s*(魔法屋|選修)/);
+        const cN = mCompany ? mCompany[1] : "?";
+        const cU = mCompany ? mCompany[2] : "";
+        const bN = mBargain ? mBargain[1] : "?";
+        const bU = mBargain ? mBargain[2] : "";
+        const tN = mTotal   ? mTotal[1]   : "?";
+        const tU = mTotal   ? mTotal[2]   : "";
+
+        // 3. 下排：公司 chip + 數字 ＋ 爭取 chip + 數字 ＝ 合計 總數
+        //    為了視覺統一，用文字符號模擬卡片 chip
+        const yLine = ry + 0.44;
+        const row   = `〔公司〕+${cN} ${cU}  ＋  〔爭取〕+${bN} ${bU}    ＝  合計 ${tN} ${tU}`;
+        s.addText(row, {
+          x: RX+.38, y: yLine, w: RW-.5, h: .4,
+          fontSize: 10.5, color: c.tc, fontFace: F, valign: "middle", bold: false
+        });
+
+        ry += BH + .06;
+      }else if(b.slot==="discount"&&b.strikeText){
+        // 勾號
+        s.addText("✓",{x:RX+.1,y:ry,w:.3,h:BH,fontSize:13,bold:true,color:c.tc,fontFace:F,valign:"middle"});
+        s.addText(b.label,{x:RX+.38,y:ry,w:2.0,h:BH,fontSize:11,bold:true,color:c.tc,fontFace:F,valign:"middle"});
+        const VX=RX+2.42, VW=RW-2.5;
+        const afterPart=b.fullText.replace(b.strikeText,"").replace(/^\s*→?\s*/,"→ ").trim();
+        s.addText([
+          {text:b.strikeText,                options:{strike:true,fontSize:11,color:c.tc}},
+          {text:"  "+afterPart, options:{fontSize:11,color:c.tc}},
+        ],{x:VX,y:ry,w:VW,h:BH,fontFace:F,valign:"middle"});
+        ry+=.5;
+      }else{
+        // 一般單行列
+        s.addText("✓",{x:RX+.1,y:ry,w:.3,h:BH,fontSize:13,bold:true,color:c.tc,fontFace:F,valign:"middle"});
+        s.addText(b.label,{x:RX+.38,y:ry,w:2.0,h:BH,fontSize:11,bold:true,color:c.tc,fontFace:F,valign:"middle"});
+        const VX=RX+2.42, VW=RW-2.5;
+        s.addText(b.fullText,{x:VX,y:ry,w:VW,h:BH,fontSize:11,color:c.tc,fontFace:F,valign:"middle"});
+        ry+=.5;
+      }
+    });
+    ry+=.08;
+  }
+
+  // ── 截止日區塊
+  const DLH=.82;  // 加高容納 tagline
+  const dlBg=urgent?"FCEBEB":"FAEEDA";
+  const dlBd=urgent?"F09595":"F0D090";
+  const dlTc=urgent?"A32D2D":"BA7517";
+  s.addShape(pres.shapes.RECTANGLE,{x:RX,y:ry,w:RW,h:DLH,fill:{color:dlBg},line:{color:dlBd,width:1}});
+  s.addText("優惠截止日",{x:RX+.14,y:ry+.06,w:3,h:.22,fontSize:10,bold:true,color:dlTc,fontFace:F});
+  s.addText(fmtDate(deadline),{x:RX+.14,y:ry+.27,w:3.5,h:.28,fontSize:16,bold:true,color:"1A1A18",fontFace:F});
+  // tagline 小字（contenteditable 可修改，從 DOM 讀）
+  const dlTagTxt=($("dl-tagline")?.innerText||"").trim();
+  if(dlTagTxt){
+    s.addText(dlTagTxt,{x:RX+.14,y:ry+.56,w:3.5,h:.2,fontSize:8,italic:true,color:"9C9B96",fontFace:F});
+  }
+  // 剩N天徽章
+  const BDGW=.92, BDGH=.44, BDGX=RX+RW-BDGW-.1;
+  s.addShape(pres.shapes.ROUNDED_RECTANGLE,{x:BDGX,y:ry+(DLH-BDGH)/2,w:BDGW,h:BDGH,
+    fill:{color:urgent?"A32D2D":"BA7517"},line:{color:urgent?"A32D2D":"BA7517"},rectRadius:.06});
+  s.addText(`剩 ${Math.max(0,days)} 天`,{x:BDGX,y:ry+(DLH-BDGH)/2,w:BDGW,h:BDGH,
+    fontSize:11,bold:true,color:"FFFFFF",fontFace:F,align:"center",valign:"middle"});
+  ry+=DLH+.1;
+
+  // ── 備註
+  if(note){
+    s.addText(`備註：${note}`,{x:RX,y:ry,w:RW,h:.36,fontSize:11,color:"5C5B57",fontFace:F,italic:true,wrap:true});
+    ry+=.44;
+  }
+
+  // ── 報名流程
+  s.addText("報名流程",{x:RX,y:ry,w:RW,h:.22,fontSize:9,bold:true,color:"9C9B96",fontFace:F,charSpacing:1});
+  ry+=.28;
+  // 從 DOM 讀實際步驟文字（保留使用者的手動編輯）
+  const stepEls=document.querySelectorAll("#c-steps .step-row [contenteditable]");
+  const stepTexts=stepEls.length
+    ?[...stepEls].map(e=>e.innerText.trim())
+    :["確認方案與付款方式","填寫學員基本資料","課程顧問產出合約，線上簽署","刷卡完成，排定首課"];
+  stepTexts.forEach((step,i)=>{
+    const CY=ry+.025;
+    s.addShape(pres.shapes.OVAL,{x:RX,y:CY,w:.24,h:.24,fill:{color:"185FA5"},line:{color:"185FA5"}});
+    s.addText(String(i+1),{x:RX,y:CY,w:.24,h:.24,fontSize:9,bold:true,color:"FFFFFF",
+      align:"center",valign:"middle",fontFace:F,margin:0});
+    s.addText(step,{x:RX+.3,y:ry,w:RW-.32,h:.28,fontSize:11.5,color:"1A1A18",fontFace:F,valign:"middle"});
+    ry+=.34;
+  });
+
+  // ── 頁尾 tagline
+  s.addText("Learning is fun!",{x:RX,y:5.3,w:RW,h:.24,fontSize:10.5,color:"185FA5",fontFace:F,italic:true,align:"right"});
+
+  if(includeStudentCard) addStudentSlide(pres,name);
+  pres.writeFile({fileName:`ETalking_${name}.pptx`}).then(()=>toast("PPTX 下載完成 ✓"));
+}
+
+function addStudentSlide(pres, name){
+  const sd=getStudentData();
+  const F="Microsoft JhengHei";
+  const s2=pres.addSlide(); s2.background={color:"FFFFFF"};
+
+  // ── 標題列
+  s2.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:10,h:.72,fill:{color:"042C53"},line:{color:"042C53"}});
+  s2.addText("STUDENT BASIC INFO",{x:.3,y:.07,w:5,h:.2,fontSize:8,color:"B5D4F4",fontFace:F,charSpacing:4});
+  s2.addText(`${name} · 學員基本資料`,{x:.3,y:.28,w:6,h:.34,fontSize:16,bold:true,color:"FFFFFF",fontFace:F});
+  s2.addText("個人資料已依個資法遮蔽（僅供顧問留存）",
+    {x:5.5,y:.28,w:4.2,h:.34,fontSize:9,color:"B5D4F4",fontFace:F,align:"right",italic:true});
+
+  // ── 欄位定義（label / value 全部可在 PPT 內直接編輯；依 HIDDEN_FIELDS 過濾）
+  const allFields=[
+    ["cnName",     "中文名字",   maskPII(sd.cnName,"name-zh")||"—"],
+    ["guardian",   "法定代理人", maskPII(sd.guardian,"name-zh")||"—"],
+    ["enName",     "英文名字",   [maskPII(sd.enFirst,"name-en"),maskPII(sd.enLast,"name-en")].filter(Boolean).join(" ")||"—"],
+    ["id",         "身分證字號", maskPII(sd.id,"id-tw")||"—"],
+    ["dob",        "出生年月日", maskPII(sd.dob,"dob")||"—"],
+    ["addr",       "住家地址",   maskPII(sd.addr,"address")||"—"],
+    ["invAddr",    "發票地址",   maskPII(sd.invAddr,"address")||"—"],
+    ["invType",    "發票抬頭",   (sd.invType||(document.querySelector("#sf-inv-type .sc-pill.on")?.dataset.val||"個人"))
+                                +(sd.invName?" · "+maskPII(sd.invName,"name-org"):"")],
+    ["invItem",    "發票名目",   sd.invItem||(document.querySelector("#sf-inv-item .sc-pill.on")?.dataset.val||"線上課程")],
+    ["firstClass", "首課時間",   sd.firstClass||"—"],
+    ["envTest",    "環測時間",   sd.envTest||"—"],
+  ];
+  // 英文姓名特殊：en-first 與 en-last 都被隱藏才跳過整列
+  const fields = allFields.filter(([key])=>{
+    if(key==="enName") return !isFieldHidden("enFirst") || !isFieldHidden("enLast");
+    return !isFieldHidden(key);
+  }).map(([_,lbl,val])=>[lbl,val]);
+
+  const ROW_H=.42;
+  const LBL_W=1.6;
+  const VAL_X=1.95;
+  const VAL_W=7.75;
+  const START_Y=.88;
+
+  fields.forEach(([lbl,val],i)=>{
+    const fy=START_Y+i*ROW_H;
+    const rowBg=i%2===0?"F8F8F6":"FFFFFF";
+    // 交替行底色
+    s2.addShape(pres.shapes.RECTANGLE,{x:.25,y:fy,w:9.5,h:ROW_H-0.02,
+      fill:{color:rowBg},line:{color:"E8E7E0",width:.5}});
+    // label（不可編輯感）
+    s2.addText(lbl,{x:.35,y:fy,w:LBL_W,h:ROW_H,
+      fontSize:11,color:"9C9B96",fontFace:F,valign:"middle"});
+    // 分隔線
+    s2.addShape(pres.shapes.LINE,{x:VAL_X-.08,y:fy+.06,w:0,h:ROW_H-.12,
+      line:{color:"E0DFD8",width:.5}});
+    // value — 可在 PPT 內直接點選編輯
+    s2.addText(val,{x:VAL_X,y:fy,w:VAL_W,h:ROW_H,
+      fontSize:12,color:"1A1A18",fontFace:F,valign:"middle"});
+  });
+
+  // ── 頁尾提示
+  const footY=START_Y+fields.length*ROW_H+.12;
+  s2.addShape(pres.shapes.RECTANGLE,{x:.25,y:footY,w:9.5,h:.36,
+    fill:{color:"E6F1FB"},line:{color:"B5D4F4",width:.5}});
+  s2.addText("🔒  以上個資欄位均已依個資法自動遮蔽。本投影片內容可直接在 PowerPoint 中點選編輯。",
+    {x:.38,y:footY,w:9.24,h:.36,fontSize:9,color:"185FA5",fontFace:F,valign:"middle"});
+}
+
+// ── Card inline edit → sync right outputs ──────────────
+function ct(id){return($(id)?.innerText||"").trim();}
+
+function syncCard(){
+  const name      = ct("c-name").replace(/\s*的專屬學習方案\s*$/,"") || "學員";
+  const planName  = ct("c-plan");
+  const freq      = ct("c-freq").match(/\d+/)?.[0] || "3";
+  const priceVal  = ct("c-price");
+  const regLine   = ct("c-regfee");
+  const dlDate    = ct("dl-date");
+  const dlBadge   = ct("dl-badge");
+  const dlTag     = ct("dl-tagline");
+  const noteVal   = ct("note-txt");
+  const consultant= ct("c-consultant");
+  const contact   = ($("c-contact")?.innerText||"").trim();
+  const lineId    = $("lineId").value;
+  const parent    = $("parentName").value || "家長";
+
+  const bonuses=[];
+  document.querySelectorAll("#c-bonuses .bonus-item").forEach(el=>{
+    const lbl=(el.querySelector(".b-label")?.innerText||"").trim();
+    // 若已凍結（顧問自己改過）→ 讀 DOM 最新純文字
+    // 否則優先 data-plain（結構化算式原始純文字版），再退 innerText
+    let val;
+    if(el.dataset.frozen==="1"){
+      const valEl = el.querySelector(".b-val");
+      val = (valEl?.innerText || "").replace(/\u3000/g," ").replace(/^\s*|\s*$/g,"");
+    }else{
+      val = (el.getAttribute("data-plain") || el.querySelector(".b-val")?.innerText || "").replace(/^\s*|\s*$/g,"");
+    }
+    if(lbl) bonuses.push({label:lbl,val});
+  });
+  const bonusTxt=bonuses.length?bonuses.map(b=>`• ${b.label}：${b.val}`).join("\n"):"（本次無額外加贈）";
+  const contactBlock=consultant+(contact?"\n"+contact:"");
+
+  const _sBA=appendBlankToChannels?"\n\n"+getFilledStudentText():"";
+  $("line-txt").textContent=`Hi ${parent}！\n\n這是 ${name} 的 ETalking Kids 方案確認：\n\n📌 方案：${planName}｜每週 ${freq} 堂\n💰 月付款：${priceVal}　${regLine}\n${bonuses.length?"🎁 加贈：\n"+bonusTxt+"\n":""}\n⏰ 優惠截止：${dlDate}（${dlBadge}）${dlTag?`\n　　（${dlTag}）`:""}\n\n有問題隨時找我！\n${contactBlock}`+_sBA;
+
+  const es=`【ETalking Kids】${name} 的專屬學習方案確認`;
+  const eb=`${parent}，您好：\n\n感謝您今天撥冗體驗 ETalking Kids！以下是為 ${name} 規劃的專屬方案，請確認：\n\n━━ 課程方案 ━━\n方案：${planName}\n每週頻率：${freq} 堂\n月付款：${priceVal}（24期零利率分期）\n${regLine}\n${bonuses.length?"\n━━ 本次優惠加贈 ━━\n"+bonusTxt+"\n":""}\n━━ 優惠截止日 ━━\n${dlDate}（${dlBadge}）${dlTag?`\n（${dlTag}）`:""}\n${noteVal?"\n━━ 顧問備註 ━━\n"+noteVal+"\n":""}\n━━ 報名流程 ━━\n① 確認方案與付款方式\n② 填寫學員基本資料\n③ 課程顧問產出合約，線上簽署確認\n④ 刷卡完成，排定首課時間\n\n如有任何問題，歡迎隨時聯繫！\n\n${contactBlock}\n\nLearning is fun! 成就孩子的無限可能！\n——————————\nETalking Kids`+_sBA;
+  $("email-prev").textContent=eb.split("\n").slice(0,4).join("\n")+(appendBlankToChannels?"\n…（末尾含學員基本資料）":"…");
+  $("modal-subj").textContent=es;
+  $("modal-body").textContent=eb;
+  window._D=Object.assign(window._D||{},{es,eb,name});
+
+  const priceNum=priceVal.replace(/[^0-9,]/g,"");
+  const dlShort=dlDate.length>=5?dlDate.slice(5):"";
+  const sms=`ETalking ${name}/${planName}${freq}堂$${priceNum}截${dlShort} LINE:${lineId}`;
+  $("sms-txt").textContent=sms;
+  const sl=sms.length;
+  $("sms-cnt").textContent=`${sl} / 70 字元`;
+  $("sms-cnt").className="hint"+(sl>70?" warn":"");
+
+  if($("crmModal").classList.contains("open")) openCRM();
+}
+
+function resetCard(){
+  // 1. 清 localStorage
+  try{["et_card_styles_v1"].forEach(k=>localStorage.removeItem(k));}catch(e){}
+  // 2. 清記憶體樣式
+  SEC_DEFS.forEach(s=>{CARD_STYLES[s.id]={bg:"",bd:""};});
+  BONUS_SLOTS.forEach(s=>{BONUS_STYLES[s.slot]={bg:"",bd:""};});
+  CARD_STYLES["card"]={bg:"",bd:""};
+  Object.keys(TEXT_STYLES).forEach(k=>delete TEXT_STYLES[k]);
+  // 3. 清 #card 外框本身（openCardBgPop 可修改 #card inline style）
+  ["background","border-color","border-style","border-width"].forEach(p=>{
+    $("card").style.removeProperty(p);
+  });
+  // 4. 清 SEC_DEFS 每個區塊（不動 render() 管的 inline style）
+  SEC_DEFS.forEach(s=>{
+    const el=$(s.id);if(!el)return;
+    ["background","border-color","border-style","border-width"].forEach(p=>el.style.removeProperty(p));
+  });
+  // 5. 清 bonus-item 的底色/框線（render() 會重建它們）
+  document.querySelectorAll("#card .bonus-item").forEach(el=>{
+    ["background","border-color","border-style","border-width"].forEach(p=>el.style.removeProperty(p));
+  });
+  // 6. 還原 contenteditable 元素的原始 style（而非盲目刪除屬性，
+  //    避免把 HTML 裡本就定義的 font-size / color 也一起清掉）
+  document.querySelectorAll("#card [contenteditable]").forEach(el=>{
+    const orig=ORIG_CE_STYLES.get(el);
+    if(orig!==undefined){
+      // 靜態元素：還原快照
+      if(orig)el.setAttribute("style",orig);
+      else el.removeAttribute("style");
+    }else{
+      // 動態元素（bonus-item 等由 render() 重建），直接移除即可
+      ["font-weight","font-size","color"].forEach(p=>el.style.removeProperty(p));
+    }
+  });
+  // 7. render() 重繪
+  render();
+  // 8. 重設後短暫凍結 pointer-events，防止 cursor 殘留在 card 上
+  //    導致 🎨 paint 按鈕意外浮現（在 reset 按鈕正下方）
+  $("card").style.pointerEvents="none";
+  setTimeout(()=>{ $("card").style.pointerEvents=""; },600);
+  toast("已重設為預設值 ✓");
+}
+
+// ── Config / consultant loader (mirrors index-v3_1 pattern) ──
+var CONSULTANTS=[];
+
+function cfgStatus(msg,state){
+  $("cfg-msg").textContent=msg;
+  var colors={ok:"var(--green)",err:"var(--red)",warn:"var(--amber)",load:"var(--t3)"};
+  $("cfg-dot").style.background=colors[state]||colors.load;
+}
+
+function parseSheetUrl(url){
+  var idM=url.match(/\/spreadsheets\/d\/([^\/\?#]+)/);
+  var gidM=url.match(/[?&#]gid=(\d+)/);
+  if(!idM)return null;
+  return{id:idM[1],gid:gidM?gidM[1]:"0"};
+}
+
+function extractConsultants(tsv, rules, hardcoded){
+  var cnRe=new RegExp(rules.cn_pattern||"^[\\u4e00-\\u9fff]{2,5}$");
+  var enRe=new RegExp(rules.en_pattern||"^[A-Za-z]{2,15}$");
+  var anchor=rules.row_anchor||"12點半";
+  var phonePfx=rules.phone_prefix||"(02) 2760-7768 #6";
+  var domain=rules.email_domain||"@etalkingonline.com";
+  var seen={};
+  var results=[];
+  tsv.split("\n").forEach(function(line){
+    if(line.indexOf(anchor)<0)return;
+    var cells=line.split("\t");
+    for(var i=0;i<cells.length-1;i++){
+      var cn=cells[i].trim(),en=(cells[i+1]||"").trim();
+      if(cnRe.test(cn)&&enRe.test(en)&&cn!=="姓名"&&!seen[en.toLowerCase()]){
+        seen[en.toLowerCase()]=1;
+        // Match hardcode first (by id or English first name)
+        var hc=(hardcoded||[]).find(function(c){
+          return c.id===en.toLowerCase()||
+            (c.name||"").split(" ")[0].toLowerCase()===en.toLowerCase();
+        });
+        if(hc){results.push(hc);}
+        else{
+          results.push({
+            id:en.toLowerCase(),
+            name:en+" "+cn[0],
+            phone:phonePfx,
+            email:en+"."+domain,
+            lineId:""
+          });
+        }
+      }
+    }
+  });
+  return results;
+}
+
+function buildConsultantChips(){
+  var wrap=$("consultant-chips");
+  wrap.innerHTML="";
+  if(!CONSULTANTS.length){
+    wrap.innerHTML='<span style="font-size:11px;color:var(--t3)">無顧問資料，請直接填寫</span>';
+    return;
+  }
+  CONSULTANTS.forEach(function(c){
+    var btn=document.createElement("button");
+    btn.className="pill";
+    btn.textContent=c.name;
+    btn.style.cssText="font-size:12px;padding:4px 11px";
+    btn.onclick=function(){selectConsultant(c);};
+    wrap.appendChild(btn);
+  });
+}
+
+function quickFill(){
+  var en=($("quickEn").value||"").trim();
+  var cn=($("quickCn").value||"").trim();
+  if(!en)return;
+  var rules=PARSE_RULES;
+  var phonePfx=rules.phone_prefix||"(02) 2760-7768 #6";
+  var domain=rules.email_domain||"@etalkingonline.com";
+  // If en contains dot (e.g. "Wolf.huang"), use as-is with first char uppercased; else capitalize normally
+  var enCap=en.includes(".")?en.charAt(0).toUpperCase()+en.slice(1):en.charAt(0).toUpperCase()+en.slice(1).toLowerCase();
+  $("consultant").value=enCap+(cn?" "+cn:"");
+  $("cphone").value=phonePfx;
+  $("cemail").value=enCap+(enCap.includes(".")?domain:"."+domain);
+  $("lineId").value="";
+  // Clear chip active state (manual entry)
+  document.querySelectorAll("#consultant-chips .pill").forEach(function(b){b.classList.remove("on");});
+  render();
+}
+
+function selectConsultant(c){
+  const pref = (window.ALL_PREFS && window.ALL_PREFS[c.id]) || null;
+  const name  = (pref && pref.name)  || c.name  || "";
+  const phone = (pref && pref.phone) || c.phone || "";
+  const email = (pref && pref.email) || c.email || "";
+  const lineId= (pref && pref.lineId)|| c.lineId|| "";
+  $("consultant").value=name;
+  $("cphone").value=phone;
+  $("cemail").value=email;
+  $("lineId").value=lineId;
+  $("quickEn").value="";
+  $("quickCn").value="";
+  document.querySelectorAll("#consultant-chips .pill").forEach(function(b){
+    b.classList.toggle("on",b.textContent===c.name);
+  });
+  if(typeof applyConsultantPref==="function") applyConsultantPref(c.id);
+  render();
+}
+
+var PARSE_RULES={};
+
+// ── 共用 timeout 包裝器 ──
+function _withTimeout(promise, ms, timeoutMsg){
+  return new Promise(function(resolve, reject){
+    var timer = setTimeout(function(){ reject(new Error(timeoutMsg||"timeout")); }, ms);
+    promise.then(function(v){ clearTimeout(timer); resolve(v); })
+           .catch(function(e){ clearTimeout(timer); reject(e); });
+  });
+}
+
+// ── 班表抓取（Promise 版、不副作用更新 UI、供外部決定如何套用）──
+// 成功 resolve: {list: [合併後完整 CONSULTANTS], fromSheet: N}
+// 失敗 reject:  Error
+function _fetchSheet(url){
+  var parsed=parseSheetUrl(url);
+  if(!parsed) return Promise.reject(new Error("URL 格式有誤"));
+  var csvUrl="https://docs.google.com/spreadsheets/d/"+parsed.id+"/export?format=tsv&gid="+parsed.gid+"&t="+Date.now();
+  return fetch(csvUrl,{cache:"no-store"})
+    .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.text(); })
+    .then(function(tsv){
+      var fromSheet=extractConsultants(tsv,PARSE_RULES,CONSULTANTS);
+      if(!fromSheet.length) throw new Error("解析為空（找不到 "+PARSE_RULES.row_anchor+" 列）");
+      // Sheet order + HC-only appended
+      var hcOnly = [];
+      CONSULTANTS.forEach(function(hc){
+        if(!fromSheet.find(function(c){return c.id===hc.id;})) hcOnly.push(hc);
+      });
+      var merged = fromSheet.slice().concat(hcOnly);
+      return {list: merged, fromSheet: fromSheet.length};
+    });
+}
+
+// ── 舊 API 保留：供初次 loadConfig 呼叫（但現改經 bootstrap 統一走 _fetchSheet）──
+function trySheet(url){
+  cfgStatus("從班表抓取顧問名單…","load");
+  _fetchSheet(url)
+    .then(function(r){
+      CONSULTANTS = r.list;
+      buildConsultantChips();
+      cfgStatus("✅ 班表 "+r.fromSheet+" 位 · config "+CONSULTANTS.length+" 位","ok");
+      if(CONSULTANTS[0])selectConsultant(CONSULTANTS[0]);
+    })
+    .catch(function(e){
+      cfgStatus("⚠️ 班表抓取失敗，改用 config（"+e.message+"）","warn");
+      buildConsultantChips();
+      if(CONSULTANTS[0])selectConsultant(CONSULTANTS[0]);
+    });
+}
+
+// ══════════════════════════════════════════════════
+//  啟動 Mask 控制
+// ══════════════════════════════════════════════════
+function _setBootStage(id, state, text){
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.classList.remove("pending","ok","warn");
+  el.classList.add(state);
+  var icon = state==="ok" ? "✓" : state==="warn" ? "⚠" : "⏳";
+  el.querySelector(".s-icon").textContent = icon;
+  el.querySelector(".s-text").textContent = text;
+}
+function _dismissBootMask(){
+  var m = document.getElementById("boot-mask");
+  if(!m) return;
+  m.classList.add("fade-out");
+  setTimeout(function(){ if(m.parentNode) m.parentNode.removeChild(m); }, 400);
+}
+
+// ══════════════════════════════════════════════════
+//  手動重抓班表（左下 cfg-st + Settings Modal 共用）
+// ══════════════════════════════════════════════════
+var _lastManualRefreshTs = 0;
+function manualRefreshSheet(btn){
+  var now = Date.now();
+  if(now - _lastManualRefreshTs < 5000){
+    toast("⏱ 請稍候 5 秒後再試");
+    return;
+  }
+  _lastManualRefreshTs = now;
+
+  // 需要有 sheet_url 才有東西可抓
+  if(!window.SHEET_URL){
+    toast("⚠ 無 sheet_url，無法重抓");
+    return;
+  }
+
+  // 按鈕動畫 + 禁用
+  var buttons = document.querySelectorAll(".cfg-refresh-btn, #settings-refresh-btn");
+  buttons.forEach(function(b){
+    b.disabled = true;
+    b.classList.add("spinning");
+  });
+  cfgStatus("重抓班表中…","load");
+
+  _withTimeout(_fetchSheet(window.SHEET_URL), 8000, "逾時")
+    .then(function(r){
+      CONSULTANTS = r.list;
+      buildConsultantChips();
+      cfgStatus("✅ 班表 "+r.fromSheet+" 位 · config "+CONSULTANTS.length+" 位","ok");
+      // 若 Settings Modal 開著 → 同步重建 chips
+      if(document.getElementById("settingsModal").classList.contains("open")){
+        _rebuildSettingsChips();
+      }
+      toast("班表已更新 ✓");
+    })
+    .catch(function(e){
+      cfgStatus("⚠️ 重抓失敗（"+e.message+"），維持原有資料","warn");
+      toast("重抓失敗，維持原有資料");
+    })
+    .then(function(){
+      buttons.forEach(function(b){
+        b.disabled = false;
+        b.classList.remove("spinning");
+      });
+    });
+}
+
+// 重建 Settings Modal 的 chips（抽出供 manualRefreshSheet 複用）
+function _rebuildSettingsChips(){
+  var wrap = $("settings-chips");
+  if(!wrap) return;
+  var currentSelected = SETTINGS_SELECTED_ID;
+  wrap.innerHTML = "";
+  if(!CONSULTANTS.length){
+    wrap.innerHTML = '<span style="font-size:11px;color:var(--t3)">尚未載入顧問名單</span>';
+    return;
+  }
+  CONSULTANTS.forEach(function(c){
+    var btn=document.createElement("button");
+    btn.type="button";
+    btn.className="pill";
+    btn.textContent=c.name;
+    btn.style.cssText="font-size:12px;padding:4px 11px";
+    if(c.id===currentSelected) btn.classList.add("on");
+    btn.onclick=function(){ settingsSelectConsultant(c); };
+    wrap.appendChild(btn);
+  });
+}
+
+function loadConfig(){
+  cfgStatus("載入 config.json…","load");
+  _setBootStage("boot-stage-sheet","pending","班表：連線中…");
+  _setBootStage("boot-stage-gas",  "pending","偏好設定：等待中…");
+
+  fetch("./config.json?v="+Date.now(),{cache:"no-store"})
+    .then(function(r){if(!r.ok)throw "HTTP "+r.status;return r.json();})
+    .then(function(cfg){
+      CONSULTANTS      = cfg.consultants || [];
+      PARSE_RULES      = cfg.parse_rules || {};
+      window.GAS_URL   = (cfg.gas_url   || "").trim();
+      window.SHEET_URL = (cfg.sheet_url || "").trim();  // 給手動重抓用
+
+      // ── Stage 1: 班表（8 秒 timeout）──
+      var sheetP;
+      if(window.SHEET_URL){
+        sheetP = _withTimeout(_fetchSheet(window.SHEET_URL), 8000, "逾時")
+          .then(function(r){
+            CONSULTANTS = r.list;
+            buildConsultantChips();
+            cfgStatus("✅ 班表 "+r.fromSheet+" 位 · config "+CONSULTANTS.length+" 位","ok");
+            _setBootStage("boot-stage-sheet","ok","班表：已載入 "+r.fromSheet+" 位");
+            if(CONSULTANTS[0]) selectConsultant(CONSULTANTS[0]);
+          })
+          .catch(function(e){
+            buildConsultantChips();
+            cfgStatus("⚠️ 班表讀取失敗（"+e.message+"），改用 config","warn");
+            _setBootStage("boot-stage-sheet","warn","班表：使用預設（"+e.message+"）");
+            if(CONSULTANTS[0]) selectConsultant(CONSULTANTS[0]);
+          });
+      }else{
+        buildConsultantChips();
+        cfgStatus("✅ config.json（"+CONSULTANTS.length+" 位顧問）","ok");
+        _setBootStage("boot-stage-sheet","ok","班表：未設定（使用 config 名單）");
+        if(CONSULTANTS[0]) selectConsultant(CONSULTANTS[0]);
+        sheetP = Promise.resolve();
+      }
+
+      // ── Stage 2: GAS 偏好（5 秒 timeout，等 Stage 1 完成後再啟動）──
+      var gasP = sheetP.then(function(){
+        if(!window.GAS_URL){
+          _setBootStage("boot-stage-gas","warn","偏好設定：未設定 GAS URL（本機模式）");
+          return;
+        }
+        _setBootStage("boot-stage-gas","pending","偏好設定：同步中…");
+        return _withTimeout(gasGetAllPrefs(), 5000, "逾時")
+          .then(function(){
+            var n = Object.keys(window.ALL_PREFS||{}).length;
+            _setBootStage("boot-stage-gas","ok","偏好設定：已同步 "+n+" 位顧問");
+            if(window.CURRENT_CONSULTANT_ID){
+              var c = CONSULTANTS.find(function(x){return x.id===window.CURRENT_CONSULTANT_ID;});
+              if(c) selectConsultant(c);
+            }
+          })
+          .catch(function(e){
+            console.warn("GAS prefs load failed:", e);
+            _setBootStage("boot-stage-gas","warn","偏好設定：離線模式（"+String(e.message||e)+"）");
+          });
+      });
+
+      // 無論成敗都撤 Mask（但讓最終狀態停 500ms 讓使用者看到）
+      gasP.then(function(){
+        applyLimitModeUI(window.LIMIT_MODE);
+        setTimeout(_dismissBootMask, 500);
+      });
+    })
+    .catch(function(e){
+      cfgStatus("⚠️ 無 config.json（"+e+"），請直接填寫","warn");
+      buildConsultantChips();
+      applyLimitModeUI(window.LIMIT_MODE);
+      _setBootStage("boot-stage-sheet","warn","config.json 載入失敗");
+      _setBootStage("boot-stage-gas","warn","已略過");
+      setTimeout(_dismissBootMask, 800);
+    });
+}
+
+$("card").addEventListener("input", syncCard);
+
+/* ══════════════════════════════════════════
+   STYLE STATE  (sections + bonus slots + text elements)
+══════════════════════════════════════════ */
+const SEC_DEFS=[
+  {id:"c-head",    label:"標題區",  dark:true,
+   bgPal:["#042C53","#0A3D6B","#1B4F72","#17202A","#1A5276","#154360","#145A32","#4A235A","#7B241C","#2E4057"],
+   bdPal:["#1A4A7A","#2E86C1","#0B5394","#283747","transparent"]},
+  {id:"c-hero",    label:"方案區",  dark:true,
+   bgPal:["#185FA5","#0B5394","#0D6EFD","#117A65","#1A5276","#6C3483","#B03A2E","#17A589","#5D6D7E","#2E4057"],
+   bdPal:["#2471A3","#1F618D","#0D6EFD","transparent"]},
+  {id:"c-bonuses", label:"加贈容器",dark:false,
+   bgPal:["#F7F6F3","#F0EFE9","#E6F1FB","#EAF3DE","#FEF0E2","#FCEBEB","#FAEEDA","#F0F3FF","#fff","#F8F9FA"],
+   bdPal:["#E0DFD8","#B5D4F4","#C5E0A8","#F5C080","#F09595","transparent"]},
+  {id:"c-deadline",label:"截止日區",dark:false,
+   bgPal:["#FAEEDA","#FEF0E2","#FCEBEB","#E6F1FB","#EAF3DE","#F0EFE9","#F7F6F3","#fff","#FFF9C4"],
+   bdPal:["#F0D090","#FAC775","#F09595","#B5D4F4","#E0DFD8","transparent"]},
+  {id:"c-steps",   label:"流程區",  dark:false,
+   bgPal:["#F7F6F3","#F0EFE9","#E6F1FB","#EAF3DE","#FEF0E2","#fff","#F0F3FF","#FAFAFA","#E8F5E9"],
+   bdPal:["#E0DFD8","#B5D4F4","#C5E0A8","transparent"]},
+  {id:"c-note",    label:"備註區",  dark:false,
+   bgPal:["#F0EFE9","#F7F6F3","#FFF9C4","#FEF0E2","#EAF3DE","#E6F1FB","#fff","#FAEEDA"],
+   bdPal:["#E0DFD8","#F0D090","#B5D4F4","transparent"]},
+  {id:"c-foot",    label:"底部區",  dark:false,
+   bgPal:["#F0EFE9","#F7F6F3","#E6F1FB","#EAF3DE","#FEF0E2","#fff","#042C53","#185FA5","#E8EAF6"],
+   bdPal:["#E0DFD8","#B5D4F4","#042C53","transparent"]},
+];
+
+// bonus slot definitions（fixed order matches render()）
+const BONUS_SLOTS=[
+  {slot:"discount", label:"折扣列",   dark:false,
+   bgPal:["#E6F1FB","#EEF7FF","#DBEAFE","#F0F9FF","#fff","#F0EFE9"],
+   bdPal:["#B5D4F4","#93C5FD","#BAE6FD","transparent"]},
+  {slot:"regFee",   label:"報名費列", dark:false,
+   bgPal:["#EAF3DE","#F0FDF4","#DCFCE7","#F7FEE7","#fff","#F0EFE9"],
+   bdPal:["#C5E0A8","#86EFAC","#BBF7D0","transparent"]},
+  {slot:"biz",      label:"顧問加贈列",dark:false,
+   bgPal:["#F0EFE9","#F7F6F3","#E6F1FB","#EAF3DE","#fff","#F5F5F5"],
+   bdPal:["#E0DFD8","#B5D4F4","#042C53","transparent"]},
+  {slot:"activity", label:"活動加碼列",dark:false,
+   bgPal:["#FEF0E2","#FFF7ED","#FFEDD5","#FEF9C3","#fff","#F0EFE9"],
+   bdPal:["#F5C080","#FCA5A5","#FCD34D","transparent"]},
+  {slot:"lump",     label:"付清加贈列",dark:false,
+   bgPal:["#EAF3DE","#F0FDF4","#DCFCE7","#F7FEE7","#fff","#F0EFE9"],
+   bdPal:["#C5E0A8","#86EFAC","transparent"]},
+];
+
+// 初始化 state
+const CARD_STYLES={};
+SEC_DEFS.forEach(s=>{CARD_STYLES[s.id]={bg:"",bd:""};});
+// 卡片外框底色（獨立管理，避免與 hover 按鈕衝突）
+const CARD_OUTER_DEF={
+  id:"card", label:"卡片底色",
+  bgPal:["#F7F6F3","#F0EFE9","#FFFFFF","#F0F3FF","#EAF3DE","#FEF0E2","#E6F1FB","#FCEBEB","#F5F5F5","#FFFBF0"],
+  bdPal:["#E0DFD8","#B5D4F4","#042C53","#185FA5","transparent"]
+};
+CARD_STYLES["card"]={bg:"",bd:""};
+
+function openCardBgPop(trigBtn){
+  curSecId="card"; curPaintType="section";
+  $("pp-sec-label").textContent=CARD_OUTER_DEF.label;
+  const cur=CARD_STYLES["card"];
+  buildSwatches("pp-bg-sw",CARD_OUTER_DEF.bgPal,cur.bg,applySecBg);
+  buildSwatches("pp-bd-sw",CARD_OUTER_DEF.bdPal,cur.bd,applySecBorder);
+  $("pp-bg-custom").value=cur.bg.startsWith("#")?cur.bg:"#F7F6F3";
+  $("pp-bd-custom").value=cur.bd.startsWith("#")?cur.bd:"#E0DFD8";
+  const pop=$("paint-pop");pop.classList.add("show");
+  const r=trigBtn.getBoundingClientRect();
+  let top=r.bottom+6,left=r.left;
+  if(top+300>window.innerHeight)top=r.top-310;
+  if(left+224>window.innerWidth)left=window.innerWidth-230;
+  pop.style.top=top+"px";pop.style.left=left+"px";
+}
+const BONUS_STYLES={};  // keyed by slot name
+BONUS_SLOTS.forEach(s=>{BONUS_STYLES[s.slot]={bg:"",bd:""};});
+// text element styles by id (fontWeight, fontSize, color)
+const TEXT_STYLES={};
+// 原始 inline style 快照（頁面載入時建立，reset 時還原）
+const ORIG_CE_STYLES=new Map();
+
+
+
+// ── apply styles ──
+function reapplyStyles(){
+  // 只在有自訂值時才套用（空=不干預 render() 管理的 inline style）
+  SEC_DEFS.forEach(s=>{
+    const el=$(s.id);if(!el)return;
+    if(CARD_STYLES[s.id].bg) el.style.background=CARD_STYLES[s.id].bg;
+    const bd=CARD_STYLES[s.id].bd;
+    if(bd){
+      if(bd==="transparent")el.style.borderColor="transparent";
+      else{el.style.borderColor=bd;el.style.borderStyle="solid";el.style.borderWidth="1px";}
+    }
+  });
+  initPaintBtns();
+  initBonusPaintBtns();
+}
+
+function applyTextStyles(){
+  // 只套用有記錄的樣式；清除由 resetCard() 負責
+  Object.keys(TEXT_STYLES).forEach(id=>{
+    const el=$(id);if(!el)return;
+    const ts=TEXT_STYLES[id];
+    if(ts.fw)el.style.fontWeight=ts.fw;
+    if(ts.fs)el.style.fontSize=ts.fs;
+    if(ts.color)el.style.color=ts.color;
+  });
+}
+
+function saveTextStyle(el){
+  if(!el||!el.id)return;
+  const cs=getComputedStyle(el);
+  TEXT_STYLES[el.id]={
+    fw:el.style.fontWeight||"",
+    fs:el.style.fontSize||"",
+    color:el.style.color||""
+  };
+}
+
+// ── section paint buttons ──
+function initPaintBtns(){
+  SEC_DEFS.forEach(s=>{
+    const el=$(s.id);if(!el)return;
+    el.querySelectorAll(".sec-paint-btn").forEach(b=>b.remove());
+    el.classList.add("s-paint-host");
+    const btn=document.createElement("div");
+    btn.className="sec-paint-btn "+(s.dark?"dark-handle":"light-handle");
+    btn.innerHTML="🎨";btn.title="調整"+s.label;
+    btn.setAttribute("data-html2canvas-ignore","true");
+    btn.onmousedown=e=>e.preventDefault();
+    btn.onclick=function(e){e.stopPropagation();openPaintPop(s.id,btn,"section");};
+    el.appendChild(btn);
+  });
+}
+
+// ── bonus paint buttons ──
+function initBonusPaintBtns(){
+  document.querySelectorAll(".bonus-item[data-slot]").forEach(item=>{
+    item.querySelectorAll(".sec-paint-btn").forEach(b=>b.remove());
+    item.classList.add("s-paint-host");
+    item.style.position="relative";
+    const slot=item.dataset.slot;
+    const def=BONUS_SLOTS.find(s=>s.slot===slot);if(!def)return;
+    // reapply stored colors
+    if(BONUS_STYLES[slot].bg)item.style.background=BONUS_STYLES[slot].bg;
+    if(BONUS_STYLES[slot].bd){
+      item.style.borderColor=BONUS_STYLES[slot].bd;
+      item.style.borderStyle="solid";item.style.borderWidth="1px";
+    }
+    const btn=document.createElement("div");
+    btn.className="sec-paint-btn light-handle";
+    btn.innerHTML="🎨";btn.title="調整"+def.label;
+    btn.setAttribute("data-html2canvas-ignore","true");
+    btn.onmousedown=e=>e.preventDefault();
+    btn.onclick=function(e){e.stopPropagation();openPaintPop(slot,btn,"bonus");};
+    item.appendChild(btn);
+  });
+}
+
+/* ── paint popover ── */
+let curSecId=null, curPaintType=null;
+function openPaintPop(secId,trigBtn,type){
+  curSecId=secId;curPaintType=type;
+  const def=type==="bonus"
+    ?BONUS_SLOTS.find(s=>s.slot===secId)
+    :SEC_DEFS.find(s=>s.id===secId);
+  if(!def)return;
+  $("pp-sec-label").textContent=def.label;
+  const cur=type==="bonus"?BONUS_STYLES[secId]:CARD_STYLES[secId];
+  buildSwatches("pp-bg-sw",def.bgPal,cur.bg,applySecBg);
+  buildSwatches("pp-bd-sw",def.bdPal,cur.bd,applySecBorder);
+  $("pp-bg-custom").value=cur.bg.startsWith("#")?cur.bg:"#F7F6F3";
+  $("pp-bd-custom").value=cur.bd.startsWith("#")?cur.bd:"#E0DFD8";
+  const pop=$("paint-pop");pop.classList.add("show");
+  const r=trigBtn.getBoundingClientRect();
+  let top=r.bottom+6,left=r.right-224;
+  if(top+300>window.innerHeight)top=r.top-310;
+  if(left<6)left=6;
+  pop.style.top=top+"px";pop.style.left=left+"px";
+}
+function closePaintPop(){$("paint-pop").classList.remove("show");curSecId=null;curPaintType=null;}
+document.addEventListener("click",e=>{
+  if($("paint-pop").classList.contains("show")&&
+     !$("paint-pop").contains(e.target)&&
+     !e.target.classList.contains("sec-paint-btn"))closePaintPop();
+});
+
+function buildSwatches(containerId,palette,current,fn){
+  const wrap=$(containerId);
+  wrap.innerHTML=palette.map(c=>{
+    const isT=c==="transparent";
+    return`<div class="pp-swatch${current===c?" on":""}${isT?" trans":""}" `+
+      `style="${isT?"":"background:"+c}" title="${isT?"透明":c}" data-val="${c}"></div>`;
+  }).join("");
+  wrap.querySelectorAll(".pp-swatch").forEach(el=>{
+    el.addEventListener("click",function(){
+      wrap.querySelectorAll(".pp-swatch").forEach(s=>s.classList.remove("on"));
+      this.classList.add("on");fn(this.dataset.val);
+    });
+  });
+}
+
+function applySecBg(val){
+  if(!curSecId)return;
+  const store=curPaintType==="bonus"?BONUS_STYLES[curSecId]:CARD_STYLES[curSecId];
+  store.bg=val;
+  if(curPaintType==="bonus"){
+    document.querySelectorAll(`.bonus-item[data-slot="${curSecId}"]`).forEach(el=>el.style.background=val);
+  }else{
+    const el=$(curSecId);if(el)el.style.background=val;
+  }
+  if(val.startsWith("#"))$("pp-bg-custom").value=val;
+}
+function applySecBorder(val){
+  if(!curSecId)return;
+  const store=curPaintType==="bonus"?BONUS_STYLES[curSecId]:CARD_STYLES[curSecId];
+  store.bd=val;
+  const applyBd=el=>{
+    if(val==="transparent")el.style.borderColor="transparent";
+    else{el.style.borderColor=val;el.style.borderStyle="solid";el.style.borderWidth="1px";}
+  };
+  if(curPaintType==="bonus"){
+    document.querySelectorAll(`.bonus-item[data-slot="${curSecId}"]`).forEach(applyBd);
+  }else{
+    const el=$(curSecId);if(el)applyBd(el);
+  }
+  if(val.startsWith("#"))$("pp-bd-custom").value=val;
+}
+function resetSecStyle(type){
+  if(!curSecId)return;
+  const store=curPaintType==="bonus"?BONUS_STYLES[curSecId]:CARD_STYLES[curSecId];
+  if(type==="bg"){
+    store.bg="";
+    if(curPaintType==="bonus")document.querySelectorAll(`.bonus-item[data-slot="${curSecId}"]`).forEach(el=>el.style.background="");
+    else{const el=$(curSecId);if(el)el.style.background="";}
+  }else{
+    store.bd="";
+    const clearBd=el=>{el.style.borderColor="";el.style.borderStyle="";el.style.borderWidth="";};
+    if(curPaintType==="bonus")document.querySelectorAll(`.bonus-item[data-slot="${curSecId}"]`).forEach(clearBd);
+    else{const el=$(curSecId);if(el)clearBd(el);}
+  }
+  const def=curPaintType==="bonus"
+    ?BONUS_SLOTS.find(s=>s.slot===curSecId)
+    :SEC_DEFS.find(s=>s.id===curSecId);
+  const cur=curPaintType==="bonus"?BONUS_STYLES[curSecId]:CARD_STYLES[curSecId];
+  if(def){buildSwatches("pp-bg-sw",def.bgPal,cur.bg,applySecBg);buildSwatches("pp-bd-sw",def.bdPal,cur.bd,applySecBorder);}
+}
+
+/* ── 浮動文字格式工具列 ── */
+let fmtEl=null;
+let fmtElOrigStyle="";
+
+$("card").addEventListener("focusin",function(e){
+  const ce=e.target.closest("[contenteditable]");if(!ce)return;
+  fmtEl=ce;
+  fmtElOrigStyle=ce.getAttribute("style")||"";
+  // 工具列錨定到 card 頂端，不跟著元素跑
+  const bar=$("fmt-bar");
+  const cardRect=$("card").getBoundingClientRect();
+  bar.style.top=(cardRect.top-48)+"px";
+  bar.style.left=cardRect.left+"px";
+  bar.style.width=cardRect.width+"px";
+  bar.classList.add("show");
+  updateFmtBar(ce);
+});
+// focusout 只有在焦點完全離開 card 且不在 fmt-bar 內時才隱藏
+$("card").addEventListener("focusout",function(){
+  setTimeout(()=>{
+    const active=document.activeElement;
+    const inCard=$("card").contains(active);
+    const inBar=$("fmt-bar").contains(active);
+    if(!inCard&&!inBar){$("fmt-bar").classList.remove("show");fmtEl=null;}
+  },200);
+});
+
+function updateFmtBar(el){
+  const cs=getComputedStyle(el);
+  $("fmt-bold").classList.toggle("on",+cs.fontWeight>=600);
+  const fsz=Math.round(parseFloat(cs.fontSize));
+  document.querySelectorAll(".fmt-sz").forEach(b=>b.classList.toggle("on",+b.dataset.sz===fsz));
+  const col=cs.color.replace(/\s/g,"");
+  document.querySelectorAll(".fmt-color").forEach(c=>c.classList.toggle("on",rgbMatch(col,c.dataset.color)));
+}
+function rgbMatch(rgb,hex){
+  const m=rgb.match(/\d+/g);if(!m)return false;
+  const h=m.slice(0,3).map(n=>parseInt(n).toString(16).padStart(2,"0")).join("").toLowerCase();
+  return h===hex.replace("#","").toLowerCase();
+}
+function fmtBold(){
+  if(!fmtEl)return;
+  const isBold=+getComputedStyle(fmtEl).fontWeight>=600;
+  fmtEl.style.fontWeight=isBold?"400":"700";
+  $("fmt-bold").classList.toggle("on",!isBold);
+  saveTextStyle(fmtEl);
+}
+function fmtSize(sz){
+  if(!fmtEl)return;
+  fmtEl.style.fontSize=sz+"px";
+  document.querySelectorAll(".fmt-sz").forEach(b=>b.classList.toggle("on",+b.dataset.sz===sz));
+  saveTextStyle(fmtEl);
+}
+function fmtColor(c){
+  if(!fmtEl)return;
+  fmtEl.style.color=c;
+  document.querySelectorAll(".fmt-color").forEach(fc=>fc.classList.toggle("on",fc.dataset.color.toLowerCase()===c.toLowerCase()));
+  saveTextStyle(fmtEl);
+}
+function fmtReset(){
+  if(!fmtEl)return;
+  if(fmtElOrigStyle)fmtEl.setAttribute("style",fmtElOrigStyle);
+  else fmtEl.removeAttribute("style");
+  if(fmtEl.id)delete TEXT_STYLES[fmtEl.id];
+  updateFmtBar(fmtEl);
+}
+
+/* ── 擷取 canvas（供下載＆複製共用）── */
+async function buildCanvas(){
+  hidePaintBtns(true);$("fmt-bar").classList.remove("show");
+  try{
+    const c1=await html2canvas($("card"),{scale:2.5,useCORS:true,logging:false,backgroundColor:"#F7F6F3"});
+    if(includeStudentCard && $("c-student")){
+      const c2=await captureStudentCardMasked();
+      const gap=Math.round(12*2.5);
+      const combined=document.createElement("canvas");
+      combined.width=Math.max(c1.width,c2.width);
+      combined.height=c1.height+gap+c2.height;
+      const ctx=combined.getContext("2d");
+      ctx.fillStyle="#E8E7E0";
+      ctx.fillRect(0,0,combined.width,combined.height);
+      ctx.drawImage(c1,(combined.width-c1.width)/2,0);
+      ctx.drawImage(c2,(combined.width-c2.width)/2,c1.height+gap);
+      hidePaintBtns(false);return combined;
+    }
+    hidePaintBtns(false);return c1;
+  }catch(e){hidePaintBtns(false);throw e;}
+}
+function hidePaintBtns(hide){
+  document.querySelectorAll(".sec-paint-btn").forEach(b=>b.style.display=hide?"none":"");
+}
+
+/* ── PPTX 顏色讀取 ── */
+function elHex(id,fallback){
+  const el=$(id);if(!el)return fallback;
+  const bg=getComputedStyle(el).backgroundColor;
+  const m=bg.match(/\d+/g);
+  if(!m||+m[3]===0)return fallback;
+  return m.slice(0,3).map(n=>parseInt(n).toString(16).padStart(2,"0")).join("").toUpperCase();
+}
+
+/* ══════════════════════════════════════════
+   空白模板輸出
+══════════════════════════════════════════ */
+let appendBlankToChannels=false;
+
+function toggleBlankAppend(){
+  appendBlankToChannels=!appendBlankToChannels;
+  $("blank-track").classList.toggle("on",appendBlankToChannels);
+  const lbl=$("blank-append-label");
+  lbl.classList.toggle("on",appendBlankToChannels);
+  render();
+}
+
+function getBlankStudentText(){
+  const u="＿＿＿＿＿＿＿＿＿＿";
+  // 依 HIDDEN_FIELDS 動態組合欄位
+  const rows=[];
+  if(!isFieldHidden("cnName"))     rows.push(`中文名字　　：${u}`);
+  if(!isFieldHidden("guardian"))   rows.push(`法定代理人　：${u}`);
+  if(!isFieldHidden("enFirst"))    rows.push(`英文名字　　：${u}`);
+  if(!isFieldHidden("enLast"))     rows.push(`英文姓氏　　：${u}`);
+  if(!isFieldHidden("id"))         rows.push(`身分證字號　：${u}`);
+  if(!isFieldHidden("dob"))        rows.push(`出生年月日　：${u}（西元）`);
+  if(!isFieldHidden("addr"))       rows.push(`住家地址　　：${u}`);
+  if(!isFieldHidden("invAddr"))    rows.push(`發票地址　　：${u}`);
+  if(!isFieldHidden("invType"))    rows.push(`發票抬頭　　：□ 個人　□ 公司`);
+  if(!isFieldHidden("invItem"))    rows.push(`發票名目　　：□ 線上課程　□ 培訓費　□ 服務費`);
+  if(!isFieldHidden("firstClass")) rows.push(`首課時間　　：${u}`);
+  if(!isFieldHidden("envTest"))    rows.push(`環測時間　　：${u}`);
+  return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ETalking Kids　學員基本資料
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${rows.join("\n")}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+}
+
+function getFilledStudentText(){
+  const sd=getStudentData();
+  const m=(v,t)=>maskPII(v,t)||"（未填）";
+  const invType=document.querySelector("#sf-inv-type .sc-pill.on")?.dataset.val||"個人";
+  const invItem=document.querySelector("#sf-inv-item .sc-pill.on")?.dataset.val||"線上課程";
+  const invName=invType==="公司"?(maskPII(sd.invName,"name-org")||""):"";
+  const rows=[];
+  if(!isFieldHidden("cnName"))   rows.push(`中文名字　　：${m(sd.cnName,"name-zh")}`);
+  if(!isFieldHidden("guardian")) rows.push(`法定代理人　：${m(sd.guardian,"name-zh")}`);
+  if(!isFieldHidden("enFirst")&&!isFieldHidden("enLast")){
+    rows.push(`英文姓名　　：${(sd.enFirst||sd.enLast)?[sd.enFirst?m(sd.enFirst,"name-en"):"",sd.enLast?m(sd.enLast,"name-en"):""].filter(Boolean).join(" "):"（未填）"}`);
+  }else if(!isFieldHidden("enFirst")){
+    rows.push(`英文名字　　：${m(sd.enFirst,"name-en")}`);
+  }else if(!isFieldHidden("enLast")){
+    rows.push(`英文姓氏　　：${m(sd.enLast,"name-en")}`);
+  }
+  if(!isFieldHidden("id"))         rows.push(`身分證字號　：${m(sd.id,"id-tw")}`);
+  if(!isFieldHidden("dob"))        rows.push(`出生年月日　：${m(sd.dob,"dob")}`);
+  if(!isFieldHidden("addr"))       rows.push(`住家地址　　：${m(sd.addr,"address")}`);
+  if(!isFieldHidden("invAddr"))    rows.push(`發票地址　　：${m(sd.invAddr,"address")}`);
+  if(!isFieldHidden("invType"))    rows.push(`發票抬頭　　：${invType}${invName?" · "+invName:""}`);
+  if(!isFieldHidden("invItem"))    rows.push(`發票名目　　：${invItem}`);
+  if(!isFieldHidden("firstClass")) rows.push(`首課時間　　：${sd.firstClass||"（未填）"}`);
+  if(!isFieldHidden("envTest"))    rows.push(`環測時間　　：${sd.envTest||"（未填）"}`);
+  return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ETalking Kids　學員基本資料（🔒 個資法隱私遮蔽）
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${rows.join("\n")}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+}
+
+async function captureBlankCard(){
+  const original=$("c-student");
+  const clone=original.cloneNode(true);
+  clone.style.cssText="position:fixed;top:0;left:-9999px;width:420px;z-index:-1";
+  document.body.appendChild(clone);
+  // 文字 input → 空底線 span
+  ["sf-cn-name","sf-guardian","sf-en-first","sf-en-last","sf-id","sf-dob",
+   "sf-addr","sf-inv-addr","sf-inv-name"].forEach(id=>{
+    const ci=clone.querySelector("#"+id);if(!ci)return;
+    const sp=document.createElement("span");
+    sp.className="sc-val";
+    sp.style.cssText="display:inline-block;min-width:140px;border-bottom:1.5px solid #bbb;padding:0 2px";
+    sp.textContent="";
+    ci.parentNode.replaceChild(sp,ci);
+  });
+  // 時間 select → 空底線
+  ["sf-first-class-time","sf-env-test-time"].forEach(id=>{
+    const ci=clone.querySelector("#"+id);if(!ci)return;
+    const sp=document.createElement("span");
+    sp.className="sc-val";
+    sp.style.cssText="display:inline-block;min-width:70px;border-bottom:1.5px solid #bbb";
+    sp.textContent="";
+    ci.parentNode.replaceChild(sp,ci);
+  });
+  // 日期按鈕
+  ["fc-date-display","et-date-display"].forEach(id=>{
+    const el=clone.querySelector("#"+id);
+    if(el){el.textContent="____/  /  ";el.style.color="var(--t3)";}
+  });
+  // pill 全清
+  clone.querySelectorAll(".sc-pill").forEach(p=>p.classList.remove("on"));
+  clone.querySelectorAll("[data-no-capture]").forEach(el=>el.remove());
+  // 移除隱藏欄位（空白表單也要遵守隱藏規則）
+  clone.querySelectorAll(".sc-field[data-field]").forEach(el=>{
+    if(isFieldHidden(el.dataset.field)) el.remove();
+  });
+  const canvas=await html2canvas(clone,{scale:2.5,useCORS:true,logging:false,backgroundColor:"#ffffff"});
+  document.body.removeChild(clone);
+  return canvas;
+}
+
+async function blankCopyImg(){
+  if(!window.html2canvas){toast("載入中...");return;}
+  toast(includeStudentCard?"產生學員資料圖片...":"產生空白模板...");
+  try{
+    const cv=includeStudentCard?await captureStudentCardMasked():await captureBlankCard();
+    cv.toBlob(async blob=>{
+      try{
+        await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);
+        toast(includeStudentCard?"學員資料已複製到剪貼簿 ✓":"空白模板已複製到剪貼簿 ✓");
+      }catch(e){toast("複製失敗（需 HTTPS 或授權）");}
+    },"image/png");
+  }catch(e){toast("失敗："+e.message);}
+}
+
+async function blankDownloadImg(){
+  if(!window.html2canvas){toast("載入中...");return;}
+  toast(includeStudentCard?"產生學員資料圖片...":"產生空白模板...");
+  try{
+    const cv=includeStudentCard?await captureStudentCardMasked():await captureBlankCard();
+    const a=document.createElement("a");
+    a.download=includeStudentCard?`ETalking_學員資料_${new Date().toLocaleDateString("zh-TW",{month:"2-digit",day:"2-digit"}).replace("/","")}.png`:"ETalking_學員基本資料_空白表單.png";
+    a.href=cv.toDataURL("image/png");a.click();
+    toast(includeStudentCard?"學員資料圖片下載完成 ✓":"空白模板下載完成 ✓");
+  }catch(e){toast("失敗："+e.message);}
+}
+
+function blankCopyText(){
+  const txt=includeStudentCard?getFilledStudentText():getBlankStudentText();
+  navigator.clipboard.writeText(txt)
+    .then(()=>toast(includeStudentCard?"學員資料（遮蔽）已複製 ✓":"空白模板已複製 ✓"))
+    .catch(()=>toast("請手動複製"));
+}
+
+function blankPPTX(){
+  if(!window.PptxGenJS){toast("載入中...");return;}
+  const pres=new PptxGenJS();pres.layout="LAYOUT_16x9";
+  const name=($("studentName").value||"學員");
+  if(includeStudentCard){
+    // 含入匯出模式：產出有值（遮蔽）的投影片
+    addStudentSlide(pres,name);
+    pres.writeFile({fileName:`ETalking_學員資料_${name}.pptx`}).then(()=>toast("學員資料 PPTX 下載完成 ✓"));
+    return;
+  }
+  // 空白模板模式：欄位皆為可編輯空白文字框
+  const F="Microsoft JhengHei";
+  const s=pres.addSlide();s.background={color:"FFFFFF"};
+  s.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:10,h:.72,fill:{color:"042C53"},line:{color:"042C53"}});
+  s.addText("STUDENT BASIC INFO",{x:.3,y:.07,w:5,h:.2,fontSize:8,color:"B5D4F4",fontFace:F,charSpacing:4});
+  s.addText("ETalking Kids  學員基本資料",{x:.3,y:.28,w:7,h:.34,fontSize:16,bold:true,color:"FFFFFF",fontFace:F});
+  s.addText("請於 PowerPoint 中直接填寫各欄位",
+    {x:6,y:.28,w:3.7,h:.34,fontSize:9,color:"B5D4F4",fontFace:F,align:"right",italic:true});
+
+  const rows=[
+    ["中文名字",   "",                    "例：陳小明"],
+    ["英文名字",   "",                    "例：Ming"],
+    ["英文姓氏",   "",                    "例：Chen"],
+    ["身分證字號", "",                    "例：A123456789"],
+    ["出生年月日", "（西元 YYYY/MM/DD）", "例：1990/06/15"],
+    ["住家地址",   "",                    "例：台北市大安區…"],
+    ["發票地址",   "（同住家地址請填相同）",""],
+    ["發票抬頭",   "",                    "□ 個人   □ 公司（統編/名稱：　　　　　　）"],
+    ["發票名目",   "",                    "□ 線上課程   □ 培訓費   □ 服務費"],
+    ["首課時間",   "",                    "例：2026/05/01  15:00"],
+    ["環測時間",   "",                    "例：2026/04/28  14:30"],
+  ];
+  const ROW_H=.42;
+  const LBL_W=1.6;
+  const VAL_X=1.95;
+  const VAL_W=7.75;
+  const START_Y=.88;
+
+  rows.forEach(([lbl,hint,example],i)=>{
+    const fy=START_Y+i*ROW_H;
+    const rowBg=i%2===0?"F8F8F6":"FFFFFF";
+    s.addShape(pres.shapes.RECTANGLE,{x:.25,y:fy,w:9.5,h:ROW_H-.02,
+      fill:{color:rowBg},line:{color:"E8E7E0",width:.5}});
+    s.addText(lbl,{x:.35,y:fy,w:LBL_W,h:ROW_H,
+      fontSize:11,color:"9C9B96",fontFace:F,valign:"middle"});
+    s.addShape(pres.shapes.LINE,{x:VAL_X-.08,y:fy+.06,w:0,h:ROW_H-.12,
+      line:{color:"E0DFD8",width:.5}});
+    // 顯示範例文字（淡色）讓文字框可見；填寫者直接覆蓋即可
+    const display=example||hint||"（請填寫）";
+    s.addText(display,{x:VAL_X,y:fy,w:VAL_W,h:ROW_H,
+      fontSize:10.5,color:"BBBBBB",fontFace:F,valign:"middle",italic:true});
+  });
+
+  const footY=START_Y+rows.length*ROW_H+.12;
+  s.addShape(pres.shapes.RECTANGLE,{x:.25,y:footY,w:9.5,h:.36,
+    fill:{color:"E6F1FB"},line:{color:"B5D4F4",width:.5}});
+  s.addText("💡  各欄位均為可編輯文字框，請在 PowerPoint 中直接點選填寫。完成後請交回課程顧問。",
+    {x:.38,y:footY,w:9.24,h:.36,fontSize:9,color:"185FA5",fontFace:F,valign:"middle"});
+
+  pres.writeFile({fileName:"ETalking_學員基本資料_空白表單.pptx"}).then(()=>toast("空白模板 PPTX 下載完成 ✓"));
+}
+
+/* ══════════════════════════════════════════
+   隱私遮蔽 (個資法 / GB-T 35273 / GDPR TW)
+══════════════════════════════════════════ */
+function maskPII(val, type){
+  if(!val||!val.trim())return "";
+  const v=val.trim();
+  switch(type){
+    case "name-zh":
+      // 保留姓（第1字），名全遮 ＊
+      if(v.length<=1)return v;
+      return v[0]+"＊".repeat(v.length-1);
+    case "name-en":
+      // 保留首字母大寫，其餘 *
+      if(v.length<=1)return v[0].toUpperCase();
+      return v[0].toUpperCase()+"*".repeat(v.length-1);
+    case "id-tw":
+      // 保留前2碼（縣市碼+性別碼），其餘 *
+      if(v.length<=2)return v;
+      return v.slice(0,2)+"*".repeat(v.length-2);
+    case "dob":
+      // 保留年份，月日 **/**
+      const m=v.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+      if(m)return m[1]+"/**/**";
+      if(v.length>=4)return v.slice(0,4)+"/**/**";
+      return v;
+    case "address":
+      // 保留縣市+區（前6字），其餘 ****
+      if(v.length<=6)return v;
+      return v.slice(0,6)+"****";
+    case "name-org":
+      // 公司：保留前2字，其餘 ＊（最多4個）
+      if(v.length<=2)return v;
+      return v.slice(0,2)+"＊".repeat(Math.min(v.length-2,4));
+    default:
+      return val;
+  }
+}
+
+const STUDENT_MASK_RULES=[
+  {id:"sf-cn-name",  type:"name-zh"},
+  {id:"sf-guardian", type:"name-zh"},
+  {id:"sf-en-first", type:"name-en"},
+  {id:"sf-en-last",  type:"name-en"},
+  {id:"sf-id",       type:"id-tw"},
+  {id:"sf-dob",      type:"dob"},
+  {id:"sf-addr",     type:"address"},
+  {id:"sf-inv-addr", type:"address"},
+  {id:"sf-inv-name", type:"name-org"},
+  // 首課/環測時間：非個人識別資料，不遮蔽
+];
+
+async function captureStudentCardMasked(){
+  const original=$("c-student");
+  // 複製 DOM，用遮蔽值取代 input（避免污染原始資料）
+  const clone=original.cloneNode(true);
+  clone.style.cssText="position:fixed;top:0;left:-9999px;width:420px;z-index:-1";
+  document.body.appendChild(clone);
+
+  // 複製 input values 並套用遮蔽
+  STUDENT_MASK_RULES.forEach(({id,type})=>{
+    const orig=$(id);
+    const ci=clone.querySelector("#"+id);
+    if(!orig||!ci)return;
+    const realVal=orig.value;
+    const maskedVal=type?maskPII(realVal,type):realVal;
+    // 將 input 換成靜態 span（html2canvas 對 input 的渲染更穩定）
+    const span=document.createElement("span");
+    span.className="sc-val";
+    span.style.cssText="display:inline-block;min-height:18px;padding:1px 4px";
+    span.textContent=maskedVal||"";
+    span.style.color=maskedVal?"var(--text)":"var(--t3)";
+    ci.parentNode.replaceChild(span,ci);
+  });
+
+  // pill 選擇器同步顯示
+  ["sf-inv-type","sf-inv-item"].forEach(gid=>{
+    const origActive=document.querySelector("#"+gid+" .sc-pill.on");
+    if(!origActive)return;
+    clone.querySelectorAll("#"+gid+" .sc-pill").forEach(p=>{
+      p.classList.toggle("on",p.dataset.val===origActive.dataset.val);
+    });
+  });
+  // 時間 select 同步並轉為靜態文字
+  ["sf-first-class-time","sf-env-test-time"].forEach(id=>{
+    const orig=$(id),ci=clone.querySelector("#"+id);
+    if(!orig||!ci)return;
+    const span=document.createElement("span");
+    span.className="sc-val";span.style.cssText="display:inline-block;padding:1px 4px";
+    span.textContent=orig.value||"—";
+    ci.parentNode.replaceChild(span,ci);
+  });
+
+  clone.querySelectorAll("[data-no-capture]").forEach(el=>el.remove());
+  // 移除隱藏欄位（整列從圖片輸出消失）
+  clone.querySelectorAll(".sc-field[data-field]").forEach(el=>{
+    if(isFieldHidden(el.dataset.field)) el.remove();
+  });
+  const canvas=await html2canvas(clone,{scale:2.5,useCORS:true,logging:false,backgroundColor:"#ffffff"});
+  document.body.removeChild(clone);
+  return canvas;
+}
+let includeStudentCard = false;
+
+function toggleStudentExport(){
+  includeStudentCard = !includeStudentCard;
+  const track=$("sc-track"), label=$("sc-toggle-label"), tog=$("sc-toggle");
+  const card=$("c-student");
+  track.classList.toggle("on", includeStudentCard);
+  tog.classList.toggle("on", includeStudentCard);
+  label.textContent = includeStudentCard ? "含入匯出" : "不含入匯出";
+  card.classList.toggle("export-on", includeStudentCard);
+}
+
+function scPill(groupId, btn){
+  document.querySelectorAll("#"+groupId+" .sc-pill").forEach(p=>p.classList.remove("on"));
+  btn.classList.add("on");
+  // 公司抬頭時顯示公司名稱欄
+  if(groupId==="sf-inv-type"){
+    const isCompany = btn.dataset.val === "公司";
+    $("sf-inv-name").style.display = isCompany ? "block" : "none";
+  }
+}
+
+function initStudentTimeOpts(){
+  // 首課時間：15:00 ~ 21:00，每半小時
+  const fcSel=$("sf-first-class-time");
+  fcSel.innerHTML='<option value="">— 時間 —</option>';
+  for(let h=15;h<=21;h++){
+    [0,30].forEach(m=>{
+      if(h===21&&m===30)return;
+      const t=`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+      fcSel.innerHTML+=`<option value="${t}">${t}</option>`;
+    });
+  }
+  // 環測時間：13:30 ~ 20:30，僅半點（:30）
+  const etSel=$("sf-env-test-time");
+  etSel.innerHTML='<option value="">— 時間 —</option>';
+  for(let h=13;h<=20;h++){
+    const t=`${String(h).padStart(2,"0")}:30`;
+    etSel.innerHTML+=`<option value="${t}">${t}</option>`;
+  }
+}
+
+function fmtDateTime(dateVal, timeVal){
+  if(!dateVal&&!timeVal)return "";
+  if(dateVal){const[y,m,d]=dateVal.split("-");dateVal=`${y}/${m}/${d}`;}
+  return [dateVal,timeVal].filter(Boolean).join(" ");
+}
+
+function getStudentData(){
+  const invType=document.querySelector("#sf-inv-type .sc-pill.on")?.dataset.val||"個人";
+  const invItem=document.querySelector("#sf-inv-item .sc-pill.on")?.dataset.val||"線上課程";
+  const dob=$("sf-dob").value;
+  return {
+    cnName:     $("sf-cn-name").value,
+    guardian:   $("sf-guardian")?.value||"",
+    enFirst:    $("sf-en-first").value,
+    enLast:     $("sf-en-last").value,
+    id:         $("sf-id").value,
+    dob:        dob?fmtDate(dob):"",
+    addr:       $("sf-addr").value,
+    invAddr:    $("sf-inv-addr").value||$("sf-addr").value,
+    invType,
+    invName:    invType==="公司"?($("sf-inv-name").value||""):"",
+    invItem,
+    firstClass: fmtDateTime(STUDENT_DATES.firstClass,$("sf-first-class-time").value),
+    envTest:    fmtDateTime(STUDENT_DATES.envTest,$("sf-env-test-time").value),
+  };
+}
+
+/* ══════════════════════════════════════════
+   公休日資料（個資法 / 行事曆 hardcode 2025-2028）
+══════════════════════════════════════════ */
+function buildHolidays(){
+  const H=new Map();
+  // 元旦、聖誕節 — 每年固定
+  [2025,2026,2027,2028,2029].forEach(y=>{
+    H.set(`${y}-01-01`,"元旦");
+    H.set(`${y}-12-25`,"聖誕節");
+  });
+  // 農曆春節（除夕 ~ 初三）—— 逐年 hardcode
+  const cny=[
+    {y:2025,dates:["01-28","01-29","01-30","01-31"],labels:["除夕","初一（春節）","初二","初三"]},
+    {y:2026,dates:["02-16","02-17","02-18","02-19"],labels:["除夕","初一（春節）","初二","初三"]},
+    {y:2027,dates:["02-05","02-06","02-07","02-08"],labels:["除夕","初一（春節）","初二","初三"]},
+    {y:2028,dates:["01-25","01-26","01-27","01-28"],labels:["除夕","初一（春節）","初二","初三"]},
+  ];
+  cny.forEach(({y,dates,labels})=>dates.forEach((d,i)=>H.set(`${y}-${d}`,"農曆"+labels[i])));
+  return H;
+}
+const HOLIDAYS=buildHolidays();
+
+function isHoliday(dateStr){return HOLIDAYS.get(dateStr)||null;}
+
+/* ── 日曆狀態 ── */
+const STUDENT_DATES={firstClass:"",envTest:""};
+let calField=null,calTrigger=null,calYear=0,calMonth=0;
+let tipTimer=null;
+
+function openCal(field,trigBtn){
+  calField=field;calTrigger=trigBtn;
+  const now=new Date();
+  const cur=STUDENT_DATES[field];
+  if(cur){const p=cur.split("-");calYear=+p[0];calMonth=+p[1]-1;}
+  else{calYear=now.getFullYear();calMonth=now.getMonth();}
+  renderCal();
+  const pop=$("cal-pop");pop.classList.add("show");
+  const r=trigBtn.getBoundingClientRect();
+  let top=r.bottom+4,left=r.left;
+  if(top+310>window.innerHeight)top=r.top-316;
+  if(left+260>window.innerWidth)left=window.innerWidth-266;
+  pop.style.top=top+"px";pop.style.left=left+"px";
+}
+function closeCal(){$("cal-pop").classList.remove("show");calField=null;calTrigger=null;}
+document.addEventListener("click",e=>{
+  if($("cal-pop").classList.contains("show")&&
+     !$("cal-pop").contains(e.target)&&
+     !e.target.closest(".sc-date-btn"))closeCal();
+});
+
+function calMove(d){calMonth+=d;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCal();}
+function calToday(){const n=new Date();calYear=n.getFullYear();calMonth=n.getMonth();renderCal();}
+
+function renderCal(){
+  const months=["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+  $("cal-title").textContent=`${calYear}年 ${months[calMonth]}`;
+  const first=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const daysInPrev=new Date(calYear,calMonth,0).getDate();
+  const today=new Date().toISOString().split("T")[0];
+  const selected=STUDENT_DATES[calField]||"";
+  let html="";
+  // 前月補位
+  for(let i=first-1;i>=0;i--){
+    html+=`<div class="cal-day other-month">${daysInPrev-i}</div>`;
+  }
+  // 本月
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const hName=isHoliday(ds);
+    const isSel=ds===selected;
+    const isToday=ds===today;
+    let cls="cal-day";
+    if(hName)cls+=" blocked";
+    if(isSel)cls+=" selected";
+    if(isToday&&!isSel)cls+=" today";
+    if(hName){
+      const safe=hName.replace(/'/g,"\&#39;");
+      html+=`<div class="${cls}" `+
+        `onmouseenter="showHolidayTip(event,'${safe}')" onmouseleave="hideHolidayTip()" `+
+        `onclick="onBlockedClick(this)">${d}</div>`;
+    }else{
+      html+=`<div class="${cls}" onclick="selectCalDate('${ds}')">${d}</div>`;
+    }
+  }
+  // 後月補位
+  const total=first+daysInMonth;
+  const rem=(7-total%7)%7;
+  for(let i=1;i<=rem;i++)html+=`<div class="cal-day other-month">${i}</div>`;
+  $("cal-grid").innerHTML=html;
+}
+
+function onBlockedClick(el){
+  el.style.animation="none";
+  void el.offsetWidth; // reflow trick to restart animation
+  el.style.animation="calShake .35s ease";
+}
+
+function selectCalDate(ds){
+  STUDENT_DATES[calField]=ds;
+  const[y,m,d]=ds.split("-");
+  const displayId=calField==="firstClass"?"fc-date-display":"et-date-display";
+  const dispEl=$(displayId);
+  dispEl.textContent=`${y}/${m}/${d}`;
+  dispEl.classList.remove("placeholder");
+  renderCal();
+  // 自動關閉（如果時間也已選則更流暢）
+  setTimeout(closeCal,180);
+}
+
+function onBlockedClick(el){
+  el.style.animation="calShake .3s ease";
+  setTimeout(()=>el.style.animation="",320);
+}
+
+function showHolidayTip(e,name){
+  const tip=$("cal-holiday-tip");
+  tip.textContent="🚫 "+name+" — 公休，無法排課";
+  tip.style.left=(e.clientX+12)+"px";
+  tip.style.top=(e.clientY-28)+"px";
+  tip.classList.add("show");
+  clearTimeout(tipTimer);
+}
+function hideHolidayTip(){
+  tipTimer=setTimeout(()=>$("cal-holiday-tip").classList.remove("show"),120);
+}
+
+initStudentTimeOpts();
+loadConfig();
+// 快照所有 #card contenteditable 元素的原始 style（在任何 fmt-bar 操作前）
+document.querySelectorAll("#card [contenteditable]").forEach(el=>{
+  ORIG_CE_STYLES.set(el,el.getAttribute("style")||"");
+});
+render();
+</script>
+</body>
+</html>
